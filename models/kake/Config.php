@@ -62,10 +62,6 @@ class Config extends General
             ],
             [
                 ['value'],
-                'required'
-            ],
-            [
-                ['value'],
                 'string',
                 'max' => 128
             ],
