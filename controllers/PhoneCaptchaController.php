@@ -1,4 +1,5 @@
 <?php
+
 namespace service\controllers;
 
 use service\components\Helper;
@@ -55,8 +56,11 @@ class PhoneCaptchaController extends MainController
     public function actionSend($phone, $type)
     {
         $phoneCaptchaModel = new PhoneCaptcha();
-        if (!in_array($type, $phoneCaptchaModel->_type)) {
-            $this->fail('param illegal');
+        if (!isset($phoneCaptchaModel->_type[$type])) {
+            $this->fail([
+                'param illegal',
+                'param' => 'type'
+            ]);
         }
 
         $rulePhone = $phoneCaptchaModel->_rule_phone;
@@ -66,8 +70,7 @@ class PhoneCaptchaController extends MainController
             'phone' => $phone
         ], $rulePhone);
 
-        $key = Helper::getKeyByValue($phoneCaptchaModel->_type, $type);
-        $length = $phoneCaptchaModel->_type_captcha_length[$key];
+        $length = $phoneCaptchaModel->_type_captcha_length[$type];
 
         $captcha = Helper::randString($length, 'number');
         $result = $phoneCaptchaModel->validCaptcha($phone, $captcha, $type);

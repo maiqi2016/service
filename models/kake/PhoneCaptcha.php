@@ -30,8 +30,8 @@ class PhoneCaptcha extends General
      * @var array Type 类型对应的验证码长度
      */
     public $_type_captcha_length = [
-        1 => 4,
-        2 => 8
+        1 => 8,
+        2 => 4
     ];
 
     /**
@@ -88,7 +88,7 @@ class PhoneCaptcha extends General
             'phone' => $phone
         ], [
             'captcha' => $captcha,
-            'type' => Helper::getKeyByValue($this->_type, $type),
+            'type' => $type,
             'state' => 1
         ], function ($record) {
 
@@ -124,7 +124,7 @@ class PhoneCaptcha extends General
         $record = static::find()->where([
             'phone' => $phone,
             'captcha' => $captcha,
-            'type' => Helper::getKeyByValue($this->_type, $type),
+            'type' => $type,
             'state' => 1,
         ])->andWhere([
             '>=',
