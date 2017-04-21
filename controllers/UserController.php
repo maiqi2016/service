@@ -154,4 +154,25 @@ class UserController extends MainController
 
         $this->success();
     }
+
+    /**
+     * 编辑真实信息
+     *
+     * @param $user_id
+     * @param $real_name
+     * @param $phone
+     * @param $captcha
+     */
+    public function actionEditRealInfo($user_id, $real_name, $phone, $captcha)
+    {
+        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, 2);
+        if (!$captcha) {
+            Yii::info('验证码错误, phone:' . $phone . ', captcha:' . $captcha);
+            $this->fail('phone captcha error');
+        }
+
+        $result = (new User())->edit(['id' => $user_id], compact('real_name', 'phone'));
+
+        $this->success($result);
+    }
 }
