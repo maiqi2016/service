@@ -11,6 +11,7 @@ use Yii;
  * @property integer $product_id
  * @property string  $name
  * @property integer $price
+ * @property integer $purchase_limit
  * @property string  $info
  * @property string  $add_time
  * @property string  $update_time
@@ -37,6 +38,7 @@ class ProductPackage extends General
                     'product_id',
                     'name',
                     'price',
+                    'purchase_limit',
                     'info'
                 ],
                 'required'
@@ -44,7 +46,8 @@ class ProductPackage extends General
             [
                 [
                     'product_id',
-                    'price'
+                    'price',
+                    'purchase_limit'
                 ],
                 'integer'
             ],
@@ -70,6 +73,7 @@ class ProductPackage extends General
             'product_id' => Yii::t('database', 'Product ID'),
             'name' => Yii::t('database', 'Name'),
             'price' => Yii::t('database', 'Price'),
+            'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),

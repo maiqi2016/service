@@ -6,6 +6,7 @@ use service\components\Helper;
 use service\models\kake\Order;
 use service\models\kake\OrderInstructionsLog;
 use service\models\kake\OrderSub;
+use service\models\kake\Product;
 use yii;
 
 /**
@@ -66,7 +67,7 @@ class OrderController extends MainController
     }
 
     /**
-     * 订单支付处理
+     * 订单支付后处理
      *
      * @param string  $order_number
      * @param boolean $paid_result
@@ -89,6 +90,13 @@ class OrderController extends MainController
 
         if ($paid_result) {
             $order->payment_state = 1;
+
+            (new Product())->edit(['id' => $order->product_id], [
+                'real_sales' => function ($num) {
+                    return ++$num;
+                }
+            ]);
+
         } else {
             $order->payment_state = 2;
         }
@@ -168,6 +176,7 @@ class OrderController extends MainController
      * @param integer $order_sub_id
      * @param string  $remark
      * @param integer $user_id
+     *
      * @throws yii\db\Exception
      */
     public function actionRefuseOrder($order_sub_id, $remark, $user_id)
@@ -210,6 +219,7 @@ class OrderController extends MainController
      *
      * @param integer $order_sub_id
      * @param integer $user_id
+     *
      * @throws yii\db\Exception
      */
     public function actionAgreeRefund($order_sub_id, $user_id)
@@ -252,6 +262,7 @@ class OrderController extends MainController
      * @param integer $order_sub_id
      * @param string  $remark
      * @param integer $user_id
+     *
      * @throws yii\db\Exception
      */
     public function actionRefuseRefund($order_sub_id, $remark, $user_id)
@@ -287,5 +298,33 @@ class OrderController extends MainController
         }
 
         $this->success();
+    }
+
+    /**
+     * 统计指定用户的套餐购买次数
+     *
+     * @param integer $user_id
+     * @param string $package_ids
+     */
+    public function actionPurchaseTimes($user_id, $package_ids = null)
+    {
+        $model = new OrderSub();
+
+        $package_ids = Helper::parseJsonString($package_ids);
+        $result = $model->all(function($ar) use ($user_id, $package_ids) {
+            $ar->select('product_package_id, COUNT(*) AS times');
+            $ar->leftJoin('order', 'order_sub.order_id = order.id');
+            $ar->where(['order.user_id' => $user_id]);
+            if ($package_ids) {
+                $ar->andWhere(['order_sub.product_package_id' => $package_ids]);
+            }
+
+            $ar->groupBy('order_sub.product_package_id');
+
+            return $ar;
+        });
+
+        $result = array_column($result, 'times', 'product_package_id');
+        $this->success($result);
     }
 }

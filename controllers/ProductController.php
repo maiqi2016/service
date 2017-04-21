@@ -29,6 +29,7 @@ class ProductController extends MainController
                 'id',
                 'name',
                 'price',
+                'purchase_limit',
                 'info'
             ]);
             $list->where([
@@ -43,13 +44,13 @@ class ProductController extends MainController
     }
 
     /**
-     * 列表简单版本产品
+     * 列表产品
      *
      * @access public
      */
-    public function actionSimpleList()
+    public function actionProductList()
     {
-        $list = (new Product())->simpleList($this->getParams());
+        $list = (new Product())->productList($this->getParams());
         $this->success($list);
     }
 
