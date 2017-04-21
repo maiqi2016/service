@@ -11,7 +11,7 @@ use Yii;
  * @property string  $title
  * @property string  $info
  * @property string  $destination
- * @property string  $hotel_id
+ * @property integer  $hotel_id
  * @property integer $classify
  * @property integer $sale_type
  * @property integer $sale_rate
@@ -19,7 +19,9 @@ use Yii;
  * @property string  $sale_to
  * @property integer $top
  * @property integer $stock
- * @property integer $min_night
+ * @property integer $virtual_sales
+ * @property integer $real_sales
+ * @property integer $night_times
  * @property integer $manifestation
  * @property integer $attachment_cover
  * @property string  $attachment_ids
@@ -118,7 +120,9 @@ class Product extends General
                     'sale_rate',
                     'top',
                     'stock',
-                    'min_night',
+                    'virtual_sales',
+                    'real_sales',
+                    'night_times',
                     'manifestation',
                     'attachment_cover',
                     'product_description_id',
@@ -186,7 +190,9 @@ class Product extends General
             'sale_to' => Yii::t('database', 'Sale To'),
             'top' => Yii::t('database', 'Top'),
             'stock' => Yii::t('database', 'Stock'),
-            'min_night' => Yii::t('database', 'Min Night'),
+            'virtual_sales' => Yii::t('database', 'Virtual Sales'),
+            'real_sales' => Yii::t('database', 'Real Sales'),
+            'night_times' => Yii::t('database', 'Night Times'),
             'manifestation' => Yii::t('database', 'Manifestation'),
             'attachment_cover' => Yii::t('database', 'Attachment Cover'),
             'attachment_ids' => Yii::t('database', 'Attachment Ids'),
@@ -200,7 +206,7 @@ class Product extends General
     }
 
     /**
-     * 列表简单版本产品
+     * 列表产品
      *
      * @access public
      *
@@ -208,7 +214,7 @@ class Product extends General
      *
      * @return array
      */
-    public function simpleList($params)
+    public function productList($params)
     {
         $where = null;
 
@@ -242,6 +248,12 @@ class Product extends General
             `product`.`id`, 
             `product`.`title`, 
             `product`.`attachment_cover`, 
+            `product`.`sale_type`,
+            `product`.`sale_rate`,
+            `product`.`sale_from`,
+            `product`.`sale_to`,
+            `product`.`virtual_sales`,
+            `product`.`real_sales`,
             `package`.`price`, 
             `cover`.`deep_path` AS `cover_deep_path`, 
             `cover`.`filename` AS `cover_filename`, 

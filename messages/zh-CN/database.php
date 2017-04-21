@@ -60,7 +60,9 @@ return [
     'Stock' => '库存',
     'Purchase Times' => '购买次',
     'Share Times' => '分享次',
-    'Min Night' => '最低晚次',
+    'Virtual Sales' => '虚拟销量',
+    'Real Sales' => '真实销量',
+    'Night Times' => '晚次',
     'Target' => '目标',
     'From' => '开始时间',
     'To' => '结束时间',
@@ -83,4 +85,5 @@ return [
     'Courier Company' => '快递公司',
     'Invoice Title' => '发票抬头',
     'Product Package ID' => '产品套餐ID',
+    'Purchase Limit' => '限购数量',
 ];
