@@ -22,8 +22,8 @@ class PhoneCaptcha extends General
      * @var array Field
      */
     public $_type = [
-        1 => 'frontend-login',
-        2 => 'backend-login'
+        1 => '后台登录',
+        2 => '填写订单联系人',
     ];
 
     /**
