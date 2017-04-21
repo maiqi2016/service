@@ -60,7 +60,7 @@ class UserController extends MainController
             $this->fail('wrong user or password');
         }
 
-        if ($type == 'backend-login' && empty($user['role'])) {
+        if (1 == $type && empty($user['role'])) {
             Yii::info('非管理员登录, phone:' . $phone);
             $this->fail('wrong user or password');
         }

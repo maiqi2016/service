@@ -11,7 +11,7 @@ use Yii;
  * @property string  $title
  * @property string  $info
  * @property string  $destination
- * @property integer  $hotel_id
+ * @property integer $hotel_id
  * @property integer $classify
  * @property integer $sale_type
  * @property integer $sale_rate
@@ -155,6 +155,11 @@ class Product extends General
                 ['title'],
                 'string',
                 'max' => 64
+            ],
+            [
+                ['real_sales'],
+                'default',
+                'value' => 0
             ],
             [
                 [
