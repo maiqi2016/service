@@ -84,7 +84,7 @@ class Main extends ActiveRecord
         'phone_standard' => [
             ['phone'],
             'match',
-            'pattern' => '/[\d\-]+$/',
+            'pattern' => '/^[\d]([\d\-\ ]+)?[\d]$/',
             'message' => '{attribute} {value} 不是一个规范的格式'
         ],
     ];

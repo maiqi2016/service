@@ -55,6 +55,13 @@ class PhoneCaptchaController extends MainController
      */
     public function actionSend($phone, $type)
     {
+        if (empty($phone)) {
+            $this->fail([
+                'param illegal',
+                'param' => 'phone'
+            ]);
+        }
+
         $phoneCaptchaModel = new PhoneCaptcha();
         if (!isset($phoneCaptchaModel->_type[$type])) {
             $this->fail([
