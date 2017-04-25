@@ -85,10 +85,10 @@ class PhoneCaptcha extends General
     public function validCaptcha($phone, $captcha, $type)
     {
         $result = $this->updateOrInsert([
-            'phone' => $phone
+            'phone' => $phone,
+            'type' => $type
         ], [
             'captcha' => $captcha,
-            'type' => $type,
             'state' => 1
         ], function ($record) {
 
@@ -99,7 +99,7 @@ class PhoneCaptcha extends General
 
             if ($timeLong < $timeout) {
                 $second = $timeout - $timeLong;
-                return $this->result(Yii::t('common', 'try again after {second}s', ['second' => $second]));
+                return $this->result(Yii::t('common', 'try again after moment', ['second' => $second]));
             }
 
             return true;

@@ -25,16 +25,22 @@ class ProductController extends MainController
     public function actionPackageList($product_id)
     {
         $list = (new ProductPackage())->all(function ($list) use ($product_id) {
+            $list->from('product_package AS package');
             $list->select([
-                'id',
-                'name',
-                'price',
-                'purchase_limit',
-                'info'
+                'package.id',
+                'package.name',
+                'package.price',
+                'package.purchase_limit',
+                'package.info',
+                'product.sale_type',
+                'product.sale_rate',
+                'product.sale_from',
+                'product.sale_to',
             ]);
+            $list->leftJoin('product', 'package.product_id = product.id');
             $list->where([
-                'product_id' => $product_id,
-                'state' => 1
+                'package.product_id' => $product_id,
+                'package.state' => 1
             ]);
 
             return $list;
