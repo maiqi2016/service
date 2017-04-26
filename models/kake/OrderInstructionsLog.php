@@ -26,6 +26,7 @@ class OrderInstructionsLog extends General
         1 => '拒绝退款',
         2 => '同意预约',
         3 => '拒绝预约',
+        4 => '申请退款',
     ];
 
     /**

@@ -255,7 +255,8 @@ class Main extends ActiveRecord
         $model->attributes = $attributes;
 
         if ($model->validate()) {
-            $result = $model->save();
+            $model->save();
+            $result = $model->id;
         } else {
             $result = current($model->getFirstErrors());
             Yii::error($result);
@@ -284,6 +285,9 @@ class Main extends ActiveRecord
         }
 
         foreach ($attributes as $field => $value) {
+            if (is_callable($value)) {
+                $value = call_user_func($value, $record->{$field});
+            }
             $record->{$field} = $value;
         }
 
@@ -615,9 +619,9 @@ class Main extends ActiveRecord
                 $leftId = empty($item['left_on_field']) ? $item['table'] . '_id' : $item['left_on_field'];
                 $rightId = empty($item['right_on_field']) ? 'id' : $item['right_on_field'];
 
-                $table = empty($item['left_table']) ? $table : $item['left_table'];
-                $on = $table . '.' . $leftId . ' = ' . $as . '.' . $rightId;
-                $target = $item['table'] . ' AS ' . $as;
+                $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
+                $on = "`${leftTable}`.`${leftId}` = `${as}`.`${rightId}`";
+                $target = "${item['table']} AS `${as}`";
 
                 $action = $item['type'] . 'Join';
                 $activeRecord->$action($target, $on);
