@@ -36,10 +36,13 @@ class Bill extends General
             [
                 [
                     'order_sub_id',
-                    'invoice_title',
                     'address'
                 ],
                 'required'
+            ],
+            [
+                ['order_sub_id'],
+                'unique'
             ],
             [
                 ['order_sub_id'],

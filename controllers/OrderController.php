@@ -3,6 +3,7 @@
 namespace service\controllers;
 
 use service\components\Helper;
+use service\models\kake\Bill;
 use service\models\kake\Order;
 use service\models\kake\OrderInstructionsLog;
 use service\models\kake\OrderSub;
@@ -304,14 +305,14 @@ class OrderController extends MainController
      * 统计指定用户的套餐购买次数
      *
      * @param integer $user_id
-     * @param string $package_ids
+     * @param string  $package_ids
      */
     public function actionPurchaseTimes($user_id, $package_ids = null)
     {
         $model = new OrderSub();
 
         $package_ids = Helper::parseJsonString($package_ids);
-        $result = $model->all(function($ar) use ($user_id, $package_ids) {
+        $result = $model->all(function ($ar) use ($user_id, $package_ids) {
             $ar->select('product_package_id, COUNT(*) AS times');
             $ar->leftJoin('order', 'order_sub.order_id = order.id');
             $ar->where(['order.user_id' => $user_id]);
@@ -326,5 +327,68 @@ class OrderController extends MainController
 
         $result = array_column($result, 'times', 'product_package_id');
         $this->success($result);
+    }
+
+    /**
+     * 退款申请
+     *
+     * @param integer $order_sub_id
+     * @param string  $remark
+     */
+    public function actionApplyRefund($order_sub_id, $remark)
+    {
+        $model = new Order();
+        $result = $model->trans(function () use ($model, $order_sub_id, $remark) {
+
+            $result = $model->edit([
+                'id' => $order_sub_id,
+                'state' => 0
+            ], [
+                'state' => 3
+            ]);
+
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            $logModel = new OrderInstructionsLog();
+            $result = $logModel->add([
+                'order_sub_id' => $order_sub_id,
+                'remark' => $remark,
+                'type' => 4
+            ]);
+
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            return true;
+        }, '退款申请事务操作');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
+    }
+
+    /**
+     * 发票申请
+     *
+     * @param integer $order_sub_id
+     * @param string  $address
+     * @param string  $invoice_title
+     *
+     * @throws yii\db\Exception
+     */
+    public function actionApplyBill($order_sub_id, $address, $invoice_title = null)
+    {
+        $result = (new Bill())->add(compact('order_sub_id', 'invoice_title', 'address'));
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
     }
 }
