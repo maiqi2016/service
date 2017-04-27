@@ -86,4 +86,5 @@ return [
     'Invoice Title' => '发票抬头',
     'Product Package ID' => '产品套餐ID',
     'Purchase Limit' => '限购数量',
+    'Order Contacts ID' => '订单联系人',
 ];

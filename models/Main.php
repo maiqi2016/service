@@ -660,6 +660,10 @@ class Main extends ActiveRecord
             $activeRecord->limit($options['limit']);
         }
 
+        if (!empty($options['distinct'])) {
+            $activeRecord->distinct();
+        }
+
         return $activeRecord;
     }
 

@@ -34,6 +34,11 @@ class OrderSub extends General
     ];
 
     /**
+     * @var array Field
+     */
+    public $_payment_state_model = 'kake\Order';
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
