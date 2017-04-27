@@ -39,6 +39,15 @@ class Order extends General
     ];
 
     /**
+     * @var array Field
+     */
+    public $_state = [
+        0 => '已取消',
+        1 => '正常',
+        2 => '已完成'
+    ];
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
