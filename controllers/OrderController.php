@@ -481,6 +481,30 @@ class OrderController extends MainController
     }
 
     /**
+     * 取消订单
+     *
+     * @param integer $user_id
+     * @param string $order_number
+     */
+    public function actionCancelOrder($user_id, $order_number)
+    {
+        $result = (new Order())->edit([
+            'user_id' => $user_id,
+            'order_number' => $order_number,
+            'payment_state' => 0,
+            'state' => 1
+        ], [
+            'state' => 0
+        ]);
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
+    }
+
+    /**
      * 发票申请
      *
      * @param integer $user_id
