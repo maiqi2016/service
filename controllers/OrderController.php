@@ -5,8 +5,10 @@ namespace service\controllers;
 use service\components\Helper;
 use service\models\kake\Bill;
 use service\models\kake\Order;
+use service\models\kake\OrderContacts;
 use service\models\kake\OrderInstructionsLog;
 use service\models\kake\OrderSub;
+use service\models\kake\PhoneCaptcha;
 use service\models\kake\Product;
 use yii;
 
@@ -70,7 +72,7 @@ class OrderController extends MainController
     /**
      * 订单支付后处理
      *
-     * @param string  $order_number
+     * @param string $order_number
      * @param boolean $paid_result
      */
     public function actionPayHandler($order_number, $paid_result)
@@ -330,15 +332,55 @@ class OrderController extends MainController
     }
 
     /**
+     * 添加联系人
+     *
+     * @param string  $real_name
+     * @param string  $phone
+     * @param string  $captcha
+     */
+    public function actionAddContacts($real_name, $phone, $captcha)
+    {
+        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, 2);
+        if (!$captcha) {
+            Yii::info('验证码错误, phone:' . $phone . ', captcha:' . $captcha);
+            $this->fail('phone captcha error');
+        }
+
+        $result = (new OrderContacts())->add(compact('real_name', 'phone'));
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
+    }
+
+    /**
      * 退款申请
      *
+     * @param integer $user_id
      * @param integer $order_sub_id
      * @param string  $remark
      */
-    public function actionApplyRefund($order_sub_id, $remark)
+    public function actionApplyRefund($user_id, $order_sub_id, $remark)
     {
-        $model = new Order();
-        $result = $model->trans(function () use ($model, $order_sub_id, $remark) {
+        $model = new OrderSub();
+        $result = $model->trans(function () use ($model, $user_id, $order_sub_id, $remark) {
+
+            $result = $model->first(function($ar) use ($user_id, $order_sub_id) {
+                $ar->leftJoin('order', 'order.id = order_sub.order_id');
+                $ar->where([
+                    'order_sub.id' => $order_sub_id,
+                    'order.user_id' => $user_id,
+                    'order.payment_state' => 1,
+                    'order.state' => 1
+                ]);
+
+                return $ar;
+            });
+
+            if (empty($result)) {
+                throw new yii\db\Exception('abnormal operation');
+            }
 
             $result = $model->edit([
                 'id' => $order_sub_id,

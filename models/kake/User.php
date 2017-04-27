@@ -9,7 +9,6 @@ use Yii;
  *
  * @property integer $id
  * @property string  $username
- * @property string  $real_name
  * @property string  $phone
  * @property integer $role
  * @property string  $openid
@@ -68,10 +67,7 @@ class User extends General
                 'value' => 0
             ],
             [
-                [
-                    'real_name',
-                    'openid'
-                ],
+                ['openid'],
                 'string',
                 'max' => 32
             ],
@@ -104,7 +100,6 @@ class User extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'username' => Yii::t('database', 'Username'),
-            'real_name' => Yii::t('database', 'Real Name'),
             'phone' => Yii::t('database', 'Phone'),
             'role' => Yii::t('database', 'Role'),
             'openid' => Yii::t('database', 'Openid'),
