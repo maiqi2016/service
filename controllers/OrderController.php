@@ -72,7 +72,7 @@ class OrderController extends MainController
     /**
      * 订单支付后处理
      *
-     * @param string $order_number
+     * @param string  $order_number
      * @param boolean $paid_result
      */
     public function actionPayHandler($order_number, $paid_result)
@@ -334,9 +334,9 @@ class OrderController extends MainController
     /**
      * 添加联系人
      *
-     * @param string  $real_name
-     * @param string  $phone
-     * @param string  $captcha
+     * @param string $real_name
+     * @param string $phone
+     * @param string $captcha
      */
     public function actionAddContacts($real_name, $phone, $captcha)
     {
@@ -355,6 +355,36 @@ class OrderController extends MainController
     }
 
     /**
+     * 验证子订单的真实性
+     *
+     * @param integer $user_id
+     * @param integer $order_sub_id
+     *
+     * @return object
+     */
+    private function validateOrderSubUser($user_id, $order_sub_id)
+    {
+        $model = new OrderSub();
+        $result = $model->first(function ($ar) use ($user_id, $order_sub_id) {
+            $ar->leftJoin('order', 'order.id = order_sub.order_id');
+            $ar->where([
+                'order_sub.id' => $order_sub_id,
+                'order.user_id' => $user_id,
+                'order.payment_state' => 1,
+                'order.state' => 1
+            ]);
+
+            return $ar;
+        });
+
+        if (empty($result)) {
+            $this->fail('abnormal operation');
+        }
+
+        return $model;
+    }
+
+    /**
      * 退款申请
      *
      * @param integer $user_id
@@ -363,24 +393,8 @@ class OrderController extends MainController
      */
     public function actionApplyRefund($user_id, $order_sub_id, $remark)
     {
-        $model = new OrderSub();
+        $model = $this->validateOrderSubUser($user_id, $order_sub_id);
         $result = $model->trans(function () use ($model, $user_id, $order_sub_id, $remark) {
-
-            $result = $model->first(function($ar) use ($user_id, $order_sub_id) {
-                $ar->leftJoin('order', 'order.id = order_sub.order_id');
-                $ar->where([
-                    'order_sub.id' => $order_sub_id,
-                    'order.user_id' => $user_id,
-                    'order.payment_state' => 1,
-                    'order.state' => 1
-                ]);
-
-                return $ar;
-            });
-
-            if (empty($result)) {
-                throw new yii\db\Exception('abnormal operation');
-            }
 
             $result = $model->edit([
                 'id' => $order_sub_id,
@@ -415,18 +429,72 @@ class OrderController extends MainController
     }
 
     /**
+     * 预约申请
+     *
+     * @param integer $user_id
+     * @param integer $order_sub_id
+     * @param string  $name
+     * @param string  $phone
+     * @param string  $time
+     */
+    public function actionApplyOrder($user_id, $order_sub_id, $name, $phone, $time)
+    {
+        $model = $this->validateOrderSubUser($user_id, $order_sub_id);
+        $result = $model->edit([
+            'id' => $order_sub_id,
+            'state' => 0
+        ], [
+            'check_in_name' => $name,
+            'check_in_phone' => $phone,
+            'check_in_time' => $time,
+            'state' => 1
+        ]);
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
+    }
+
+    /**
+     * 我已入住
+     *
+     * @param integer $user_id
+     * @param integer $order_sub_id
+     */
+    public function actionCompleted($user_id, $order_sub_id)
+    {
+        $model = $this->validateOrderSubUser($user_id, $order_sub_id);
+        $result = $model->edit([
+            'id' => $order_sub_id,
+            'state' => 2
+        ], [
+            'state' => 5
+        ]);
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
+    }
+
+    /**
      * 发票申请
      *
+     * @param integer $user_id
      * @param integer $order_sub_id
      * @param string  $address
      * @param string  $invoice_title
      *
      * @throws yii\db\Exception
      */
-    public function actionApplyBill($order_sub_id, $address, $invoice_title = null)
+    public function actionApplyBill($user_id, $order_sub_id, $address, $invoice_title = null)
     {
-        $result = (new Bill())->add(compact('order_sub_id', 'invoice_title', 'address'));
+        $this->validateOrderSubUser($user_id, $order_sub_id);
 
+        $result = (new Bill())->add(compact('order_sub_id', 'invoice_title', 'address'));
         if (!$result['state']) {
             $this->fail($result['info']);
         }
