@@ -681,6 +681,7 @@ class Main extends ActiveRecord
         $dp = new yii\caching\DbDependency([
             'sql' => sprintf('SELECT `update_time` FROM `%s` ORDER BY `update_time` DESC LIMIT 1', $table)
         ]);
+        $dp->db = $this->db;
 
         return $dp;
     }
