@@ -11,7 +11,7 @@ return [
     'company_tel' => '021-60494472',
     'wechat_id' => 'KAKE_Hotel',
 
-    'use_cache' => true,
+    'use_cache' => false,
     'cache_time' => 7200,
 
     'captcha_timeout' => 600,
