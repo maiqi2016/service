@@ -2,6 +2,9 @@
 return [
     'app_name' => 'Service',
 
+    'use_cache' => true,
+    'cache_time' => 7200,
+
     'private' => [
         'root_user_ids' => '1' // user ids, comma separated
     ],
@@ -10,9 +13,6 @@ return [
     'sendmail_interval' => 90,
     'company_tel' => '021-60494472',
     'wechat_id' => 'KAKE_Hotel',
-
-    'use_cache' => false,
-    'cache_time' => 7200,
 
     'captcha_timeout' => 600,
     'captcha_send_again' => 60,
