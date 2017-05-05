@@ -74,41 +74,55 @@ class OrderController extends MainController
      *
      * @param string  $order_number
      * @param boolean $paid_result
+     *
+     * @throws yii\db\Exception
      */
     public function actionPayHandler($order_number, $paid_result)
     {
         $model = new Order();
-        $order = $model::findOne([
-            'order_number' => $order_number,
-            'state' => 1
-        ]);
-
-        if (empty($order)) {
-            $this->fail('order does not exist');
-        }
-
-        if ($order['payment_state'] == 1) {
-            $this->success();
-        }
-
-        if ($paid_result) {
-            $order->payment_state = 1;
-
-            (new Product())->edit(['id' => $order->product_id], [
-                'real_sales' => function ($num) {
-                    return ++$num;
-                }
+        $result = $model->trans(function () use ($model, $order_number, $paid_result) {
+            $order = $model::findOne([
+                'order_number' => $order_number,
+                'state' => 1
             ]);
 
-        } else {
-            $order->payment_state = 2;
+            if (empty($order)) {
+                throw new yii\db\Exception('order does not exist');
+            }
+
+            if ($order['payment_state'] == 1) {
+                return true;
+            }
+
+            if ($paid_result) {
+
+                $order->payment_state = 1;
+                $number = OrderSub::find()->where([
+                    'order_id' => $order->id
+                ])->count();
+
+                (new Product())->edit(['id' => $order->product_id], [
+                    'real_sales' => function ($num) use ($number) {
+                        return $num + $number;
+                    }
+                ]);
+
+            } else {
+                $order->payment_state = 2;
+            }
+
+            if (!$order->save()) {
+                throw new yii\db\Exception(current($order->getFirstErrors()));
+            }
+
+            return true;
+        }, '支付后处理');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
         }
 
-        if (!$order->save()) {
-            $this->fail(current($order->getFirstErrors()));
-        }
-
-        $this->success();
+        $this->success($result['data']);
     }
 
     /**
@@ -484,7 +498,7 @@ class OrderController extends MainController
      * 取消订单
      *
      * @param integer $user_id
-     * @param string $order_number
+     * @param string  $order_number
      */
     public function actionCancelOrder($user_id, $order_number)
     {
