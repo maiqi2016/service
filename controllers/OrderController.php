@@ -539,4 +539,26 @@ class OrderController extends MainController
 
         $this->success($result['data']);
     }
+
+    /**
+     * 轮询订单支付状态
+     *
+     * @param string $order_number
+     * @param integer $user_id
+     * @param number $time
+     */
+    public function actionPollOrder($order_number, $user_id, $time)
+    {
+        $result = Order::find()->where([
+            'order_number' => $order_number,
+            'user_id' => $user_id,
+            'payment_state' => 1
+        ])->andWhere([
+            '>',
+            'update_time',
+            $time
+        ])->count();
+
+        $this->success($result);
+    }
 }
