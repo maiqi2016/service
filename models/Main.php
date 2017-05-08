@@ -270,9 +270,10 @@ class Main extends ActiveRecord
      *
      * @access public
      *
-     * @param array $where
-     * @param array $attributes
+     * @param array  $where
+     * @param array  $attributes
      * @param object $model
+     *
      * @return array
      */
     public function edit($where, $attributes, $model = null)
@@ -621,7 +622,14 @@ class Main extends ActiveRecord
 
                 $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
                 $on = "`${leftTable}`.`${leftId}` = `${as}`.`${rightId}`";
-                $target = "${item['table']} AS `${as}`";
+
+                if (isset($item['sub'])) {
+                    $item['sub']['from'] = $item['table'];
+                    $subQuery = $this->handleActiveRecord(new yii\db\Query(), $item['table'], $item['sub']);
+                    $target = [$item['as'] => $subQuery];
+                } else {
+                    $target = "${item['table']} AS `${as}`";
+                }
 
                 $action = $item['type'] . 'Join';
                 $activeRecord->$action($target, $on);
@@ -642,6 +650,14 @@ class Main extends ActiveRecord
             foreach ($options['where'] as $item) {
                 $activeRecord->andWhere($item);
             }
+        }
+
+        if (!empty($options['group'])) {
+            $options['group'] = Helper::parseJsonString($options['group']);
+            if (is_array($options['group']) && is_numeric(key($options['group']))) {
+                $options['group'] = implode(',', $options['group']);
+            }
+            $activeRecord->groupBy($options['group']);
         }
 
         if (!empty($options['order'])) {
