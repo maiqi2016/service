@@ -332,6 +332,11 @@ class OrderController extends MainController
             $ar->select('product_package_id, COUNT(*) AS times');
             $ar->leftJoin('order', 'order_sub.order_id = order.id');
             $ar->where(['order.user_id' => $user_id]);
+            $ar->andWhere([
+                '<>',
+                'order.state',
+                0
+            ]);
             if ($package_ids) {
                 $ar->andWhere(['order_sub.product_package_id' => $package_ids]);
             }

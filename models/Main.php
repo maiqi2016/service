@@ -626,7 +626,7 @@ class Main extends ActiveRecord
                 if (isset($item['sub'])) {
                     $item['sub']['from'] = $item['table'];
                     $subQuery = $this->handleActiveRecord(new yii\db\Query(), $item['table'], $item['sub']);
-                    $target = [$item['as'] => $subQuery];
+                    $target = [$as => $subQuery];
                 } else {
                     $target = "${item['table']} AS `${as}`";
                 }
@@ -648,7 +648,10 @@ class Main extends ActiveRecord
         if (!empty($options['where'])) {
             $options['where'] = Helper::parseJsonString($options['where'], []);
             foreach ($options['where'] as $item) {
-                $activeRecord->andWhere($item);
+                $operator = isset($item['or']) ? 'or' : 'and';
+                $action = $operator . 'Where';
+                unset($item['or']);
+                $activeRecord->{$action}($item);
             }
         }
 
