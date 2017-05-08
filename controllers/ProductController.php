@@ -50,17 +50,6 @@ class ProductController extends MainController
     }
 
     /**
-     * 列表产品
-     *
-     * @access public
-     */
-    public function actionProductList()
-    {
-        $list = (new Product())->productList($this->getParams());
-        $this->success($list);
-    }
-
-    /**
      * 新增/编辑酒店产品前置操作
      *
      * @access private
