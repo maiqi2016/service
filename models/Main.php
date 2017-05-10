@@ -232,7 +232,7 @@ class Main extends ActiveRecord
 
             // rollback
             $transaction->rollBack();
-            Yii::war($info . '失败, ' . $e->getMessage());
+            Yii::warning($info . '失败, ' . $e->getMessage());
 
             $result = $e->getMessage();
         }

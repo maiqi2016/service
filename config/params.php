@@ -24,7 +24,5 @@ return [
     'sms_tpl_1' => '您的验证码是%s，请不要将验证码泄露给其他人，验证码将在%d分钟后失效。',
     'sms_tpl_2' => '您的验证码是%s，请不要将验证码泄露给其他人，验证码将在%d分钟后失效。',
 
-    'wechat_tpl_bind_link' => '点击这里<a href="%s">绑定KAKE</a>账号',
-
     'default_purchase_limit' => 10
 ];
