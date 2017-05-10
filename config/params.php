@@ -9,7 +9,7 @@ return [
         'root_user_ids' => '1' // user ids, comma separated
     ],
 
-    'pagenum' => 20,
+    'pagenum' => 15,
     'sendmail_interval' => 90,
     'company_tel' => '021-60494472',
     'wechat_id' => 'KAKE_Hotel',
