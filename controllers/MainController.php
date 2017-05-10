@@ -556,7 +556,7 @@ class MainController extends Controller
             $this->orderTagsRecord($tagsRecord, $model->id);
 
             return ['id' => $model->id];
-        }, '添加记录和更新附件状态(若有附件)');
+        }, '添加或更新附件状态(若有附件)');
 
         if (!$result['state']) {
             $this->fail($result['info']);

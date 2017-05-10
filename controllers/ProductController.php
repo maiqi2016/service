@@ -180,7 +180,7 @@ class ProductController extends MainController
             $this->orderTagsRecord($tagsRecord, $id);
 
             return true;
-        }, '新增酒店产品');
+        }, '编辑酒店产品');
 
         if (!$result['state']) {
             $this->fail($result['info']);
