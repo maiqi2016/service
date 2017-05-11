@@ -97,7 +97,7 @@ class PhoneCaptcha extends General
             $timeout = Yii::$app->params['captcha_send_again'];
             $timeLong = TIME - strtotime($record->update_time);
 
-            if ($timeLong > 0 && $timeLong < $timeout) {
+            if ($timeLong < $timeout) {
                 $second = $timeout - $timeLong;
                 return $this->result(Yii::t('common', 'try again after moment', ['second' => $second]));
             }
