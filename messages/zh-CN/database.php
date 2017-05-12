@@ -87,4 +87,7 @@ return [
     'Product Package ID' => '产品套餐ID',
     'Purchase Limit' => '限购数量',
     'Order Contacts ID' => '订单联系人',
+    'Company' => '公司名称',
+    'Nickname' => '昵称',
+    'Code' => '代码',
 ];
