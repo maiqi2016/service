@@ -2,6 +2,7 @@
 
 namespace service\controllers;
 
+use service\models\kake\ActivityLotteryCode;
 use service\models\kake\Attachment;
 use service\models\kake\Ad;
 use service\models\kake\Config;
@@ -110,5 +111,38 @@ class GeneralController extends MainController
         }
 
         $this->success($package);
+    }
+
+    /**
+     * 生成抽奖码
+     *
+     * @param string $openid
+     * @param string $nickname
+     * @param integer $company
+     */
+    public function actionLogLotteryCode($openid, $nickname, $company)
+    {
+        $model = new ActivityLotteryCode();
+        $result = $model->trans(function () use ($model, $openid, $nickname, $company) {
+            $sql = 'SELECT * FROM `activity_lottery_code` WHERE `company` = :company FOR UPDATE';
+            $total = $model::findBySql($sql, [':company' => $company])->count();
+
+            $code = dechex($total + 666666 + 1);
+            $code = str_pad($code, 6, 0, STR_PAD_LEFT);
+            $code = strtoupper($company . $code);
+
+            $result = $model->add(compact('openid', 'nickname', 'company', 'code'));
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            return $code;
+        }, '生成抽奖码');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
     }
 }
