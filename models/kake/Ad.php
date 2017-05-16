@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $attachment_id
+ * @property integer $type
  * @property integer $target
  * @property string  $url
  * @property string  $remark
@@ -20,6 +21,14 @@ use Yii;
  */
 class Ad extends General
 {
+    /**
+     * @var array Field
+     */
+    public $_type = [
+        0 => '焦点图',
+        1 => 'banner'
+    ];
+
     /**
      * @var array Field
      */
@@ -45,6 +54,7 @@ class Ad extends General
             [
                 [
                     'attachment_id',
+                    'type',
                     'target',
                     'url',
                     'remark'
@@ -54,6 +64,7 @@ class Ad extends General
             [
                 [
                     'attachment_id',
+                    'type',
                     'target'
                 ],
                 'integer'
@@ -86,6 +97,7 @@ class Ad extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'attachment_id' => Yii::t('database', 'Attachment ID'),
+            'type' => Yii::t('database', 'Type'),
             'target' => Yii::t('database', 'Target'),
             'url' => Yii::t('database', 'Url'),
             'remark' => Yii::t('database', 'Remark'),

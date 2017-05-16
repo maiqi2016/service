@@ -11,6 +11,8 @@ use Yii;
  * @property string  $openid
  * @property integer $company
  * @property string  $nickname
+ * @property string  $real_name
+ * @property string  $phone
  * @property string  $code
  * @property string  $add_time
  * @property string  $update_time
@@ -56,7 +58,9 @@ class ActivityLotteryCode extends General
             [
                 [
                     'openid',
-                    'nickname'
+                    'nickname',
+                    'real_name',
+                    'phone'
                 ],
                 'string',
                 'max' => 32
@@ -79,6 +83,8 @@ class ActivityLotteryCode extends General
             'openid' => Yii::t('database', 'Openid'),
             'company' => Yii::t('database', 'Company'),
             'nickname' => Yii::t('database', 'Nickname'),
+            'real_name' => Yii::t('database', 'Real Name'),
+            'phone' => Yii::t('database', 'Phone'),
             'code' => Yii::t('database', 'Code'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
