@@ -8,9 +8,10 @@ use Yii;
  * This is the model class for table "product_description".
  *
  * @property integer $id
- * @property string  $enjoy
- * @property string  $characteristic
+ * @property string  $cost
+ * @property string  $recommend
  * @property string  $use
+ * @property string  $back
  */
 class ProductDescription extends General
 {
@@ -30,16 +31,19 @@ class ProductDescription extends General
         return [
             [
                 [
-                    'enjoy',
-                    'use'
+                    'cost',
+                    'recommend',
+                    'use',
+                    'back'
                 ],
                 'required'
             ],
             [
                 [
-                    'enjoy',
-                    'characteristic',
-                    'use'
+                    'cost',
+                    'recommend',
+                    'use',
+                    'back'
                 ],
                 'string'
             ],
@@ -53,9 +57,10 @@ class ProductDescription extends General
     {
         return [
             'id' => Yii::t('database', 'ID'),
-            'enjoy' => Yii::t('database', 'Enjoy'),
-            'characteristic' => Yii::t('database', 'Characteristic'),
+            'cost' => Yii::t('database', 'Cost'),
+            'recommend' => Yii::t('database', 'Recommend'),
             'use' => Yii::t('database', 'Use'),
+            'back' => Yii::t('database', 'Back'),
         ];
     }
 }

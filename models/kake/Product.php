@@ -9,7 +9,6 @@ use Yii;
  *
  * @property integer $id
  * @property string  $title
- * @property string  $info
  * @property string  $destination
  * @property integer $hotel_id
  * @property integer $classify
@@ -102,7 +101,6 @@ class Product extends General
             [
                 [
                     'title',
-                    'info',
                     'destination',
                     'hotel_id',
                     'classify',
@@ -162,10 +160,7 @@ class Product extends General
                 'value' => 0
             ],
             [
-                [
-                    'info',
-                    'attachment_ids'
-                ],
+                ['attachment_ids'],
                 'string',
                 'max' => 256
             ],
@@ -185,7 +180,6 @@ class Product extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'title' => Yii::t('database', 'Title'),
-            'info' => Yii::t('database', 'Info'),
             'destination' => Yii::t('database', 'Destination'),
             'hotel_id' => Yii::t('database', 'Hotel ID'),
             'classify' => Yii::t('database', 'Classify'),
