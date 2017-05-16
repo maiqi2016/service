@@ -21,8 +21,7 @@ class LoginLog extends General
      * @var array Field
      */
     public $_type = [
-        0 => 'login',
-        1 => 'register',
+        1 => 'backend-login',
         2 => 'we-chat-login',
         3 => 'we-chat-bind',
     ];

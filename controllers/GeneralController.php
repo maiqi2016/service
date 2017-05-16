@@ -115,28 +115,25 @@ class GeneralController extends MainController
 
     /**
      * 生成抽奖码
-     *
-     * @param string $openid
-     * @param string $nickname
-     * @param integer $company
      */
-    public function actionLogLotteryCode($openid, $nickname, $company)
+    public function actionLogLotteryCode()
     {
+        $params = $this->getParams();
         $model = new ActivityLotteryCode();
-        $result = $model->trans(function () use ($model, $openid, $nickname, $company) {
+        $result = $model->trans(function () use ($model, $params) {
             $sql = 'SELECT * FROM `activity_lottery_code` WHERE `company` = :company FOR UPDATE';
-            $total = $model::findBySql($sql, [':company' => $company])->count();
+            $total = $model::findBySql($sql, [':company' => $params['company']])->count();
 
-            $code = dechex($total + 666666 + 1);
-            $code = str_pad($code, 6, 0, STR_PAD_LEFT);
-            $code = strtoupper($company . $code);
+            $params['code'] = dechex($total + 666666 + 1);
+            $params['code'] = str_pad($params['code'], 6, 0, STR_PAD_LEFT);
+            $params['code'] = strtoupper($params['company'] . $params['code']);
 
-            $result = $model->add(compact('openid', 'nickname', 'company', 'code'));
+            $result = $model->add($params);
             if (!$result['state']) {
                 throw new yii\db\Exception($result['info']);
             }
 
-            return $code;
+            return $params['code'];
         }, '生成抽奖码');
 
         if (!$result['state']) {
