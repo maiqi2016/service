@@ -24,8 +24,12 @@ class ActivityLotteryCode extends General
      * @var array Fields
      */
     public $_company = [
-        1 => '迈骐',
-        2 => '喀客'
+        1 => '多乐米',
+        2 => '保龄球',
+        3 => '立秀宝',
+        4 => '嘿姐',
+        5 => '黄浦趴',
+        6 => 'UYuan'
     ];
 
     /**

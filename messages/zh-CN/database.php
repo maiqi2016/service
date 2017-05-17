@@ -44,7 +44,7 @@ return [
     'Cost' => '费用包含',
     'Recommend' => '推荐理由',
     'Use' => '使用说明',
-    'Back' => '改退规则',
+    'Back' => '退改规则',
     'Classify' => '分类',
     'Top' => '置顶',
     'Sort' => '排序',
