@@ -56,7 +56,6 @@ class Ad extends General
                     'attachment_id',
                     'type',
                     'target',
-                    'url',
                     'remark'
                 ],
                 'required'
