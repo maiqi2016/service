@@ -124,17 +124,14 @@ class MainController extends Controller
         }
 
         // 删除隐私变量
-        $keys = [
+        Helper::popSome($params, [
             'app_api',
             'app_id',
             'app_secret',
             'app_lang',
             'app_cache',
             'app_sign'
-        ];
-        foreach ($keys as $key) {
-            unset($params[$key]);
-        }
+        ]);
         $params['r'] = $api;
 
         return true;
