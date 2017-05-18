@@ -79,10 +79,11 @@ class PhoneCaptcha extends General
      * @param string  $phone
      * @param integer $captcha
      * @param string  $type
+     * @param integer $timeout
      *
      * @return mixed
      */
-    public function validCaptcha($phone, $captcha, $type)
+    public function validCaptcha($phone, $captcha, $type, $timeout)
     {
         $result = $this->updateOrInsert([
             'phone' => $phone,
@@ -90,15 +91,14 @@ class PhoneCaptcha extends General
         ], [
             'captcha' => $captcha,
             'state' => 1
-        ], function ($record) {
+        ], function ($record) use ($timeout) {
 
             Yii::trace('判断上次发送短信至今是否超过冷却时间');
 
-            $timeout = Yii::$app->params['captcha_send_again'];
             $timeLong = TIME - strtotime($record->update_time);
-
             if ($timeLong < $timeout) {
                 $second = $timeout - $timeLong;
+
                 return $this->result(Yii::t('common', 'try again after moment', ['second' => $second]));
             }
 
@@ -113,13 +113,14 @@ class PhoneCaptcha extends General
      *
      * @access public
      *
-     * @param string $phone
-     * @param string $captcha
-     * @param string $type
+     * @param string  $phone
+     * @param string  $captcha
+     * @param string  $type
+     * @param integer $timeout
      *
      * @return boolean
      */
-    public function checkCaptcha($phone, $captcha, $type)
+    public function checkCaptcha($phone, $captcha, $type, $timeout)
     {
         $record = static::find()->where([
             'phone' => $phone,
@@ -129,7 +130,7 @@ class PhoneCaptcha extends General
         ])->andWhere([
             '>=',
             'update_time',
-            date('Y-m-d H:i:s', TIME - Yii::$app->params['captcha_timeout'])
+            date('Y-m-d H:i:s', TIME - $timeout)
         ])->exists();
 
         return $record ? true : false;

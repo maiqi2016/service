@@ -354,10 +354,11 @@ class Main extends ActiveRecord
      * 获取单条数据
      *
      * @param array | callable $handler
+     * @param boolean          $useCache
      *
      * @return array
      */
-    public function first($handler = null)
+    public function first($handler = null, $useCache = true)
     {
         $one = static::find();
         if (is_array($handler)) {
@@ -375,7 +376,7 @@ class Main extends ActiveRecord
 
         return $this->cache($table . '.first.' . $key, function () use ($one) {
             return $one->asArray()->one();
-        }, null, $this->cacheDbDependent($table));
+        }, null, $this->cacheDbDependent($table), $useCache);
     }
 
     /**
@@ -385,12 +386,13 @@ class Main extends ActiveRecord
      *
      * @param array | callable $handler
      * @param integer          $pageSize
+     * @param boolean          $useCache
      * @param array            $additional
      * @param boolean          $debugSql
      *
      * @return array
      */
-    public function all($handler = null, $pageSize = null, $additional = [], $debugSql = false)
+    public function all($handler = null, $pageSize = null, $useCache = true, $additional = [], $debugSql = false)
     {
         $list = static::find();
 
@@ -428,7 +430,7 @@ class Main extends ActiveRecord
                 $list,
                 $pagination
             ] : $list;
-        }, null, $this->cacheDbDependent($table));
+        }, null, $this->cacheDbDependent($table), $useCache);
     }
 
     /**
@@ -548,12 +550,13 @@ class Main extends ActiveRecord
      * @param callable                $fetchFn
      * @param int                     $time
      * @param \yii\caching\Dependency $dependent
+     * @param boolean                 $useCache
      *
      * @return mixed
      */
-    public function cache($key, $fetchFn, $time = null, $dependent = null)
+    public function cache($key, $fetchFn, $time = null, $dependent = null, $useCache = true)
     {
-        if (!Yii::$app->params['use_cache'] || Yii::$app->session->getFlash('no_cache')) {
+        if (!$useCache || Yii::$app->session->getFlash('no_cache')) {
             return call_user_func($fetchFn);
         }
 
@@ -566,7 +569,7 @@ class Main extends ActiveRecord
         if (false === $data) {
             Yii::trace('缓存命中失败并重新获取写入: ' . $key);
             $data = call_user_func($fetchFn);
-            $time = isset($time) ? $time : Yii::$app->params['cache_time'];
+            $time = isset($time) ? $time : DAY;
             $result = Yii::$app->cache->set($key, $data, $time, $dependent);
 
             if ($result === false) {

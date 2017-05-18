@@ -44,7 +44,7 @@ class ProductController extends MainController
             ]);
 
             return $list;
-        });
+        }, null, Yii::$app->params['use_cache']);
 
         $this->success($list);
     }
