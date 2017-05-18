@@ -42,7 +42,7 @@ class MainController extends Controller
      */
     public function beforeAction($action)
     {
-        $this->identityVerification($_GET);
+        $useCache = $this->identityVerification($_GET);
 
         $config = (new Config())->listConfigKVP([
             'app' => [
@@ -51,7 +51,10 @@ class MainController extends Controller
             ],
             'state' => 1
         ]);
+
+        $config['use_cache'] = $useCache;
         Yii::$app->params = array_merge(Yii::$app->params, $config);
+
 
         // 对应 api 的权限验证 TODO
 
@@ -65,10 +68,11 @@ class MainController extends Controller
      *
      * @param array $params
      *
-     * @return mixed
+     * @return boolean
      */
     public function identityVerification(&$params)
     {
+        $useCache = true;
         $api = Helper::popOne($params, 'r');
 
         // 参数为空或错误
@@ -105,7 +109,7 @@ class MainController extends Controller
             'app_id' => $params['app_id'],
             'app_secret' => $params['app_secret'],
             'state' => 1
-        ]);
+        ], Yii::$app->params['use_cache']);
 
         if (empty($user)) {
             $this->fail('account validation failed', 'common', -1);
@@ -120,7 +124,7 @@ class MainController extends Controller
 
         // 缓存
         if (isset($params['app_cache']) && $params['app_cache'] == 'no') {
-            Yii::$app->params['use_cache'] = false;
+            $useCache = false;
         }
 
         // 删除隐私变量
@@ -134,7 +138,7 @@ class MainController extends Controller
         ]);
         $params['r'] = $api;
 
-        return true;
+        return $useCache;
     }
 
     /**
@@ -335,7 +339,7 @@ class MainController extends Controller
 
         $detail = $model->first(function ($ar) use ($table, $model, $option) {
             return $model->handleActiveRecord($ar, $table, $option);
-        });
+        }, Yii::$app->params['use_cache']);
 
         $this->success($detail);
     }
@@ -351,7 +355,7 @@ class MainController extends Controller
 
         $list = $model->all(function ($ar) use ($table, $model, $option) {
             return $model->handleActiveRecord($ar, $table, $option);
-        });
+        }, null, Yii::$app->params['use_cache']);
 
         $this->success($list);
     }
@@ -497,7 +501,7 @@ class MainController extends Controller
 
         $all = $model->all(function ($list) use ($model, $table, $options) {
             return $model->handleActiveRecord($list, $table, $options);
-        }, $size);
+        }, $size, Yii::$app->params['use_cache']);
 
         $this->success($all);
     }
@@ -520,7 +524,7 @@ class MainController extends Controller
 
         $record = $model->first(function ($first) use ($model, $table, $options) {
             return $model->handleActiveRecord($first, $table, $options);
-        });
+        }, Yii::$app->params['use_cache']);
 
         $this->success($record);
     }

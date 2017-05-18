@@ -58,7 +58,7 @@ class GeneralController extends MainController
             ]);
 
             return $list;
-        });
+        }, null, Yii::$app->params['use_cache']);
         $this->success($list);
     }
 
@@ -72,7 +72,7 @@ class GeneralController extends MainController
 
         $list = $model->all(function ($ar) use ($model, $option) {
             return $model->handleActiveRecord($ar, 'ad', $option);
-        });
+        }, null, Yii::$app->params['use_cache']);
 
         $this->success($list);
     }
@@ -97,7 +97,7 @@ class GeneralController extends MainController
             $list->leftJoin('product_package', 'order_sub.product_package_id = product_package.id');
 
             return $list;
-        });
+        }, null, Yii::$app->params['use_cache']);
 
         $package = [];
         foreach ($list as $item) {

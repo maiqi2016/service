@@ -40,7 +40,7 @@ class UserController extends MainController
          */
         extract($params);
 
-        $user = $userModel->first(['phone' => $phone]);
+        $user = $userModel->first(['phone' => $phone], Yii::$app->params['use_cache']);
         if (!$user) {
             Yii::info('用户名错误, phone:' . $phone);
             $this->fail('wrong user or password');
@@ -54,7 +54,7 @@ class UserController extends MainController
             }
         }
 
-        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, $type);
+        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, $type, Yii::$app->params['captcha_timeout']);
         if (!$captcha) {
             Yii::info('验证码错误, phone:' . $phone . ', password:' . $captcha);
             $this->fail('wrong user or password');
