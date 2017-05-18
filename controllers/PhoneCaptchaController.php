@@ -80,7 +80,7 @@ class PhoneCaptchaController extends MainController
         $length = $phoneCaptchaModel->_type_captcha_length[$type];
 
         $captcha = Helper::randString($length, 'number');
-        $result = $phoneCaptchaModel->validCaptcha($phone, $captcha, $type);
+        $result = $phoneCaptchaModel->validCaptcha($phone, $captcha, $type, Yii::$app->params['captcha_send_again']);
 
         if (!$result['state']) {
             $this->fail($result['info']);
