@@ -29,7 +29,8 @@ class ActivityLotteryCode extends General
         3 => '立秀宝',
         4 => '嘿姐',
         5 => '黄浦趴',
-        6 => 'UYuan'
+        6 => 'UYuan',
+        7 => 'KAKE'
     ];
 
     /**

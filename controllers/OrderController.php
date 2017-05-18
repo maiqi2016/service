@@ -344,7 +344,7 @@ class OrderController extends MainController
             $ar->groupBy('order_sub.product_package_id');
 
             return $ar;
-        });
+        }, null, Yii::$app->params['use_cache']);
 
         $result = array_column($result, 'times', 'product_package_id');
         $this->success($result);
@@ -359,7 +359,7 @@ class OrderController extends MainController
      */
     public function actionAddContacts($real_name, $phone, $captcha)
     {
-        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, 2);
+        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, 2, Yii::$app->params['captcha_timeout']);
         if (!$captcha) {
             Yii::info('验证码错误, phone:' . $phone . ', captcha:' . $captcha);
             $this->fail('phone captcha error');
@@ -394,7 +394,7 @@ class OrderController extends MainController
             ]);
 
             return $ar;
-        });
+        }, Yii::$app->params['use_cache']);
 
         if (empty($result)) {
             $this->fail('abnormal operation');
