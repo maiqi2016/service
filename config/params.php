@@ -3,7 +3,6 @@ return [
     'app_name' => 'Service',
 
     'use_cache' => true,
-    'cache_time' => 7200,
 
     'private' => [
         'root_user_ids' => '1' // user ids, comma separated
