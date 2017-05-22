@@ -1,6 +1,7 @@
 <?php
-namespace service\controllers;
+namespace service\controllers\kake;
 
+use service\controllers\MainController;
 use service\components\Helper;
 use service\models\kake\AdminAuth;
 use service\models\kake\LoginLog;
