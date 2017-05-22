@@ -1,7 +1,8 @@
 <?php
 
-namespace service\controllers;
+namespace service\controllers\kake;
 
+use service\controllers\MainController;
 use service\models\kake\ActivityLotteryCode;
 use service\models\kake\Attachment;
 use service\models\kake\Ad;

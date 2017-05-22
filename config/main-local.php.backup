@@ -1,6 +1,5 @@
 <?php
 return [
-    'params' => array_merge(require(__DIR__ . '/params.php'), require(__DIR__ . '/params-local.php')),
     'bootstrap' => ['gii'],
     'modules' => [
         'gii' => [
@@ -10,6 +9,52 @@ return [
                 '::1',
                 '192.168.0.*'
             ]
+        ],
+    ],
+    'params' => array_merge(
+        require(__DIR__ . '/params.php'),
+        require(__DIR__ . '/params-local.php')
+    ),
+    'components' => [
+        'kake' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            // Master
+            'masterConfig' => [
+                'username' => 'maiqi_kake_write',
+                'password' => 'maiqi@KAKE2016',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_kake'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => 'maiqi_kake_read',
+                'password' => 'maiqi@KAKE2016',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_kake'],
+            ],
+        ],
+        'service' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            // Master
+            'masterConfig' => [
+                'username' => 'maiqi_service_write',
+                'password' => 'maiqi@SERVICE2016',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_service'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => 'maiqi_service_read',
+                'password' => 'maiqi@SERVICE2016',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_service'],
+            ],
         ],
     ],
 ];
