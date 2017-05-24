@@ -59,7 +59,6 @@ return [
     'Head Img Url' => '头像',
     'Product ID' => '产品ID',
     'Stock' => '库存',
-    'Purchase Times' => '购买次',
     'Share Times' => '分享次',
     'Virtual Sales' => '虚拟销量',
     'Real Sales' => '真实销量',

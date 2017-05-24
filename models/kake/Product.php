@@ -25,7 +25,6 @@ use Yii;
  * @property integer $attachment_cover
  * @property string  $attachment_ids
  * @property integer $product_description_id
- * @property integer $purchase_times
  * @property integer $share_times
  * @property string  $add_time
  * @property string  $update_time
@@ -124,16 +123,12 @@ class Product extends General
                     'manifestation',
                     'attachment_cover',
                     'product_description_id',
-                    'purchase_times',
                     'share_times'
                 ],
                 'integer'
             ],
             [
-                [
-                    'purchase_times',
-                    'share_times'
-                ],
+                ['share_times'],
                 'default',
                 'value' => 0
             ],
@@ -196,7 +191,6 @@ class Product extends General
             'attachment_cover' => Yii::t('database', 'Attachment Cover'),
             'attachment_ids' => Yii::t('database', 'Attachment Ids'),
             'product_description_id' => Yii::t('database', 'Product Description ID'),
-            'purchase_times' => Yii::t('database', 'Purchase Times'),
             'share_times' => Yii::t('database', 'Share Times'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
