@@ -30,7 +30,7 @@ class GeneralController extends MainController
         unset($config['private']);
 
         $configFile = Yii::getAlias('@service/config/params.php');
-        $file = $this->cache('file.get.params', function () use ($configFile) {
+        $file = $this->cache('list.file.params', function () use ($configFile) {
             return require $configFile;
         }, null, new yii\caching\FileDependency([
             'fileName' => $configFile
