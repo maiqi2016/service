@@ -55,7 +55,6 @@ class MainController extends Controller
         $config['use_cache'] = $useCache;
         Yii::$app->params = array_merge(Yii::$app->params, $config);
 
-
         // 对应 api 的权限验证 TODO
 
         return parent::beforeAction($action);
@@ -641,6 +640,15 @@ class MainController extends Controller
             $this->fail($result['info']);
         }
 
+        $this->success();
+    }
+
+    /**
+     * 清楚缓存
+     */
+    public function actionClearCache()
+    {
+        Yii::$app->cache->flush();
         $this->success();
     }
 
