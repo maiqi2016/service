@@ -96,7 +96,10 @@ class Config extends General
      */
     public function listConfigKVP($app = 1)
     {
-        return $this->cache(__METHOD__ . json_encode($app), function () use ($app) {
+        return $this->cache([
+            'list.config.kvp',
+            func_get_args()
+        ], function () use ($app) {
             $config = static::find()->select([
                 'key',
                 'value'

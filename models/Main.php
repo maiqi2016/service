@@ -368,13 +368,13 @@ class Main extends ActiveRecord
         }
 
         $table = static::tableName();
-        $key = md5(json_encode([
-            $one,
-            Yii::$app->request->get(),
-            Yii::$app->request->post()
-        ]));
 
-        return $this->cache($table . '.first.' . $key, function () use ($one) {
+        return $this->cache([
+            'select.' . $table . '.first',
+            Yii::$app->request->get(),
+            Yii::$app->request->post(),
+            func_get_args()
+        ], function () use ($one) {
             return $one->asArray()->one();
         }, null, $this->cacheDbDependent($table), $useCache);
     }
@@ -403,13 +403,13 @@ class Main extends ActiveRecord
         }
 
         $table = static::tableName();
-        $key = md5(json_encode([
-            $list,
-            Yii::$app->request->get(),
-            Yii::$app->request->post()
-        ]));
 
-        return $this->cache($table . '.all.' . $key, function () use ($list, $pageSize, $additional, $debugSql) {
+        return $this->cache([
+            'select.' . $table . '.all',
+            Yii::$app->request->get(),
+            Yii::$app->request->post(),
+            func_get_args()
+        ], function () use ($list, $pageSize, $additional, $debugSql) {
 
             if (isset($pageSize)) {
                 $count = $list->count();
