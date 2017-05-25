@@ -6,4 +6,5 @@ Common service
 * cd service
 * chmod a+x install.sh
 * ./install.sh
-* nohup python thrift/runserver.py 192.168.0.222 8888 &
+* cd thrift
+* nohup python runserver.py 2>&1 &
