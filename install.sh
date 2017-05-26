@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# composer
+composer install
+
 # add write
 sudo chmod -R a+w runtime/ web/assets/
 
@@ -20,6 +23,3 @@ fi
 
 sudo cp web/index-${env}.php web/index.php
 sudo cp web/index-${env}.php web/index.php
-
-# composer
-composer install
