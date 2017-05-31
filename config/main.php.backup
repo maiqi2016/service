@@ -1,0 +1,124 @@
+<?php
+return [
+    'id' => 'service',
+    'language' => 'zh-CN',
+    'defaultRoute' => 'base',
+    'name' => 'Service',
+    'basePath' => dirname(__DIR__),
+    'vendorPath' => dirname(__DIR__) . '/vendor',
+    'controllerNamespace' => 'service\controllers',
+    'bootstrap' => ['log'],
+    'params' => array_merge(
+        require(__DIR__ . '/params-local.php'),
+        require(__DIR__ . '/params.php')
+    ),
+    'components' => [
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@service/messages',
+                ],
+            ],
+        ],
+        'errorHandler' => [
+            'errorAction' => 'main/error',
+        ],
+        'request' => [
+            'cookieValidationKey' => '[SECRET:cookie]',
+        ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        'urlManager' => [
+            'class' => 'service\inherit\CliUrlManager'
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => YII_DEBUG ? [
+                        'trace',
+                        'warning',
+                        'info'
+                    ] : ['info'],
+                    'logFile' => '@app/runtime/logs/debug.log',
+                    'logVars' => [],
+                    'maxLogFiles' => 20
+                ],
+                [
+                    'class' => 'yii\log\DbTarget',
+                    'levels' => ['error'],
+                    'db' => DB_SERVICE,
+                    'logTable' => 'app_log',
+                    'logVars' => []
+                ],
+            ],
+        ],
+        'user' => [
+            'identityClass' => [],
+        ],
+        /**
+         * create user maiqi_kake_write identified by '[SECRET:kake_pwd]';
+         * create user maiqi_kake_read identified by '[SECRET:kake_pwd]';
+         * grant all on maiqi_kake.* to maiqi_kake_write;
+         * grant SELECT on maiqi_kake.* to maiqi_kake_read;
+         */
+        'kake' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => true,
+            // Master
+            'masterConfig' => [
+                'username' => 'maiqi_kake_write',
+                'password' => '[SECRET:kake_pwd]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_kake'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => 'maiqi_kake_read',
+                'password' => '[SECRET:kake_pwd]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_kake'],
+            ],
+        ],
+        /**
+         * create user maiqi_service_write identified by '[SECRET:service_pwd]';
+         * create user maiqi_service_read identified by '[SECRET:service_pwd]';
+         * grant all on maiqi_service.* to maiqi_service_write;
+         * grant SELECT on maiqi_service.* to maiqi_service_read;
+         */
+        'service' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => true,
+            // Master
+            'masterConfig' => [
+                'username' => 'maiqi_service_w',
+                'password' => '[SECRET:service_pwd]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_service'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => 'maiqi_service_r',
+                'password' => '[SECRET:service_pwd]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_service'],
+            ],
+        ],
+        // Custom components
+        'reflection' => [
+            'class' => 'service\components\Reflection'
+        ],
+        'api' => [
+            'class' => 'service\components\Service'
+        ],
+    ],
+];
