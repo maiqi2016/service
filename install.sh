@@ -4,7 +4,9 @@
 composer install
 
 # add write
-sudo chmod -R a+w runtime/ web/assets/
+sudo chmod -R a+w config/
+sudo chmod -R a+w runtime/
+sudo chmod -R a+w web/assets/
 
 # add execute
 sudo chmod a+x thrfit/service.php
