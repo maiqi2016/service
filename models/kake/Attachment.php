@@ -16,7 +16,9 @@ use Yii;
  */
 class Attachment extends General
 {
-
+    /**
+     * @var array Fields
+     */
     public $_state = [
         0 => '未使用',
         1 => '使用中',

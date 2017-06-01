@@ -11,6 +11,7 @@ use Yii;
  * @property integer $product_id
  * @property string  $name
  * @property integer $price
+ * @property integer $bidding
  * @property integer $purchase_limit
  * @property string  $info
  * @property string  $add_time
@@ -19,6 +20,14 @@ use Yii;
  */
 class ProductPackage extends General
 {
+    /**
+     * @var array Fields
+     */
+    public $_bidding = [
+        0 => '不参与',
+        1 => '参与'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -38,6 +47,7 @@ class ProductPackage extends General
                     'product_id',
                     'name',
                     'price',
+                    'bidding',
                     'purchase_limit',
                     'info'
                 ],
@@ -47,6 +57,7 @@ class ProductPackage extends General
                 [
                     'product_id',
                     'price',
+                    'bidding',
                     'purchase_limit'
                 ],
                 'integer'
@@ -73,6 +84,7 @@ class ProductPackage extends General
             'product_id' => Yii::t('database', 'Product ID'),
             'name' => Yii::t('database', 'Name'),
             'price' => Yii::t('database', 'Price'),
+            'bidding' => Yii::t('database', 'Bidding'),
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
             'add_time' => Yii::t('database', 'Add Time'),
