@@ -33,6 +33,7 @@ class ProductController extends MainController
                 'package.price',
                 'package.purchase_limit',
                 'package.info',
+                'package.bidding',
                 'product.sale_type',
                 'product.sale_rate',
                 'product.sale_from',
@@ -43,6 +44,7 @@ class ProductController extends MainController
                 'package.product_id' => $product_id,
                 'package.state' => 1
             ]);
+            $list->orderBy('package.bidding DESC');
 
             return $list;
         }, null, Yii::$app->params['use_cache']);

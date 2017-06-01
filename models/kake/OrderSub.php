@@ -30,7 +30,8 @@ class OrderSub extends General
         2 => '待入住',
         3 => '退款申请中',
         4 => '已操作退款',
-        5 => '已入住'
+        5 => '已入住',
+        6 => '已完成',
     ];
 
     /**
@@ -53,7 +54,7 @@ class OrderSub extends General
     {
         $state = $this->_rule_state;
         $state['state_default']['value'] = 0;
-        $state['state_range']['range'] = range(0, 5);
+        $state['state_range']['range'] = range(0, 6);
 
         return array_merge([
             [
