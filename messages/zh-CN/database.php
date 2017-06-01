@@ -90,5 +90,6 @@ return [
     'Company' => '公司名称',
     'Nickname' => '昵称',
     'Code' => '代码',
-    'Subscribe' => '关注'
+    'Subscribe' => '关注',
+    'Bidding' => '竞价',
 ];

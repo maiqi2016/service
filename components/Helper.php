@@ -979,6 +979,65 @@ class Helper extends Object
     }
 
     /**
+     * Create radio'html
+     *
+     * @param array   $array
+     * @param string  $name
+     * @param string  $selected
+     * @param string  $selectedModel value & key
+     * @param boolean $disabled
+     * @param string  $class
+     *
+     * @return string
+     */
+    public static function createRadio($array, $name, $selected = null, $selectedModel = 'key', $disabled = false, $class = 'radio-inline')
+    {
+        $class = $class ? 'class="' . $class . '"' : null;
+        $disabled = $disabled ? 'disabled=disabled' : null;
+        $tpl = null;
+
+        foreach ($array as $value => $info) {
+            $tpl .= '<label ' . $class . ' ' . $disabled . '>';
+            $operationObj = ($selectedModel == 'key') ? $value : $info;
+            $checkedState = ($operationObj == $selected) ? 'checked="checked"' : null;
+            $tpl .= '<input type="radio" name="' . $name . '" value="' . $value . '" ' . $checkedState . '> ' . $info;
+            $tpl .= '</label>';
+        }
+
+        return $tpl;
+    }
+
+    /**
+     * Create checkbox'html
+     *
+     * @param array   $array
+     * @param string  $name
+     * @param mixed  $selected
+     * @param string  $selectedModel value & key
+     * @param boolean $disabled
+     * @param string  $class
+     *
+     * @return string
+     */
+    public static function createCheckbox($array, $name, $selected = null, $selectedModel = 'key', $disabled = false, $class = 'checkbox-inline')
+    {
+        $class = $class ? 'class="' . $class . '"' : null;
+        $disabled = $disabled ? 'disabled=disabled' : null;
+        $tpl = null;
+
+        foreach ($array as $value => $info) {
+            $tpl .= '<label ' . $class . ' ' . $disabled . '>';
+            $operationObj = ($selectedModel == 'key') ? $value : $info;
+            $selected = is_array($selected) ? $selected : explode(',', $selected);
+            $checkedState = in_array($operationObj, $selected) ? 'checked="checked"' : null;
+            $tpl .= '<input type="checkbox" name="' . $name . '" value="' . $value . '" ' . $checkedState . '> ' . $info;
+            $tpl .= '</label>';
+        }
+
+        return $tpl;
+    }
+
+    /**
      * Get array'keys by array'values
      *
      * @access public
@@ -1989,7 +2048,7 @@ class Helper extends Object
      */
     public static function joinString($split, ...$items)
     {
-        $total = count($items);
+        $total = count($items) - 1;
         $_items = [];
 
         foreach ($items as $key => $value) {
