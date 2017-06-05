@@ -29,6 +29,7 @@ class User extends General
     public $_role = [
         0 => '普通用户',
         1 => '管理员',
+        2 => '分销商',
     ];
 
     /**
