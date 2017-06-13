@@ -91,7 +91,11 @@ class ActivityLotteryCode extends General
                 ['subscribe'],
                 'default',
                 'value' => 1
-            ]
+            ],
+            [
+                ['openid'],
+                'unique'
+            ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 

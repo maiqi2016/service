@@ -29,7 +29,7 @@ class User extends General
     public $_role = [
         0 => '普通用户',
         1 => '管理员',
-        2 => '分销商',
+        10 => '分销商',
     ];
 
     /**
@@ -89,7 +89,11 @@ class User extends General
             [
                 ['role'],
                 'integer'
-            ]
+            ],
+            [
+                ['openid'],
+                'unique'
+            ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 

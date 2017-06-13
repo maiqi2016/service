@@ -13,5 +13,5 @@ return [
     'account validation failed' => '用户验证失败',
     'class property un exists' => '类成员属性不存在',
     'class method un exists' => '类成员方法不存',
-    'try again after moment' => '请在 {second}s 后再尝试该操作'
+    'try again after moment' => '请在 {second}s 后再尝试该操作',
 ];

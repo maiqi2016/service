@@ -1012,7 +1012,7 @@ class Helper extends Object
      *
      * @param array   $array
      * @param string  $name
-     * @param mixed  $selected
+     * @param mixed   $selected
      * @param string  $selectedModel value & key
      * @param boolean $disabled
      * @param string  $class
@@ -2032,6 +2032,71 @@ class Helper extends Object
         $orderNumber .= date('s');
 
         return $orderNumber;
+    }
+
+    /**
+     * 整数加密成字符串 - 如用于隐藏分页
+     *
+     * @access public
+     *
+     * @param integer $num
+     *
+     * @return string
+     */
+    public static function integerEncode($num)
+    {
+        $num = intval($num);
+        $padLength = floor(strlen($num) / 3) + 3;
+        $num = str_pad($num, $padLength, 0, STR_PAD_LEFT);
+        $str = base64_encode($num);
+
+        $items = str_split($str);
+        array_walk($items, function (&$char) {
+            if (ctype_upper($char)) {
+                $char = strtolower($char);
+                $_chr = chr(ord($char) + 1);
+                $char = ctype_lower($_chr) ? $_chr : 'a';
+            } else if (ctype_lower($char)) {
+                $char = strtoupper($char);
+                $_chr = chr(ord($char) + 1);
+                $char = strtoupper($_chr) ? $_chr : 'A';
+            } else if (is_numeric($char)) {
+                $char = 9 - $char;
+            }
+        });
+
+        return implode('', $items);
+    }
+
+    /**
+     * 整数密码串解密
+     *
+     * @access public
+     *
+     * @param string $str
+     *
+     * @return mixed
+     */
+    public static function integerDecode($str)
+    {
+        $items = str_split($str);
+        array_walk($items, function (&$char) {
+            if (ctype_lower($char)) {
+                $_chr = chr(ord($char) - 1);
+                $char = ctype_lower($_chr) ? $_chr : 'z';
+                $char = strtoupper($char);
+            } else if (ctype_upper($char)) {
+                $_chr = chr(ord($char) - 1);
+                $char = ctype_upper($_chr) ? $_chr : 'Z';
+                $char = strtolower($char);
+            } else if (is_numeric($char)) {
+                $char = 9 - $char;
+            }
+        });
+        $str = implode('', $items);
+        $num = base64_decode($str);
+
+        return is_numeric($num) ? intval($num) : false;
     }
 
     // --- Others ---

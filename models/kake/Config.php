@@ -45,25 +45,20 @@ class Config extends General
                 'max' => 64
             ],
             [
+                ['value'],
+                'string',
+                'max' => 128
+            ],
+            [
                 [
-                    'app',
-                    'key'
+                    'key',
+                    'app'
                 ],
                 'unique',
                 'targetAttribute' => [
                     'app',
                     'key'
-                ],
-                'when' => function () {
-                    return $this->viaValidation([
-                        'backend/update-for-backend'
-                    ]);
-                }
-            ],
-            [
-                ['value'],
-                'string',
-                'max' => 128
+                ]
             ],
         ], $this->_rule_remark, $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }

@@ -92,4 +92,10 @@ return [
     'Code' => '代码',
     'Subscribe' => '关注',
     'Bidding' => '竞价',
+    'From Sales' => '≥ 开始销量',
+    'To Sales' => '≤ 结束销量',
+    'Commission' => '分佣值',
+    'Producer ID' => '分销商ID',
+    'Theme' => '主题',
+    'Logo Attachment ID' => 'LOGO附件'
 ];
