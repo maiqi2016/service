@@ -9,11 +9,7 @@ sudo chmod -R a+w runtime/
 sudo chmod -R a+w web/assets/
 
 # add execute
-<<<<<<< HEAD
-sudo chmod a+x thrfit/service.php
-=======
 sudo chmod a+x thrift/service.php
->>>>>>> 6f99bd78613b8db17a1becb1c051bb2b3709a336
 
 # create config files
 sudo cp config/main-local.php.backup config/main-local.php

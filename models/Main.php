@@ -510,7 +510,7 @@ class Main extends ActiveRecord
      *
      * @return boolean
      */
-    public function viaValidation($actions, $app = false)
+    public function viaValidation($actions = ['backend/update-for-backend'], $app = false)
     {
         $actions = (array) $actions;
         $action = Yii::$app->controller->id . '/' . Yii::$app->controller->action->id;
@@ -602,6 +602,26 @@ class Main extends ActiveRecord
             }
         }
 
+        /**
+         * Get sub query
+         *
+         * @param mixed  $item
+         * @param string $as
+         *
+         * @return array
+         */
+        $subQuery = function ($item, $as = null) use ($table) {
+
+            $table = !empty($item['table']) ? $item['table'] : $table;
+            $item['sub']['from'] = $table;
+
+            $subQuery = $this->handleActiveRecord(new yii\db\Query(), $table, $item['sub']);
+            $as = $as ?: (isset($item['as']) ? $item['as'] : 0);
+            $item = [$as => $subQuery];
+
+            return $item;
+        };
+
         if (!empty($options['join'])) {
             $options['join'] = Helper::parseJsonString($options['join'], []);
             foreach ($options['join'] as $item) {
@@ -626,10 +646,8 @@ class Main extends ActiveRecord
                 $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
                 $on = "`${leftTable}`.`${leftId}` = `${as}`.`${rightId}`";
 
-                if (isset($item['sub'])) {
-                    $item['sub']['from'] = $item['table'];
-                    $subQuery = $this->handleActiveRecord(new yii\db\Query(), $item['table'], $item['sub']);
-                    $target = [$as => $subQuery];
+                if (is_array($item) && isset($item['sub'])) {
+                    $target = $subQuery($item, $as);
                 } else {
                     $target = "${item['table']} AS `${as}`";
                 }
@@ -645,7 +663,12 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['from'])) {
-            $activeRecord->from($options['from']);
+            $options['from'] = Helper::parseJsonString($options['from']);
+            $item = $options['from'];
+            if (is_array($item) && isset($item['sub'])) {
+                $item = $subQuery($item);
+            }
+            $activeRecord->from($item);
         }
 
         if (!empty($options['where'])) {
@@ -654,6 +677,19 @@ class Main extends ActiveRecord
                 $operator = isset($item['or']) ? 'or' : 'and';
                 $action = $operator . 'Where';
                 unset($item['or']);
+
+                $field = key($item);
+                if (is_string($item[$field]) && strpos($item[$field], ',')) {
+                    $values = Helper::handleString($item[$field], ',', 'intval');
+                    $item = ['in', $field, $values];
+                }
+
+                if (is_array($item) && isset($item['sub'])) {
+                    $sub = current($subQuery($item));
+                    $item = str_replace('{SUB_QUERY}', '$sub', $item['tpl']);
+                    $item = 'return ' . $item . ';';
+                    $item = eval($item);
+                }
                 $activeRecord->{$action}($item);
             }
         }

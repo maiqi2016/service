@@ -51,7 +51,18 @@ class PhoneCaptcha extends General
             [
                 ['type'],
                 'integer'
-            ]
+            ],
+            [
+                [
+                    'phone',
+                    'type'
+                ],
+                'unique',
+                'targetAttribute' => [
+                    'phone',
+                    'type'
+                ]
+            ],
         ], $this->_rule_phone, $this->_rule_captcha, $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 
