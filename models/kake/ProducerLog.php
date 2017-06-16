@@ -5,14 +5,14 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "producer_order".
+ * This is the model class for table "producer_log".
  *
  * @property integer $id
  * @property integer $producer_id
- * @property integer $order_id
+ * @property integer $product_id
  * @property integer $state
  */
-class ProducerOrder extends General
+class ProducerLog extends General
 {
     /**
      * @var array Field
@@ -32,7 +32,7 @@ class ProducerOrder extends General
      */
     public static function tableName()
     {
-        return 'producer_order';
+        return 'producer_log';
     }
 
     /**
@@ -44,14 +44,14 @@ class ProducerOrder extends General
             [
                 [
                     'producer_id',
-                    'order_id'
+                    'product_id'
                 ],
                 'required'
             ],
             [
                 [
                     'producer_id',
-                    'order_id'
+                    'product_id'
                 ],
                 'integer'
             ],
@@ -66,7 +66,7 @@ class ProducerOrder extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'producer_id' => Yii::t('database', 'Producer ID'),
-            'order_id' => Yii::t('database', 'Order ID'),
+            'product_id' => Yii::t('database', 'Product ID'),
             'state' => Yii::t('database', 'State'),
         ];
     }

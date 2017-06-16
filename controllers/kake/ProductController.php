@@ -27,6 +27,9 @@ class ProductController extends MainController
     public function actionPackageList($product_id)
     {
         $list = (new ProductPackage())->all(function ($list) use ($product_id) {
+            /**
+             * @var $list yii\db\Query
+             */
             $list->from('product_package AS package');
             $list->select([
                 'package.id',
@@ -61,6 +64,9 @@ class ProductController extends MainController
     public function actionProducerList($product_id)
     {
         $list = (new ProductProducer())->all(function ($list) use ($product_id) {
+            /**
+             * @var $list yii\db\Query
+             */
             $list->from('product_producer AS producer');
             $list->select([
                 'producer.from_sales',

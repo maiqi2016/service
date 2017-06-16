@@ -43,8 +43,7 @@ class Order extends General
      */
     public $_state = [
         0 => '已取消',
-        1 => '正常',
-        2 => '已完成'
+        1 => '正常'
     ];
 
     /**
