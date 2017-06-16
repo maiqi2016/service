@@ -34,12 +34,13 @@ class ActivityLotteryCode extends General
         // 7 => 'kake',
         8 => '广西大都',
         9 => '凯儿得乐',
+        10 => '哈哈'
     ];
 
     /**
      * @var array 对应活动时间
      */
-    public $activityDate = [
+    public $_activity_date = [
         8 => [
             'begin' => '2017-06-16 16:00:00',
             'end' => '2017-06-22 23:59:59'
@@ -47,6 +48,10 @@ class ActivityLotteryCode extends General
         9 => [
             'begin' => '2017-06-16 16:00:00',
             'end' => '2017-06-21 23:59:59'
+        ],
+        10 => [
+            'begin' => '2017-06-16 14:30:00',
+            'end' => '2017-06-16 15:30:00'
         ]
     ];
 
