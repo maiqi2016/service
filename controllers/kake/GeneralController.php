@@ -150,7 +150,7 @@ class GeneralController extends MainController
             $total = $model::findBySql($sql, [':company' => $params['company']])->count();
 
             $company = dechex($params['company'] + 500);
-            $serial = Helper::integerDecode($total + 1, null);
+            $serial = Helper::integerEncode($total + 1, null);
             $params['code'] = $company . $serial;
 
             $result = $model->add($params);
@@ -158,7 +158,7 @@ class GeneralController extends MainController
                 throw new yii\db\Exception($result['info']);
             }
 
-            return $params['code'];
+            return ['code' => $params['code']];
         }, '生成抽奖码');
 
         if (!$result['state']) {
@@ -166,7 +166,7 @@ class GeneralController extends MainController
         }
 
         $this->success([
-            'code' => $result['data'],
+            'code' => $result['data']['code'],
             'exists' => false
         ]);
     }
