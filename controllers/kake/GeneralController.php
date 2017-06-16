@@ -2,6 +2,7 @@
 
 namespace service\controllers\kake;
 
+use service\components\Helper;
 use service\controllers\MainController;
 use service\models\kake\ActivityLotteryCode;
 use service\models\kake\Attachment;
@@ -51,6 +52,9 @@ class GeneralController extends MainController
     {
         $ids = explode(',', $ids);
         $list = (new Attachment())->all(function ($list) use ($ids) {
+            /**
+             * @var $list yii\db\Query
+             */
             $list->where(['id' => $ids]);
             $list->andWhere([
                 '<',
@@ -86,6 +90,9 @@ class GeneralController extends MainController
     public function actionListPackageByOrderId($order_id)
     {
         $list = (new OrderSub())->all(function ($list) use ($order_id) {
+            /**
+             * @var $list yii\db\Query
+             */
             $list->select([
                 'order_sub.id',
                 'order_sub.product_package_id',
@@ -121,13 +128,30 @@ class GeneralController extends MainController
     {
         $params = $this->getParams();
         $model = new ActivityLotteryCode();
+
+        $record = $model->first(function ($ar) use ($params) {
+            /**
+             * @var $ar yii\db\Query
+             */
+            $ar->where(['openid' => $params['openid']]);
+            $ar->andWhere(['state' => 1]);
+
+            return $ar;
+        });
+        if (!empty($record)) {
+            $this->success([
+                'code' => $record['code'],
+                'exists' => true
+            ]);
+        }
+
         $result = $model->trans(function () use ($model, $params) {
             $sql = 'SELECT * FROM `activity_lottery_code` WHERE `company` = :company FOR UPDATE';
             $total = $model::findBySql($sql, [':company' => $params['company']])->count();
 
-            $params['code'] = dechex($total + 666666 + 1);
-            $params['code'] = str_pad($params['code'], 6, 0, STR_PAD_LEFT);
-            $params['code'] = strtoupper($params['company'] . $params['code']);
+            $company = dechex($params['company'] + 500);
+            $serial = Helper::integerDecode($total + 1, null);
+            $params['code'] = $company . $serial;
 
             $result = $model->add($params);
             if (!$result['state']) {
@@ -141,6 +165,9 @@ class GeneralController extends MainController
             $this->fail($result['info']);
         }
 
-        $this->success($result['data']);
+        $this->success([
+            'code' => $result['data'],
+            'exists' => false
+        ]);
     }
 }

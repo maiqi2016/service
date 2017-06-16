@@ -1525,6 +1525,34 @@ class Helper extends Object
         return $deep;
     }
 
+    /**
+     * Save remote file
+     *
+     * @access public
+     *
+     * @param string $fileUrl
+     * @param string $savePath
+     *
+     * @return boolean
+     */
+    public static function saveRemoteFile($fileUrl, $savePath)
+    {
+        $option = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'timeout' => 5
+            ]
+        ]);
+        $content = @file_get_contents($fileUrl, false, $option);
+        if (!$content) {
+            return false;
+        }
+
+        $result = @file_put_contents($savePath, $content);
+
+        return $result ? true : false;
+    }
+
     // --- String ---
 
     public static $specialChar = '`-=[];\'\,.//~!@#$%^&*()_+{}:"|<>?·【】；’、，。、！￥…（）—：“《》？';
@@ -2040,14 +2068,20 @@ class Helper extends Object
      * @access public
      *
      * @param integer $num
+     * @param integer $add
      *
      * @return string
      */
-    public static function integerEncode($num)
+    public static function integerEncode($num, $add = 100024)
     {
         $num = intval($num);
-        $padLength = floor(strlen($num) / 3) + 3;
-        $num = str_pad($num, $padLength, 0, STR_PAD_LEFT);
+        $num = $add ? $num + $add : $num;
+
+        $len = strlen($num);
+        $padLen = 3 - $len % 3;
+        $padLen = ($padLen == 3) ? 0 : $padLen + $len;
+
+        $num = str_pad($num, $padLen, 0, STR_PAD_LEFT);
         $str = base64_encode($num);
 
         $items = str_split($str);
@@ -2059,7 +2093,7 @@ class Helper extends Object
             } else if (ctype_lower($char)) {
                 $char = strtoupper($char);
                 $_chr = chr(ord($char) + 1);
-                $char = strtoupper($_chr) ? $_chr : 'A';
+                $char = ctype_upper($_chr) ? $_chr : 'A';
             } else if (is_numeric($char)) {
                 $char = 9 - $char;
             }
@@ -2074,10 +2108,11 @@ class Helper extends Object
      * @access public
      *
      * @param string $str
+     * @param integer $add
      *
      * @return mixed
      */
-    public static function integerDecode($str)
+    public static function integerDecode($str, $add = 100024)
     {
         $items = str_split($str);
         array_walk($items, function (&$char) {
@@ -2096,7 +2131,12 @@ class Helper extends Object
         $str = implode('', $items);
         $num = base64_decode($str);
 
-        return is_numeric($num) ? intval($num) : false;
+        if (!is_numeric($num)) {
+            return false;
+        }
+        $num = intval($num);
+
+        return $add ? $num - $add : $num;
     }
 
     // --- Others ---

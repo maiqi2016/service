@@ -10,6 +10,7 @@ use service\models\kake\OrderContacts;
 use service\models\kake\OrderInstructionsLog;
 use service\models\kake\OrderSub;
 use service\models\kake\PhoneCaptcha;
+use service\models\kake\ProducerLog;
 use service\models\kake\Product;
 use yii;
 
@@ -29,12 +30,26 @@ class OrderController extends MainController
     public function actionAdd()
     {
         $params = $this->getParams();
-        $package = Helper::popOne($params, 'package');
-
         $orderModel = new Order();
-        $orderModel->attributes = $params;
 
-        $result = $orderModel->trans(function () use ($orderModel, $package) {
+        $result = $orderModel->trans(function () use ($orderModel, $params) {
+
+            $channel = Helper::popOne($params, 'channel_id');
+            if ($channel) {
+                $Producer = new ProducerLog();
+                $Producer->attributes = [
+                    'producer_id' => $params['user_id'],
+                    'product_id' => $params['product_id']
+                ];
+                if (!$Producer->save()) {
+                    throw new yii\db\Exception(current($Producer->getFirstErrors()));
+                }
+
+                $params['producer_log_id'] = $Producer->id;
+            }
+
+            $package = Helper::popOne($params, 'package');
+            $orderModel->attributes = $params;
             if (!$orderModel->save()) {
                 throw new yii\db\Exception(current($orderModel->getFirstErrors()));
             }
@@ -330,6 +345,9 @@ class OrderController extends MainController
 
         $package_ids = Helper::parseJsonString($package_ids);
         $result = $model->all(function ($ar) use ($user_id, $package_ids) {
+            /**
+             * @var $ar yii\db\Query
+             */
             $ar->select('product_package_id, COUNT(*) AS times');
             $ar->leftJoin('order', 'order_sub.order_id = order.id');
             $ar->where(['order.user_id' => $user_id]);
@@ -386,6 +404,9 @@ class OrderController extends MainController
     {
         $model = new OrderSub();
         $result = $model->first(function ($ar) use ($user_id, $order_sub_id) {
+            /**
+             * @var $ar yii\db\Query
+             */
             $ar->leftJoin('order', 'order.id = order_sub.order_id');
             $ar->where([
                 'order_sub.id' => $order_sub_id,
@@ -549,9 +570,9 @@ class OrderController extends MainController
     /**
      * 轮询订单支付状态
      *
-     * @param string $order_number
+     * @param string  $order_number
      * @param integer $user_id
-     * @param number $time
+     * @param number  $time
      */
     public function actionPollOrder($order_number, $user_id, $time)
     {
