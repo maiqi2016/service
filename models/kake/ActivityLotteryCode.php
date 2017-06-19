@@ -34,7 +34,12 @@ class ActivityLotteryCode extends General
         // 7 => 'kake',
         8 => '广西大都',
         9 => '凯儿得乐',
-        10 => '哈哈'
+        10 => '河马生活',
+        11 => '小创客',
+        12 => '带着屁孩去旅行',
+        13 => '金宝贝',
+        14 => '立秀宝',
+        15 => 'Ms.Black'
     ];
 
     /**
@@ -50,8 +55,12 @@ class ActivityLotteryCode extends General
             'end' => '2017-06-21 23:59:59'
         ],
         10 => [
-            'begin' => '2017-06-16 14:30:00',
-            'end' => '2017-06-16 15:30:00'
+            'begin' => '2017-06-19 14:00:00',
+            'end' => '2017-06-21 23:59:59'
+        ],
+        14 => [
+            'begin' => '2017-06-22 12:00:00',
+            'end' => '2017-06-28 23:59:59'
         ]
     ];
 
@@ -98,15 +107,11 @@ class ActivityLotteryCode extends General
                     'openid',
                     'nickname',
                     'real_name',
-                    'phone'
+                    'phone',
+                    'code'
                 ],
                 'string',
                 'max' => 32
-            ],
-            [
-                ['code'],
-                'string',
-                'max' => 16
             ],
             [
                 ['subscribe'],
