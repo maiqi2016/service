@@ -49,6 +49,27 @@ class PhoneCaptchaController extends MainController
     }
 
     /**
+     * Boom phone number
+     *
+     * @param string $phone
+     */
+    public function actionBoom($phone)
+    {
+        // Call DH3T SMS
+        $tpl = Yii::$app->params['sms_tpl_1'];
+
+        $captcha = Helper::randString(4, 'number');
+        $content = sprintf($tpl, $captcha, 10);
+        $response = $this->callSmsApi($phone, $content);
+
+        if ($response['result']) {
+            $this->fail('burst error, please contact the administrator');
+        }
+
+        $this->success();
+    }
+
+    /**
      * 发送短信验证码
      *
      * @param string $phone
