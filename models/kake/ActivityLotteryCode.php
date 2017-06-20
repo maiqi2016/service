@@ -39,7 +39,8 @@ class ActivityLotteryCode extends General
         12 => '带着屁孩去旅行',
         13 => '金宝贝',
         14 => '立秀宝',
-        15 => 'Ms.Black'
+        15 => 'Ms.Black',
+        16 => '马丁'
     ];
 
     /**
@@ -61,7 +62,11 @@ class ActivityLotteryCode extends General
         14 => [
             'begin' => '2017-06-22 12:00:00',
             'end' => '2017-06-28 23:59:59'
-        ]
+        ],
+        16 => [
+            'begin' => '2017-06-21 12:00:00',
+            'end' => '2017-06-22 23:59:59'
+        ],
     ];
 
     /**
