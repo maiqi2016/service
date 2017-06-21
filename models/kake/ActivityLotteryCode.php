@@ -39,7 +39,7 @@ class ActivityLotteryCode extends General
         12 => '带着屁孩去旅行',
         13 => '金宝贝',
         14 => '立秀宝',
-        15 => 'Ms.Black',
+        15 => 'ms.black',
         16 => '马丁'
     ];
 
