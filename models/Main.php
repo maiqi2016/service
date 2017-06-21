@@ -638,18 +638,26 @@ class Main extends ActiveRecord
                     $item['type'] = 'left';
                 }
 
-                $as = empty($item['as']) ? $item['table'] : $item['as'];
+                $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
+                $rightTable = empty($item['as']) ? $item['table'] : $item['as'];
 
                 $leftId = empty($item['left_on_field']) ? $item['table'] . '_id' : $item['left_on_field'];
                 $rightId = empty($item['right_on_field']) ? 'id' : $item['right_on_field'];
 
-                $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
-                $on = "`${leftTable}`.`${leftId}` = `${as}`.`${rightId}`";
+                $leftId = (array) $leftId;
+                $rightId = (array) $rightId;
+
+                $on = [];
+                foreach ($leftId as $k => $v) {
+                    $on[] = "`${leftTable}`.`${v}` = `${rightTable}`.`${rightId[$k]}`";
+                }
+
+                $on = implode(' AND ', $on);
 
                 if (is_array($item) && isset($item['sub'])) {
-                    $target = $subQuery($item, $as);
+                    $target = $subQuery($item, $rightTable);
                 } else {
-                    $target = "${item['table']} AS `${as}`";
+                    $target = "${item['table']} AS `${rightTable}`";
                 }
 
                 $action = $item['type'] . 'Join';
