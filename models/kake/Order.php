@@ -11,6 +11,7 @@ use Yii;
  * @property string  $order_number
  * @property integer $product_id
  * @property integer $user_id
+ * @property integer $producer_log_id
  * @property integer $price
  * @property integer $order_contacts_id
  * @property integer $payment_method
@@ -65,6 +66,7 @@ class Order extends General
                     'order_number',
                     'product_id',
                     'user_id',
+                    'producer_log_id',
                     'price',
                     'order_contacts_id',
                     'payment_method'
@@ -75,6 +77,7 @@ class Order extends General
                 [
                     'product_id',
                     'user_id',
+                    'producer_log_id',
                     'price',
                     'order_contacts_id',
                     'payment_method',
@@ -104,6 +107,7 @@ class Order extends General
             'order_number' => Yii::t('database', 'Order Number'),
             'product_id' => Yii::t('database', 'Product ID'),
             'user_id' => Yii::t('database', 'User ID'),
+            'producer_log_id' => Yii::t('database', 'Producer Log ID'),
             'price' => Yii::t('database', 'Price'),
             'order_contacts_id' => Yii::t('database', 'Order Contacts ID'),
             'payment_method' => Yii::t('database', 'Payment Method'),

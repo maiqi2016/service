@@ -22,7 +22,11 @@ class ProductController extends MainController
     /**
      * 列表套餐详情
      *
+     * @access public
+     *
      * @param integer $product_id
+     *
+     * @return void
      */
     public function actionPackageList($product_id)
     {
@@ -59,7 +63,11 @@ class ProductController extends MainController
     /**
      * 列表分销详情
      *
+     * @access public
+     *
      * @param integer $product_id
+     *
+     * @return void
      */
     public function actionProducerList($product_id)
     {
@@ -122,6 +130,8 @@ class ProductController extends MainController
     /**
      * 新增酒店产品
      *
+     * @access public
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionAddProduct()
@@ -160,8 +170,11 @@ class ProductController extends MainController
     /**
      * 编辑酒店产品
      *
+     * @access public
+     *
      * @param integer $id
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionEditProduct($id)

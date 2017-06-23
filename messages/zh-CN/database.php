@@ -97,5 +97,10 @@ return [
     'Commission' => '分佣值',
     'Producer ID' => '分销商ID',
     'Theme' => '主题',
-    'Logo Attachment ID' => 'LOGO附件'
+    'Logo Attachment ID' => 'LOGO附件',
+    'Producer Log ID' => '分销记录ID',
+    'Log Amount In' => '入围订单额',
+    'Log Amount Out' => '淘汰订单额',
+    'Log Sub Counter' => '子订单完成数',
+    'Log Commission' => '分佣金额',
 ];

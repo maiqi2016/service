@@ -21,6 +21,9 @@ class GeneralController extends MainController
 {
     /**
      * 列表配置 - 键值对
+     *
+     * @access public
+     * @return void
      */
     public function actionConfigKvp()
     {
@@ -46,7 +49,11 @@ class GeneralController extends MainController
     /**
      * 列表附件
      *
+     * @access public
+     *
      * @param string $ids
+     *
+     * @return void
      */
     public function actionListAttachmentByIds($ids)
     {
@@ -69,6 +76,9 @@ class GeneralController extends MainController
 
     /**
      * 获取广告
+     *
+     * @access public
+     * @return void
      */
     public function actionListAd()
     {
@@ -85,7 +95,11 @@ class GeneralController extends MainController
     /**
      * 列表订单的所有套餐
      *
+     * @access public
+     *
      * @param integer $order_id
+     *
+     * @return void
      */
     public function actionListPackageByOrderId($order_id)
     {
@@ -123,6 +137,9 @@ class GeneralController extends MainController
 
     /**
      * 生成抽奖码
+     *
+     * @access public
+     * @return void
      */
     public function actionLogLotteryCode()
     {

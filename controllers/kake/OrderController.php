@@ -25,6 +25,8 @@ class OrderController extends MainController
     /**
      * 新增订单
      *
+     * @access public
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionAdd()
@@ -36,16 +38,16 @@ class OrderController extends MainController
 
             $channel = Helper::popOne($params, 'channel_id');
             if ($channel) {
-                $Producer = new ProducerLog();
-                $Producer->attributes = [
-                    'producer_id' => $params['user_id'],
+                $ProducerLog = new ProducerLog();
+                $ProducerLog->attributes = [
+                    'user_id' => $params['user_id'],
+                    'producer_id' => $channel,
                     'product_id' => $params['product_id']
                 ];
-                if (!$Producer->save()) {
-                    throw new yii\db\Exception(current($Producer->getFirstErrors()));
+                if (!$ProducerLog->save()) {
+                    throw new yii\db\Exception(current($ProducerLog->getFirstErrors()));
                 }
-
-                $params['producer_log_id'] = $Producer->id;
+                $params['producer_log_id'] = $ProducerLog->id;
             }
 
             $package = Helper::popOne($params, 'package');
@@ -88,9 +90,12 @@ class OrderController extends MainController
     /**
      * 订单支付后处理
      *
+     * @access public
+     *
      * @param string  $order_number
      * @param boolean $paid_result
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionPayHandler($order_number, $paid_result)
@@ -144,8 +149,12 @@ class OrderController extends MainController
     /**
      * 更新订单编号
      *
+     * @access public
+     *
      * @param integer $id
      * @param string  $order_number
+     *
+     * @return void
      */
     public function actionUpdateOrderNumber($id, $order_number)
     {
@@ -164,9 +173,12 @@ class OrderController extends MainController
     /**
      * 同意预约
      *
+     * @access public
+     *
      * @param integer $order_sub_id
      * @param integer $user_id
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionAgreeOrder($order_sub_id, $user_id)
@@ -206,10 +218,13 @@ class OrderController extends MainController
     /**
      * 拒绝预约
      *
+     * @access public
+     *
      * @param integer $order_sub_id
      * @param string  $remark
      * @param integer $user_id
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionRefuseOrder($order_sub_id, $remark, $user_id)
@@ -250,9 +265,12 @@ class OrderController extends MainController
     /**
      * 同意退款
      *
+     * @access public
+     *
      * @param integer $order_sub_id
      * @param integer $user_id
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionAgreeRefund($order_sub_id, $user_id)
@@ -292,10 +310,13 @@ class OrderController extends MainController
     /**
      * 拒绝退款
      *
+     * @access public
+     *
      * @param integer $order_sub_id
      * @param string  $remark
      * @param integer $user_id
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionRefuseRefund($order_sub_id, $remark, $user_id)
@@ -336,8 +357,12 @@ class OrderController extends MainController
     /**
      * 统计指定用户的套餐购买次数
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param string  $package_ids
+     *
+     * @return void
      */
     public function actionPurchaseTimes($user_id, $package_ids = null)
     {
@@ -372,9 +397,13 @@ class OrderController extends MainController
     /**
      * 添加联系人
      *
+     * @access public
+     *
      * @param string $real_name
      * @param string $phone
      * @param string $captcha
+     *
+     * @return void
      */
     public function actionAddContacts($real_name, $phone, $captcha)
     {
@@ -394,6 +423,8 @@ class OrderController extends MainController
 
     /**
      * 验证子订单的真实性
+     *
+     * @access public
      *
      * @param integer $user_id
      * @param integer $order_sub_id
@@ -428,9 +459,13 @@ class OrderController extends MainController
     /**
      * 退款申请
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param integer $order_sub_id
      * @param string  $remark
+     *
+     * @return void
      */
     public function actionApplyRefund($user_id, $order_sub_id, $remark)
     {
@@ -472,11 +507,15 @@ class OrderController extends MainController
     /**
      * 预约申请
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param integer $order_sub_id
      * @param string  $name
      * @param string  $phone
      * @param string  $time
+     *
+     * @return void
      */
     public function actionApplyOrder($user_id, $order_sub_id, $name, $phone, $time)
     {
@@ -501,8 +540,12 @@ class OrderController extends MainController
     /**
      * 我已入住
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param integer $order_sub_id
+     *
+     * @return void
      */
     public function actionCompleted($user_id, $order_sub_id)
     {
@@ -524,8 +567,12 @@ class OrderController extends MainController
     /**
      * 取消订单
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param string  $order_number
+     *
+     * @return void
      */
     public function actionCancelOrder($user_id, $order_number)
     {
@@ -548,11 +595,14 @@ class OrderController extends MainController
     /**
      * 发票申请
      *
+     * @access public
+     *
      * @param integer $user_id
      * @param integer $order_sub_id
      * @param string  $address
      * @param string  $invoice_title
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionApplyBill($user_id, $order_sub_id, $address, $invoice_title = null)
@@ -570,9 +620,13 @@ class OrderController extends MainController
     /**
      * 轮询订单支付状态
      *
+     * @access public
+     *
      * @param string  $order_number
      * @param integer $user_id
      * @param number  $time
+     *
+     * @return void
      */
     public function actionPollOrder($order_number, $user_id, $time)
     {
@@ -581,7 +635,7 @@ class OrderController extends MainController
             'user_id' => $user_id,
             'payment_state' => 1
         ])->andWhere([
-            '>',
+            '<=',
             'update_time',
             $time
         ])->count();
