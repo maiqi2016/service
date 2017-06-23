@@ -66,7 +66,6 @@ class Order extends General
                     'order_number',
                     'product_id',
                     'user_id',
-                    'producer_log_id',
                     'price',
                     'order_contacts_id',
                     'payment_method'
