@@ -245,13 +245,14 @@ class Main extends ActiveRecord
      *
      * @access public
      *
-     * @param array $attributes
+     * @param array  $attributes
+     * @param object $model
      *
      * @return array
      */
-    public function add($attributes)
+    public function add($attributes, $model = null)
     {
-        $model = new static;
+        $model = $model ?: new static;
         $model->attributes = $attributes;
 
         if ($model->validate()) {
@@ -689,7 +690,11 @@ class Main extends ActiveRecord
                 $field = key($item);
                 if (is_string($item[$field]) && strpos($item[$field], ',')) {
                     $values = Helper::handleString($item[$field], ',', 'intval');
-                    $item = ['in', $field, $values];
+                    $item = [
+                        'in',
+                        $field,
+                        $values
+                    ];
                 }
 
                 if (is_array($item) && isset($item['sub'])) {

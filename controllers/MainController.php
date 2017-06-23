@@ -329,6 +329,9 @@ class MainController extends Controller
 
     /**
      * 获取详情 - 常用于联表查询
+     *
+     * @access public
+     * @return void
      */
     public function actionDetail()
     {
@@ -345,6 +348,9 @@ class MainController extends Controller
 
     /**
      * 获取列表 - 常用于联表查询
+     *
+     * @access public
+     * @return void
      */
     public function actionList()
     {
@@ -362,8 +368,12 @@ class MainController extends Controller
     /**
      * 获取模型元信息 (for yii2)
      *
+     * @access public
+     *
      * @param string $table
      * @param string $db
+     *
+     * @return void
      */
     public function actionModelMeta($table, $db = null)
     {
@@ -479,8 +489,12 @@ class MainController extends Controller
     /**
      * 列出指定表数据
      *
+     * @access public
+     *
      * @param string $table
      * @param string $db
+     *
+     * @return void
      */
     public function actionListForBackend($table, $db = null)
     {
@@ -508,8 +522,12 @@ class MainController extends Controller
     /**
      * 查询指定表指定ID数据
      *
+     * @access public
+     *
      * @param string $table
      * @param string $db
+     *
+     * @return void
      */
     public function actionGetForBackend($table, $db = null)
     {
@@ -531,9 +549,12 @@ class MainController extends Controller
     /**
      * 添加指定表数据
      *
+     * @access public
+     *
      * @param string $table
      * @param string $db
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionAddForBackend($table, $db = null)
@@ -568,10 +589,13 @@ class MainController extends Controller
     /**
      * 更新指定表指定ID数据
      *
+     * @access public
+     *
      * @param string $table
      * @param string $where
      * @param string $db
      *
+     * @return void
      * @throws yii\db\Exception
      */
     public function actionUpdateForBackend($table, $where, $db = null)
@@ -627,9 +651,13 @@ class MainController extends Controller
     /**
      * 前置记录
      *
+     * @access public
+     *
      * @param string  $table
      * @param integer $id
      * @param string  $db
+     *
+     * @return void
      */
     public function actionFrontForBackend($table, $id, $db = null)
     {
@@ -645,6 +673,9 @@ class MainController extends Controller
 
     /**
      * 清楚缓存
+     *
+     * @access public
+     * @return void
      */
     public function actionClearCache()
     {

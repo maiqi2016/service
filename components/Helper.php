@@ -1284,6 +1284,25 @@ class Helper extends Object
         return $value;
     }
 
+    /**
+     * Set key by value
+     *
+     * @param array  $target
+     * @param string $keyValue
+     *
+     * @return array
+     */
+    public static function valueToKey($target, $keyValue)
+    {
+        $items = array_column($target, $keyValue);
+        $target = array_combine($items, $target);
+
+        return [
+            $target,
+            $items
+        ];
+    }
+
     // --- File ---
 
     /**
@@ -2107,7 +2126,7 @@ class Helper extends Object
      *
      * @access public
      *
-     * @param string $str
+     * @param string  $str
      * @param integer $add
      *
      * @return mixed

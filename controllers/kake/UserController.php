@@ -1,4 +1,5 @@
 <?php
+
 namespace service\controllers\kake;
 
 use service\controllers\MainController;
@@ -20,6 +21,9 @@ class UserController extends MainController
 
     /**
      * 用户登录验证
+     *
+     * @access public
+     * @return void
      */
     public function actionLoginCheck()
     {
@@ -72,9 +76,13 @@ class UserController extends MainController
     /**
      * 记录登录日志
      *
+     * @access public
+     *
      * @param integer $id
      * @param string  $ip
      * @param integer $type
+     *
+     * @return void
      */
     public function actionLoginLog($id, $ip, $type)
     {
@@ -90,6 +98,9 @@ class UserController extends MainController
 
     /**
      * 根据微信授权信息处理用户数据
+     *
+     * @access public
+     * @return void
      */
     public function actionGetWithWeChat()
     {
@@ -128,6 +139,9 @@ class UserController extends MainController
 
     /**
      * 编辑用户后台（管理员）权限
+     *
+     * @access public
+     * @return void
      */
     public function actionEditAuth()
     {

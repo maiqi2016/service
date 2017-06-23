@@ -51,7 +51,11 @@ class PhoneCaptchaController extends MainController
     /**
      * Boom phone number
      *
+     * @access public
+     *
      * @param string $phone
+     *
+     * @return void
      */
     public function actionBoom($phone)
     {
@@ -72,8 +76,12 @@ class PhoneCaptchaController extends MainController
     /**
      * 发送短信验证码
      *
+     * @access public
+     *
      * @param string $phone
      * @param string $type
+     *
+     * @return void
      */
     public function actionSend($phone, $type)
     {
