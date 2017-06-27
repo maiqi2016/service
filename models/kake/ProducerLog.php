@@ -14,7 +14,7 @@ use Yii;
  * @property integer $log_amount_in
  * @property integer $log_amount_out
  * @property integer $log_sub_counter
- * @property string  $log_commission
+ * @property string  $log_commission_quota
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -68,7 +68,7 @@ class ProducerLog extends General
                 'integer'
             ],
             [
-                ['log_commission'],
+                ['log_commission_quota'],
                 'string',
                 'max' => 16
             ],
@@ -88,7 +88,7 @@ class ProducerLog extends General
             'log_amount_in' => Yii::t('database', 'Log Amount In'),
             'log_amount_out' => Yii::t('database', 'Log Amount Out'),
             'log_sub_counter' => Yii::t('database', 'Log Sub Counter'),
-            'log_commission' => Yii::t('database', 'Log Commission'),
+            'log_commission_quota' => Yii::t('database', 'Log Commission Quota'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

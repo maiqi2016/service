@@ -2,6 +2,7 @@
 
 namespace service\controllers;
 
+use function GuzzleHttp\Psr7\str;
 use service\models\kake\Attachment;
 use service\models\kake\Config;
 use service\models\Main;
@@ -324,6 +325,13 @@ class MainController extends Controller
             'r'
         ]);
 
+        array_walk($params, function (&$value) {
+            $value = Helper::parseJsonString($value);
+            if (is_numeric($value)) {
+                $value = (string) $value;
+            }
+        });
+
         return $params;
     }
 
@@ -505,13 +513,7 @@ class MainController extends Controller
             $size = null;
         }
 
-        $options = [
-            'select' => Yii::$app->request->get('select'),
-            'join' => Yii::$app->request->get('join'),
-            'where' => Yii::$app->request->get('where'),
-            'order' => Yii::$app->request->get('order')
-        ];
-
+        $options = $this->getParams();
         $all = $model->all(function ($list) use ($model, $table, $options) {
             return $model->handleActiveRecord($list, $table, $options);
         }, $size, Yii::$app->params['use_cache']);
@@ -533,12 +535,7 @@ class MainController extends Controller
     {
         $model = $this->model($table, $db);
 
-        $options = [
-            'select' => Yii::$app->request->get('select'),
-            'join' => Yii::$app->request->get('join'),
-            'where' => Yii::$app->request->get('where')
-        ];
-
+        $options = $this->getParams();
         $record = $model->first(function ($first) use ($model, $table, $options) {
             return $model->handleActiveRecord($first, $table, $options);
         }, Yii::$app->params['use_cache']);

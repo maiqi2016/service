@@ -154,7 +154,8 @@ class GeneralController extends MainController
             $ar->andWhere(['state' => 1]);
 
             return $ar;
-        });
+        }, Yii::$app->params['use_cache']);
+
         if (!empty($record)) {
             $this->success([
                 'code' => $record['code'],

@@ -359,7 +359,7 @@ class Main extends ActiveRecord
      *
      * @return array
      */
-    public function first($handler = null, $useCache = true)
+    public function first($handler = null, $useCache = false)
     {
         $one = static::find();
         if (is_array($handler)) {
@@ -393,7 +393,7 @@ class Main extends ActiveRecord
      *
      * @return array
      */
-    public function all($handler = null, $pageSize = null, $useCache = true, $additional = [], $debugSql = false)
+    public function all($handler = null, $pageSize = null, $useCache = false, $additional = [], $debugSql = false)
     {
         $list = static::find();
 
@@ -603,6 +603,8 @@ class Main extends ActiveRecord
             }
         }
 
+        $tableAs = !empty($options['as']) ? $options['as'] : null;
+
         /**
          * Get sub query
          *
@@ -611,13 +613,15 @@ class Main extends ActiveRecord
          *
          * @return array
          */
-        $subQuery = function ($item, $as = null) use ($table) {
+        $subQuery = function ($item, $as = null) use ($table, $tableAs) {
 
-            $table = !empty($item['table']) ? $item['table'] : $table;
-            $item['sub']['from'] = $table;
+            $_table = !empty($item['table']) ? $item['table'] : $table;
+            $_options = $item['sub'];
 
-            $subQuery = $this->handleActiveRecord(new yii\db\Query(), $table, $item['sub']);
-            $as = $as ?: (isset($item['as']) ? $item['as'] : 0);
+            empty($_options['from']) && $_options['from'] = $_table;
+
+            $subQuery = $this->handleActiveRecord(new yii\db\Query(), $_table, $_options);
+            $as = $as ?: (isset($item['as']) ? $item['as'] : ($tableAs ?: $_table));
             $item = [$as => $subQuery];
 
             return $item;
@@ -639,7 +643,7 @@ class Main extends ActiveRecord
                     $item['type'] = 'left';
                 }
 
-                $leftTable = empty($item['left_table']) ? $table : $item['left_table'];
+                $leftTable = empty($item['left_table']) ? ($tableAs ?: $table) : $item['left_table'];
                 $rightTable = empty($item['as']) ? $item['table'] : $item['as'];
 
                 $leftId = empty($item['left_on_field']) ? $item['table'] . '_id' : $item['left_on_field'];
@@ -683,8 +687,15 @@ class Main extends ActiveRecord
         if (!empty($options['where'])) {
             $options['where'] = Helper::parseJsonString($options['where'], []);
             foreach ($options['where'] as $item) {
+
                 $operator = isset($item['or']) ? 'or' : 'and';
                 $action = $operator . 'Where';
+
+                if (is_string($item)) {
+                    $activeRecord->{$action}($item);
+                    break;
+                }
+
                 unset($item['or']);
 
                 $field = key($item);
@@ -697,7 +708,7 @@ class Main extends ActiveRecord
                     ];
                 }
 
-                if (is_array($item) && isset($item['sub'])) {
+                if (isset($item['sub'])) {
                     $sub = current($subQuery($item));
                     $item = str_replace('{SUB_QUERY}', '$sub', $item['tpl']);
                     $item = 'return ' . $item . ';';

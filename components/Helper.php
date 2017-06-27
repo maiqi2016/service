@@ -2158,6 +2158,24 @@ class Helper extends Object
         return $add ? $num - $add : $num;
     }
 
+    /**
+     * Number format for money
+     *
+     * @access public
+     *
+     * @param integer $number
+     * @param string  $tpl
+     *
+     * @return string
+     */
+    public static function money($number, $tpl = '￥%s')
+    {
+        $number = number_format($number, 2);
+        $number = sprintf($tpl, $number);
+
+        return $number;
+    }
+
     // --- Others ---
 
     /**
