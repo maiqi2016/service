@@ -12,6 +12,8 @@ use Yii;
  * @property integer $theme
  * @property integer $name
  * @property integer $logo_attachment_id
+ * @property integer $account_type
+ * @property string  $account_number
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -23,6 +25,14 @@ class ProducerSetting extends General
      */
     public $_theme = [
         1 => 'default'
+    ];
+
+    /**
+     * @var array Field
+     */
+    public $_account_type = [
+        0 => '微信',
+        1 => '支付宝'
     ];
 
     /**
@@ -43,7 +53,9 @@ class ProducerSetting extends General
                 [
                     'producer_id',
                     'name',
-                    'logo_attachment_id'
+                    'logo_attachment_id',
+                    'account_type',
+                    'account_number'
                 ],
                 'required'
             ],
@@ -51,7 +63,8 @@ class ProducerSetting extends General
                 [
                     'producer_id',
                     'theme',
-                    'logo_attachment_id'
+                    'logo_attachment_id',
+                    'account_type',
                 ],
                 'integer'
             ],
@@ -59,6 +72,11 @@ class ProducerSetting extends General
                 ['name'],
                 'string',
                 'max' => 32
+            ],
+            [
+                ['account_number'],
+                'string',
+                'max' => 64
             ],
             [
                 ['producer_id'],
@@ -78,6 +96,8 @@ class ProducerSetting extends General
             'theme' => Yii::t('database', 'Theme'),
             'name' => Yii::t('database', 'Name'),
             'logo_attachment_id' => Yii::t('database', 'Logo Attachment ID'),
+            'account_type' => Yii::t('database', 'Account Type'),
+            'account_number' => Yii::t('database', 'Account Number'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),
