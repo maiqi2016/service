@@ -192,6 +192,33 @@ class MainController extends Controller
     }
 
     /**
+     * Call method cross namespace
+     *
+     * @access public
+     *
+     * @param string  $controller
+     * @param string  $namespace
+     * @param boolean $new
+     *
+     * @return mixed
+     */
+    public function controller($controller, $namespace = 'kake', $new = true)
+    {
+        if (!strpos($controller, 'Controller')) {
+            $controller = Helper::underToCamel($controller, false, '-') . 'Controller';
+        }
+        $class = '\service\controllers\\' . $namespace . '\\' . $controller;
+
+        if (!$new) {
+            return $class;
+        }
+
+        return Helper::singleton($class, function ($cls) {
+            return new $cls($this->id, $this->module);
+        });
+    }
+
+    /**
      * 返回成功提示信息及数据
      *
      * @access public
