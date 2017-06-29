@@ -5,6 +5,7 @@ namespace service\controllers\kake;
 use service\components\Helper;
 use service\controllers\MainController;
 use service\models\kake\ProducerLog;
+use service\models\kake\ProducerProduct;
 use service\models\kake\ProducerQuota;
 use service\models\kake\ProducerWithdraw;
 use yii;
@@ -130,7 +131,7 @@ class ProducerController extends MainController
             'quota' => $surplusQuota
         ];
 
-        $result = $producerQuota->trans(function() use ($producerQuota, $producerWithdraw, $quota, $id) {
+        $result = $producerQuota->trans(function () use ($producerQuota, $producerWithdraw, $quota, $id) {
             $producerQuota->add($quota);
             $producerWithdraw->edit([
                 'id' => $id,
@@ -143,5 +144,48 @@ class ProducerController extends MainController
         }
 
         $this->success(['quota' => $surplusQuota]);
+    }
+
+    /**
+     * 获取分销产品的 product_ids
+     *
+     * @param integer $producer_id
+     * @param integer $limit
+     *
+     * @return array
+     */
+    public function listProductIds($producer_id, $limit = null)
+    {
+        $producerProduct = new ProducerProduct();
+        $product = $producerProduct->all(function ($list) use ($producer_id, $limit) {
+            /**
+             * @var $list yii\db\Query
+             */
+            $list->where([
+                'producer_id' => $producer_id,
+                'state' => 1
+            ]);
+            $list->orderBy('update_time DESC');
+            $list->select('product_id');
+            $limit && $list->limit($limit);
+
+            return $list;
+        });
+        $product = array_column($product, 'product_id');
+
+        return $product;
+    }
+
+    /**
+     * 获取分销产品的 product_ids
+     *
+     * @param integer $producer_id
+     * @param integer $limit
+     *
+     * @return void
+     */
+    public function actionListProductIds($producer_id, $limit = null)
+    {
+        $this->success($this->listProductIds($producer_id, $limit));
     }
 }

@@ -26,6 +26,11 @@ class ProducerWithdraw extends General
     ];
 
     /**
+     * @var array Field
+     */
+    public $_account_type_model = 'kake\ProducerSetting';
+
+    /**
      * @inheritdoc
      */
     public static function tableName()

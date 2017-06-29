@@ -757,6 +757,37 @@ class Helper extends Object
     }
 
     /**
+     * Sort for Two-dimensional by appoint index with appoint key
+     *
+     * @access public
+     *
+     * @param array  $arr
+     * @param string $key
+     * @param mixed $index
+     *
+     * @return array
+     */
+    public static function arraySortAppointIndex($arr, $key, $index)
+    {
+        $indexArr = is_array($index) ? $index : explode(',' , $index);
+        $lead = $passerby = [];
+
+        foreach ($arr as $item) {
+            $v = $item[$key];
+            $k = array_search($v, $indexArr);
+
+            if ($k === false) {
+                $passerby[] = $item;
+            } else {
+                $lead[$k] = $item;
+            }
+        }
+        ksort($lead);
+
+        return array_merge($lead, $passerby);
+    }
+
+    /**
      * More-dimension array to one
      *
      * @access public

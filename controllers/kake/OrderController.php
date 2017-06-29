@@ -34,14 +34,19 @@ class OrderController extends MainController
         $params = $this->getParams();
         $orderModel = new Order();
 
-        $result = $orderModel->trans(function () use ($orderModel, $params) {
+        $producerId = Helper::popOne($params, 'producer_id');
+        if ($producerId) {
+            $controller = $this->controller('producer');
+            $producerProductIds = $controller->listProductIds($producerId);
+            $producerId = in_array($params['product_id'], $producerProductIds) ? $producerId : null;
+        }
 
-            $channel = Helper::popOne($params, 'channel_id');
-            if ($channel) {
+        $result = $orderModel->trans(function () use ($orderModel, $params, $producerId) {
+            if ($producerId) {
                 $ProducerLog = new ProducerLog();
                 $ProducerLog->attributes = [
                     'user_id' => $params['user_id'],
-                    'producer_id' => $channel,
+                    'producer_id' => $producerId,
                     'product_id' => $params['product_id']
                 ];
                 if (!$ProducerLog->save()) {
