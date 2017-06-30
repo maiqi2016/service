@@ -29,6 +29,11 @@ class ProductPackage extends General
     ];
 
     /**
+     * @var array Field
+     */
+    public $_status_model = 'kake\Product::state';
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
