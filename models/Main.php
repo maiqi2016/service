@@ -463,6 +463,11 @@ class Main extends ActiveRecord
 
             $obj = $model;
             if (isset($model->$infoModel)) {
+
+                if (strpos($model->$infoModel, '::')) {
+                    list($model->$infoModel, $infoField) = explode('::', $model->$infoModel);
+                }
+
                 $_model = '\service\models\\' . $model->$infoModel;
                 $_model = new $_model;
 

@@ -763,13 +763,13 @@ class Helper extends Object
      *
      * @param array  $arr
      * @param string $key
-     * @param mixed $index
+     * @param mixed  $index
      *
      * @return array
      */
     public static function arraySortAppointIndex($arr, $key, $index)
     {
-        $indexArr = is_array($index) ? $index : explode(',' , $index);
+        $indexArr = is_array($index) ? $index : explode(',', $index);
         $lead = $passerby = [];
 
         foreach ($arr as $item) {
@@ -1608,7 +1608,7 @@ class Helper extends Object
     public static $specialChar = '`-=[];\'\,.//~!@#$%^&*()_+{}:"|<>?·【】；’、，。、！￥…（）—：“《》？';
 
     /**
-     * String length
+     * Number of characters
      *
      * @access public
      *
@@ -1616,10 +1616,38 @@ class Helper extends Object
      *
      * @return int
      */
-    public static function length($str)
+    public static function charNumber($str)
     {
         return mb_strlen($str);
-        // return count(self::split($str));
+    }
+
+    /**
+     * Count length
+     *
+     * @param string $str
+     * @param string $standard
+     * @param int    $zhCnLength Length of zh-cn
+     * @param int    $enLength   Length of en
+     *
+     * @return integer
+     */
+    public static function length($str, $standard = 'zh-cn', $zhCnLength = 2, $enLength = 1)
+    {
+        $str = self::split($str);
+        $len = 0;
+        foreach ($str as $val) {
+            if (3 == strlen($val)) {
+                $len += $zhCnLength;
+            } else {
+                $len += $enLength;
+            }
+        }
+
+        $standard = self::underToCamel($standard, true, '-');
+        $standard = $standard . 'Length';
+        $len = $len / $$standard;
+
+        return $len;
     }
 
     /**
@@ -1629,7 +1657,7 @@ class Helper extends Object
      *
      * @param string $str
      * @param int    $length
-     * @param int    $zhCnLength Length of zh
+     * @param int    $zhCnLength Length of zh-cn
      * @param int    $enLength   Length of en
      *
      * @return string

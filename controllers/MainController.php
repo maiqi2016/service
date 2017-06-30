@@ -421,9 +421,17 @@ class MainController extends Controller
         foreach ($properties as $item) {
             if (strpos($item, '_') === 0) {
                 if (preg_match('/_model$/', $item)) {
+
+                    if (strpos($model->$item, '::')) {
+                        list($model->$item, $field) = explode('::', $model->$item);
+                    }
+
                     $targetModel = 'service\models\\' . $model->$item;
+
                     $item = str_replace('_model', '', $item);
-                    $_model[$item] = (new $targetModel)->$item;
+                    $field = isset($field) ? '_' . $field : $item;
+
+                    $_model[$item] = (new $targetModel)->$field;
                 } else {
                     $_model[$item] = $model->$item;
                 }
