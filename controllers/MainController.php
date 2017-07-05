@@ -353,9 +353,10 @@ class MainController extends Controller
         ]);
 
         array_walk($params, function (&$value) {
-            $value = Helper::parseJsonString($value);
             if (is_numeric($value)) {
                 $value = (string) $value;
+            } else {
+                $value = Helper::parseJsonString($value);
             }
         });
 
