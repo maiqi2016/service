@@ -633,7 +633,6 @@ class Main extends ActiveRecord
         };
 
         if (!empty($options['join'])) {
-            $options['join'] = Helper::parseJsonString($options['join'], []);
             foreach ($options['join'] as $item) {
                 if (empty($item['table'])) {
                     continue;
@@ -676,12 +675,10 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['select'])) {
-            $options['select'] = Helper::parseJsonString($options['select']);
             $activeRecord->select($options['select']);
         }
 
         if (!empty($options['from'])) {
-            $options['from'] = Helper::parseJsonString($options['from']);
             $item = $options['from'];
             if (is_array($item) && isset($item['sub'])) {
                 $item = $subQuery($item);
@@ -690,7 +687,6 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['where'])) {
-            $options['where'] = Helper::parseJsonString($options['where'], []);
             foreach ($options['where'] as $item) {
 
                 $operator = isset($item['or']) ? 'or' : 'and';
@@ -724,7 +720,6 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['group'])) {
-            $options['group'] = Helper::parseJsonString($options['group']);
             if (is_array($options['group']) && is_numeric(key($options['group']))) {
                 $options['group'] = implode(',', $options['group']);
             }
@@ -732,7 +727,6 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['order'])) {
-            $options['order'] = Helper::parseJsonString($options['order']);
             if (is_array($options['order']) && is_numeric(key($options['order']))) {
                 $options['order'] = implode(',', $options['order']);
             }
