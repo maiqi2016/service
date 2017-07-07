@@ -511,9 +511,9 @@ class MainController extends Controller
     {
         $data = $this->getParams();
 
-        $add = Helper::parseJsonString(Helper::emptyDefault($data, 'attachment_add')); // 新增的附件
-        $del = Helper::parseJsonString(Helper::emptyDefault($data, 'attachment_del')); // 删除的附件
-        $tags_record = Helper::parseJsonString(Helper::emptyDefault($data, 'tags_record')); // 标签记录
+        $add = Helper::emptyDefault($data, 'attachment_add'); // 新增的附件
+        $del = Helper::emptyDefault($data, 'attachment_del'); // 删除的附件
+        $tags_record = Helper::emptyDefault($data, 'tags_record'); // 标签记录
 
         Helper::popSome($data, [
             'id',
