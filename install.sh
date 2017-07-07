@@ -24,4 +24,3 @@ then
 fi
 
 sudo cp web/index-${env}.php web/index.php
-sudo cp web/index-${env}.php web/index.php
