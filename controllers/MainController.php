@@ -545,9 +545,7 @@ class MainController extends Controller
         $model = $this->model($table, $db);
 
         $size = Yii::$app->request->get('size', Yii::$app->params['pagenum']);
-        if (empty($size) || $size == 'all') {
-            $size = null;
-        }
+        empty($size) && $size = null;
 
         $options = $this->getParams();
         $all = $model->all(function ($list) use ($model, $table, $options) {
