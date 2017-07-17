@@ -982,6 +982,25 @@ class Helper extends Object
     }
 
     /**
+     * Get the One/Two-dimensional from Two-dimensional simple
+     *
+     * @access public
+     *
+     * @param array  $array
+     * @param string $keyTag
+     * @param mixed  $valTag
+     *
+     * @return array
+     */
+    public static function arrayColumnSimple($array, $keyTag, $valTag)
+    {
+        $keyArray = array_column($array, $keyTag);
+        $valArray = array_column($array, $valTag);
+
+        return array_combine($keyArray, $valArray);
+    }
+
+    /**
      * Create select'html
      *
      * @param array   $array
@@ -995,9 +1014,12 @@ class Helper extends Object
      */
     public static function createSelect($array, $name, $selected = null, $selectedModel = 'key', $disabled = false, $class = 'form-control')
     {
+        if (strpos($name, '=') === false) {
+            $name = 'name=' . $name;
+        }
         $class = $class ? 'class="' . $class . '"' : null;
         $disabled = $disabled ? 'disabled=disabled' : null;
-        $tpl = '<select ' . $class . ' name="' . $name . '" ' . $disabled . '>';
+        $tpl = "<select ${class} ${name} ${disabled}>";
 
         foreach ($array as $value => $info) {
             $operationObj = ($selectedModel == 'key') ? $value : $info;
@@ -1023,6 +1045,9 @@ class Helper extends Object
      */
     public static function createRadio($array, $name, $selected = null, $selectedModel = 'key', $disabled = false, $class = 'radio-inline')
     {
+        if (strpos($name, '=') === false) {
+            $name = 'name=' . $name;
+        }
         $class = $class ? 'class="' . $class . '"' : null;
         $disabled = $disabled ? 'disabled=disabled' : null;
         $tpl = null;
@@ -1031,7 +1056,7 @@ class Helper extends Object
             $tpl .= '<label ' . $class . ' ' . $disabled . '>';
             $operationObj = ($selectedModel == 'key') ? $value : $info;
             $checkedState = ($operationObj == $selected) ? 'checked="checked"' : null;
-            $tpl .= '<input type="radio" name="' . $name . '" value="' . $value . '" ' . $checkedState . '> ' . $info;
+            $tpl .= "<input type='radio' ${name} value='${value}' ${checkedState}> ${info}";
             $tpl .= '</label>';
         }
 
@@ -1052,6 +1077,9 @@ class Helper extends Object
      */
     public static function createCheckbox($array, $name, $selected = null, $selectedModel = 'key', $disabled = false, $class = 'checkbox-inline')
     {
+        if (strpos($name, '=') === false) {
+            $name = 'name=' . $name;
+        }
         $class = $class ? 'class="' . $class . '"' : null;
         $disabled = $disabled ? 'disabled=disabled' : null;
         $tpl = null;
@@ -1061,7 +1089,7 @@ class Helper extends Object
             $operationObj = ($selectedModel == 'key') ? $value : $info;
             $selected = is_array($selected) ? $selected : explode(',', $selected);
             $checkedState = in_array($operationObj, $selected) ? 'checked="checked"' : null;
-            $tpl .= '<input type="checkbox" name="' . $name . '" value="' . $value . '" ' . $checkedState . '> ' . $info;
+            $tpl .= "<input type='checkbox' ${name} value='${value}' ${checkedState}> ${info}";
             $tpl .= '</label>';
         }
 
