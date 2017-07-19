@@ -107,4 +107,6 @@ return [
     'Log Commission Quota' => '分佣金额',
     'Quota' => '剩余额度',
     'Withdraw' => '提现额度',
+    'Photo Attachment ID' => '照片附件',
+    'Story' => '故事'
 ];

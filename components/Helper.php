@@ -1631,6 +1631,28 @@ class Helper extends Object
         return $result ? true : false;
     }
 
+    /**
+     * Save base64 to file
+     *
+     * @param string $base64
+     * @param mixed  $file
+     *
+     * @return mixed
+     */
+    public static function saveBase64File($base64, $file = null)
+    {
+        $base64 = preg_replace('/^(data:\s*image\/(\w+);base64,)/', '', $base64);
+        $base64 = base64_decode($base64);
+
+        if (empty($file)) {
+            return $base64;
+        }
+
+        $result = @file_put_contents($file, $base64);
+
+        return $result ? true : false;
+    }
+
     // --- String ---
 
     public static $specialChar = '`-=[];\'\,.//~!@#$%^&*()_+{}:"|<>?·【】；’、，。、！￥…（）—：“《》？';
