@@ -5,6 +5,7 @@ namespace service\controllers\kake;
 use service\components\Helper;
 use service\controllers\MainController;
 use service\models\kake\ActivityLotteryCode;
+use service\models\kake\ActivityStory;
 use service\models\kake\Attachment;
 use service\models\kake\Ad;
 use service\models\kake\Config;
@@ -187,5 +188,29 @@ class GeneralController extends MainController
             'code' => $result['data']['code'],
             'exists' => false
         ]);
+    }
+
+    /**
+     * 添加活动故事
+     *
+     * @access public
+     * @return void
+     */
+    public function actionAddActivityStory()
+    {
+        $params = $this->getParams();
+
+        $result = (new ActivityStory())->updateOrInsert([
+            'user_id' => $params['user_id']
+        ], [
+            'photo_attachment_id' => $params['attachment'],
+            'story' => $params['story']
+        ]);
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
     }
 }

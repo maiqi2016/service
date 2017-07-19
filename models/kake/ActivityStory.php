@@ -34,7 +34,7 @@ class ActivityStory extends General
             [
                 [
                     'user_id',
-                    'attachment_id',
+                    'photo_attachment_id',
                     'story'
                 ],
                 'required'
@@ -42,7 +42,7 @@ class ActivityStory extends General
             [
                 [
                     'user_id',
-                    'attachment_id'
+                    'photo_attachment_id'
                 ],
                 'integer'
             ],
