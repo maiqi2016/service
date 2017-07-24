@@ -5,26 +5,23 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "hotel".
+ * This is the model class for table "hotel_plate".
  *
  * @property integer $id
  * @property string  $name
- * @property integer $hotel_region_id
- * @property string  $principal
- * @property string  $contact
- * @property string  $address
+ * @property integer $attachment_id
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class Hotel extends General
+class HotelPlate extends General
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'hotel';
+        return 'hotel_plate';
     }
 
     /**
@@ -36,34 +33,23 @@ class Hotel extends General
             [
                 [
                     'name',
-                    'hotel_region_id',
-                    'principal',
-                    'contact',
-                    'address'
+                    'attachment_id'
                 ],
                 'required'
             ],
             [
-                ['hotel_region_id'],
+                [
+                    'attachment_id',
+                    'state'
+                ],
                 'integer'
             ],
             [
-                [
-                    'name',
-                    'address'
-                ],
-                'string',
-                'max' => 64
-            ],
-            [
-                [
-                    'principal',
-                    'contact'
-                ],
+                ['name'],
                 'string',
                 'max' => 32
             ],
-        ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
+        ], $this->_rule_add_time, $this->_rule_update_time, $this->_rule_state);
     }
 
     /**
@@ -74,10 +60,7 @@ class Hotel extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'name' => Yii::t('database', 'Name'),
-            'hotel_region_id' => Yii::t('database', 'Hotel Region ID'),
-            'principal' => Yii::t('database', 'Principal'),
-            'contact' => Yii::t('database', 'Contact'),
-            'address' => Yii::t('database', 'Address'),
+            'attachment_id' => Yii::t('database', 'Attachment ID'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

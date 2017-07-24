@@ -13,6 +13,8 @@ use service\models\Main;
  */
 class General extends Main
 {
+    public static $dbIdentity;
+
     /**
      * @inheritdoc
      */
@@ -21,6 +23,7 @@ class General extends Main
         parent::init();
 
         $this->setDb(DB_KAKE);
+        self::$dbIdentity = DB_KAKE;
         $this->db = Yii::$app->{DB_KAKE};
     }
 }

@@ -376,7 +376,10 @@ class Main extends ActiveRecord
             Yii::$app->request->post(),
             func_get_args()
         ], function () use ($one) {
-            return $one->asArray()->one();
+            $record = $one->asArray()->one();
+            $record = $this->getFieldInfo([$record]);
+
+            return $record[0];
         }, null, $this->cacheDbDependent($table), $useCache);
     }
 
@@ -437,8 +440,8 @@ class Main extends ActiveRecord
     /**
      * 获取对应字段的描述
      *
-     * @param array $list
-     * @param array $additional
+     * @param array   $list
+     * @param array   $additional
      *
      * @return array
      */
@@ -491,7 +494,7 @@ class Main extends ActiveRecord
 
         foreach ($list as &$item) {
             foreach ($infoKeys as $key => $value) {
-                if (!isset($value[$item[$key]])) {
+                if (!isset($item[$key]) || !isset($value[$item[$key]])) {
                     continue;
                 }
                 $item[$key . '_info'] = $value[$item[$key]];
