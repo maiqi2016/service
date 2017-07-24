@@ -10,6 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $product_id
  * @property string  $name
+ * @property integer $base_price
  * @property integer $price
  * @property integer $bidding
  * @property integer $purchase_limit
@@ -61,6 +62,7 @@ class ProductPackage extends General
             [
                 [
                     'product_id',
+                    'base_price',
                     'price',
                     'bidding',
                     'purchase_limit'
@@ -88,6 +90,7 @@ class ProductPackage extends General
             'id' => Yii::t('database', 'ID'),
             'product_id' => Yii::t('database', 'Product ID'),
             'name' => Yii::t('database', 'Name'),
+            'base_price' => Yii::t('database', 'Base Price'),
             'price' => Yii::t('database', 'Price'),
             'bidding' => Yii::t('database', 'Bidding'),
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),

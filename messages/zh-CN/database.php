@@ -35,6 +35,7 @@ return [
     'Attachment Ids' => '次要附件(s)',
     'Attachment Cover' => '封面图附件',
     'Price' => '价格',
+    'Base Price' => '底价',
     'Sale Type' => '折扣类型',
     'Sale Rate' => '折扣值',
     'Sale From' => '打折开始时间',
@@ -108,5 +109,7 @@ return [
     'Quota' => '剩余额度',
     'Withdraw' => '提现额度',
     'Photo Attachment ID' => '照片附件',
-    'Story' => '故事'
+    'Story' => '故事',
+    'Hotel Plate ID' => '所属板块',
+    'Hotel Region ID' => '所属地区',
 ];
