@@ -72,6 +72,8 @@ class MainController extends Controller
      */
     public function identityVerification(&$params)
     {
+        Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
+        
         $useCache = true;
         $api = Helper::popOne($params, 'r');
 
