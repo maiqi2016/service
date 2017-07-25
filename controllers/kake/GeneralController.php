@@ -31,7 +31,7 @@ class GeneralController extends MainController
         $config = (new Config())->listConfigKVP([
             0,
             $this->user->app
-        ]);
+        ], Yii::$app->params['use_cache']);
         unset($config['private']);
 
         $configFile = Yii::getAlias('@service/config/params.php');

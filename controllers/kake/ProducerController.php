@@ -170,7 +170,7 @@ class ProducerController extends MainController
             $limit && $list->limit($limit);
 
             return $list;
-        });
+        }, null, Yii::$app->params['use_cache']);
         $product = array_column($product, 'product_id');
 
         return $product;
