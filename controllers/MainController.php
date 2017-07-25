@@ -79,6 +79,7 @@ class MainController extends Controller
 
         // 参数为空或错误
         if (empty($params) || empty($params['app_sign'])) {
+            Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
             if (Helper::buffer('app_signed')) {
                 $this->fail('api parameter validation failed', 'common', -1);
             }
