@@ -560,7 +560,7 @@ class Main extends ActiveRecord
      *
      * @return mixed
      */
-    public function cache($key, $fetchFn, $time = null, $dependent = null, $useCache = true)
+    public function cache($key, $fetchFn, $time = null, $dependent = null, $useCache = false)
     {
         if (!$useCache || Yii::$app->session->getFlash('no_cache')) {
             return call_user_func($fetchFn);

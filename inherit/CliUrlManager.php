@@ -2,7 +2,6 @@
 
 namespace service\inherit;
 
-use service\components\Helper;
 use yii\web\UrlManager;
 
 /**

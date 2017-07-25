@@ -73,14 +73,21 @@ class MainController extends Controller
      */
     public function identityVerification(&$params)
     {
-        Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
-        
+        // 缓存
         $useCache = true;
+        if (isset($params['app_cache']) && $params['app_cache'] == 'no') {
+            $useCache = false;
+        }
+
+        if ($this->validated) {
+            return $useCache;
+        }
+
+        Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
         $api = Helper::popOne($params, 'r');
 
         // 参数为空或错误
-        if (!$this->validated && empty($params['app_sign'])) {
-            Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
+        if (empty($params['app_sign'])) {
             $this->fail('api parameter validation failed', 'common', -1);
         }
 
@@ -97,7 +104,7 @@ class MainController extends Controller
             Yii::$app->language = $params['app_lang'];
         }
 
-        // 用户id或用户秘钥为空
+        // 用户 id 或用户秘钥为空
         if (empty($params['app_id']) || empty($params['app_secret'])) {
             $this->fail('account validation failed', 'common', -1);
         }
@@ -119,11 +126,6 @@ class MainController extends Controller
             'app',
             'remark'
         ]);
-
-        // 缓存
-        if (isset($params['app_cache']) && $params['app_cache'] == 'no') {
-            $useCache = false;
-        }
 
         $this->validated = true;
 
@@ -420,23 +422,24 @@ class MainController extends Controller
         $methods = Yii::$app->reflection->getMethodsName($model, null);
 
         foreach ($properties as $item) {
-            if (strpos($item, '_') === 0) {
-                if (preg_match('/_model$/', $item)) {
-
-                    if (strpos($model->$item, '::')) {
-                        list($model->$item, $field) = explode('::', $model->$item);
-                    }
-
-                    $targetModel = 'service\models\\' . $model->$item;
-
-                    $item = str_replace('_model', '', $item);
-                    $field = isset($field) ? '_' . $field : $item;
-
-                    $_model[$item] = (new $targetModel)->$field;
-                } else {
-                    $_model[$item] = $model->$item;
-                }
+            if (strpos($item, '_') !== 0) {
+                continue;
             }
+
+            if (!preg_match('/_model$/', $item)) {
+                $_model[$item] = $model->$item;
+                continue;
+            }
+
+            if (strpos($model->$item, '::')) {
+                list($model->$item, $field) = explode('::', $model->$item);
+            }
+
+            $targetModel = 'service\models\\' . $model->$item;
+            $item = str_replace('_model', '', $item);
+            $field = isset($field) ? '_' . $field : $item;
+
+            $_model[$item] = (new $targetModel)->$field;
         }
 
         $_methods = [

@@ -85,11 +85,12 @@ class Config extends General
      *
      * @access public
      *
-     * @param mixed $app
+     * @param mixed   $app
+     * @param boolean $useCache
      *
      * @return array
      */
-    public function listConfigKVP($app = 1)
+    public function listConfigKVP($app = 1, $useCache = false)
     {
         return $this->cache([
             'list.config.kvp',
@@ -104,6 +105,6 @@ class Config extends General
             ])->asArray()->all();
 
             return array_column($config, 'value', 'key');
-        }, null, $this->cacheDbDependent(self::tableName()));
+        }, null, $this->cacheDbDependent(self::tableName()), $useCache);
     }
 }
