@@ -376,9 +376,7 @@ class Main extends ActiveRecord
             Yii::$app->request->post(),
             func_get_args()
         ], function () use ($one) {
-            $record = $one->asArray()->one();
-
-            return $this->getFieldInfo([$record])[0];
+            return $one->asArray()->one();
         }, null, $this->cacheDbDependent($table), $useCache);
     }
 
@@ -493,7 +491,7 @@ class Main extends ActiveRecord
 
         foreach ($list as &$item) {
             foreach ($infoKeys as $key => $value) {
-                if (!isset($item[$key]) || !isset($value[$item[$key]])) {
+                if (!isset($value[$item[$key]])) {
                     continue;
                 }
                 $item[$key . '_info'] = $value[$item[$key]];

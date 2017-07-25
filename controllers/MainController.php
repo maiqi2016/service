@@ -2,7 +2,6 @@
 
 namespace service\controllers;
 
-use function GuzzleHttp\Psr7\str;
 use service\models\kake\Attachment;
 use service\models\kake\Config;
 use service\models\Main;
@@ -23,6 +22,8 @@ class MainController extends Controller
      * @var array 用户信息
      */
     protected $user;
+
+    protected $validated = false;
 
     /**
      * @var string language
@@ -72,18 +73,15 @@ class MainController extends Controller
      */
     public function identityVerification(&$params)
     {
-        Yii::info('First: ' . json_encode($params, JSON_UNESCAPED_UNICODE));
+        Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
         
         $useCache = true;
         $api = Helper::popOne($params, 'r');
 
         // 参数为空或错误
-        if (empty($params) || empty($params['app_sign'])) {
-            Yii::info('Second: ' . json_encode($params, JSON_UNESCAPED_UNICODE));
-            if (Helper::buffer('app_signed')) {
-                $this->fail('api parameter validation failed', 'common', -1);
-            }
-            $this->fail('base parameter validation failed', 'common', -1);
+        if (!$this->validated && empty($params['app_sign'])) {
+            Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
+            $this->fail('api parameter validation failed', 'common', -1);
         }
 
         // 验证签名
@@ -93,9 +91,6 @@ class MainController extends Controller
                 'api' => $params['app_api']
             ], 'common', -1);
         }
-
-        // 标记当前已经验证过签名
-        Helper::buffer('app_signed', true, null, true);
 
         // 语言包
         if (isset($params['app_lang'])) {
@@ -129,6 +124,8 @@ class MainController extends Controller
         if (isset($params['app_cache']) && $params['app_cache'] == 'no') {
             $useCache = false;
         }
+
+        $this->validated = true;
 
         // 删除隐私变量
         Helper::popSome($params, [
