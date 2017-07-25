@@ -13,17 +13,13 @@ use service\models\Main;
  */
 class General extends Main
 {
-    public static $dbIdentity;
-
     /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
-
         $this->setDb(DB_SERVICE);
-        self::$dbIdentity = DB_SERVICE;
         $this->db = Yii::$app->{DB_SERVICE};
     }
 }

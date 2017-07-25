@@ -377,9 +377,8 @@ class Main extends ActiveRecord
             func_get_args()
         ], function () use ($one) {
             $record = $one->asArray()->one();
-            $record = $this->getFieldInfo([$record]);
 
-            return $record[0];
+            return $this->getFieldInfo([$record])[0];
         }, null, $this->cacheDbDependent($table), $useCache);
     }
 
@@ -440,8 +439,8 @@ class Main extends ActiveRecord
     /**
      * 获取对应字段的描述
      *
-     * @param array   $list
-     * @param array   $additional
+     * @param array $list
+     * @param array $additional
      *
      * @return array
      */
