@@ -19,6 +19,7 @@ class General extends Main
     public function init()
     {
         parent::init();
+
         $this->setDb(DB_SERVICE);
         $this->db = Yii::$app->{DB_SERVICE};
     }

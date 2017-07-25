@@ -6,7 +6,6 @@ return [
     'signature verification failed' => '签名验证失败 {api}',
     'request timeout' => '请求超时，请检查网络是否正常',
     'api parameter validation failed' => '接口参数不完整或有误',
-    'base parameter validation failed' => '基础参数不完整或有误',
     'class method not exists' => '该类中没有指定的类方法',
     'forbidden access' => '访问权限不足',
     'access to an interface that does not exist' => '访问了一个不存在的接口 {api}',
