@@ -72,14 +72,14 @@ class MainController extends Controller
      */
     public function identityVerification(&$params)
     {
-        Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
+        Yii::info('First: ' . json_encode($params, JSON_UNESCAPED_UNICODE));
         
         $useCache = true;
         $api = Helper::popOne($params, 'r');
 
         // 参数为空或错误
         if (empty($params) || empty($params['app_sign'])) {
-            Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
+            Yii::info('Second: ' . json_encode($params, JSON_UNESCAPED_UNICODE));
             if (Helper::buffer('app_signed')) {
                 $this->fail('api parameter validation failed', 'common', -1);
             }
