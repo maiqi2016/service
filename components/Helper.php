@@ -1635,22 +1635,56 @@ class Helper extends Object
      * Save base64 to file
      *
      * @param string $base64
-     * @param mixed  $file
+     * @param string  $path
+     * @param string $suffix
      *
      * @return mixed
      */
-    public static function saveBase64File($base64, $file = null)
+    public static function saveBase64File($base64, $path = null, $suffix = 'jpg')
     {
         $base64 = preg_replace('/^(data:\s*image\/(\w+);base64,)/', '', $base64);
         $base64 = base64_decode($base64);
 
-        if (empty($file)) {
+        if (empty($path)) {
             return $base64;
         }
 
-        $result = @file_put_contents($file, $base64);
+        $deep = Helper::createDeepPath();
+        $path .= '/' . $deep;
+        $filename = uniqid('base64_') . '.' . $suffix;
 
-        return $result ? true : false;
+        $result = @file_put_contents($path . '/' . $filename, $base64);
+
+        return $result ? ($deep . '/' . $filename) : false;
+    }
+
+    /**
+     * Cal the size of the thumb
+     *
+     * @param $thumbW
+     * @param $thumbH
+     * @param $imgW
+     * @param $imgH
+     *
+     * @return array
+     */
+    public static function calThumb($thumbW, $thumbH, $imgW, $imgH)
+    {
+        $thumbRadio = $thumbW / $thumbH;
+        $imgRadio = $imgW / $imgH;
+
+        $left = $top = 0;
+        if ($thumbRadio > $imgRadio) {
+            $height = $thumbH;
+            $width = $imgW * ($thumbH / $imgH);
+            $left = ($thumbW - $width) / 2;
+        } else {
+            $width = $thumbW;
+            $height = $imgH * ($thumbW / $imgW);
+            $top = ($height - $thumbH) / 2;
+        }
+
+        return compact('width', 'height', 'left', 'top');
     }
 
     // --- String ---

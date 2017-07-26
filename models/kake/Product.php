@@ -100,7 +100,6 @@ class Product extends General
             [
                 [
                     'title',
-                    'destination',
                     'hotel_id',
                     'classify',
                     'attachment_cover',
