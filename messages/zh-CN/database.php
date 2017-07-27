@@ -29,7 +29,6 @@ return [
     'Group' => '分组',
     'Name' => '名称',
     'Url' => '链接',
-    'Destination' => '目的地',
     'Title' => '标题',
     'Info' => '简介',
     'Attachment Ids' => '次要附件(s)',
