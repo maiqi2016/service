@@ -48,6 +48,7 @@ class ActivityLotteryCode extends General
         21 => '妈妈帮',
         22 => '爱代驾',
         23 => '小渔',
+        24 => '汪正摄影'
     ];
 
     /**

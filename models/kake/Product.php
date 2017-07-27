@@ -9,7 +9,6 @@ use Yii;
  *
  * @property integer $id
  * @property string  $title
- * @property string  $destination
  * @property integer $hotel_id
  * @property integer $classify
  * @property integer $sale_type
@@ -158,11 +157,6 @@ class Product extends General
                 'string',
                 'max' => 256
             ],
-            [
-                ['destination'],
-                'string',
-                'max' => 32
-            ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 
@@ -174,7 +168,6 @@ class Product extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'title' => Yii::t('database', 'Title'),
-            'destination' => Yii::t('database', 'Destination'),
             'hotel_id' => Yii::t('database', 'Hotel ID'),
             'classify' => Yii::t('database', 'Classify'),
             'sale_type' => Yii::t('database', 'Sale Type'),
