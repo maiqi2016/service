@@ -1635,7 +1635,7 @@ class Helper extends Object
      * Save base64 to file
      *
      * @param string $base64
-     * @param string  $path
+     * @param string $path
      * @param string $suffix
      *
      * @return mixed
@@ -1649,13 +1649,24 @@ class Helper extends Object
             return $base64;
         }
 
-        $deep = Helper::createDeepPath();
-        $path .= '/' . $deep;
-        $filename = uniqid('base64_') . '.' . $suffix;
+        $needCreateDeep = array_reverse(explode('.', $path))[0] === $suffix;
 
-        $result = @file_put_contents($path . '/' . $filename, $base64);
+        if ($needCreateDeep) {
+            $deep = Helper::createDeepPath();
+            $filename = uniqid('base64_') . '.' . $suffix;
+            $file = $path . '/' . $deep . '/' . $filename;
+            mkdir($path . '/' . $deep, 0777, true);
+        } else {
+            $file = $path;
+        }
 
-        return $result ? ($deep . '/' . $filename) : false;
+        $result = @file_put_contents($file, $base64);
+
+        if (!$result) {
+            return false;
+        }
+
+        return $needCreateDeep ? ($deep . '/' . $filename) : true;
     }
 
     /**
@@ -2317,6 +2328,22 @@ class Helper extends Object
         $number = sprintf($tpl, $number);
 
         return $number;
+    }
+
+    /**
+     * Filter emjoy
+     *
+     * @param string $str
+     *
+     * @return string
+     */
+    public static function filterEmjoy($str)
+    {
+        $str = preg_replace_callback('/./u', function ($match) {
+            return strlen($match[0]) >= 4 ? '' : $match[0];
+        }, $str);
+
+        return $str;
     }
 
     // --- Others ---
