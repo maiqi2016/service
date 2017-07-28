@@ -177,7 +177,7 @@ class ProductController extends MainController
      * @return void
      * @throws yii\db\Exception
      */
-    public function actionEditProduct($id)
+    public function actionUpdateProduct($id)
     {
         list($baseModel, $descriptionModel, $attachment, $tagsRecord) = $this->validateProductParams();
         $result = $baseModel->trans(function () use ($id, $baseModel, $descriptionModel, $attachment, $tagsRecord) {
