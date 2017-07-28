@@ -1692,7 +1692,7 @@ class Helper extends Object
         } else {
             $width = $thumbW;
             $height = $imgH * ($thumbW / $imgW);
-            $top = ($height - $thumbH) / 2;
+            $top = ($thumbH - $height) / 2;
         }
 
         return compact('width', 'height', 'left', 'top');
