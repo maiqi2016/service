@@ -53,7 +53,7 @@ class Helper extends Object
         $params = (array) $params;
         $key = md5(json_encode($params));
         if (!isset($container[$key])) {
-            $container[$key] = call_user_func_array($logicHandler, $params);
+            $container[$key] = call_user_func($logicHandler, $params);
         }
 
         return $container[$key];
@@ -1632,6 +1632,30 @@ class Helper extends Object
     }
 
     /**
+     * Create file path
+     *
+     * @param string $path
+     * @param string $suffix
+     * @param string $prefix
+     *
+     * @return array
+     */
+    public static function createFilePath($path, $suffix = 'jpg', $prefix = null)
+    {
+        $deep = $filename = null;
+        if (pathinfo($path, PATHINFO_EXTENSION)) {
+            $file = $path;
+        } else {
+            $deep = self::createDeepPath();
+            $filename = uniqid($prefix) . '.' . $suffix;
+            $file = $path . '/' . $deep . '/' . $filename;
+            mkdir($path . '/' . $deep, 0777, true);
+        }
+
+        return compact('deep', 'filename', 'file');
+    }
+
+    /**
      * Save base64 to file
      *
      * @param string $base64
@@ -1649,24 +1673,14 @@ class Helper extends Object
             return $base64;
         }
 
-        $needCreateDeep = array_reverse(explode('.', $path))[0] === $suffix;
-
-        if ($needCreateDeep) {
-            $deep = Helper::createDeepPath();
-            $filename = uniqid('base64_') . '.' . $suffix;
-            $file = $path . '/' . $deep . '/' . $filename;
-            mkdir($path . '/' . $deep, 0777, true);
-        } else {
-            $file = $path;
-        }
-
-        $result = @file_put_contents($file, $base64);
+        $path = self::createFilePath($path, $suffix, 'base64_');
+        $result = @file_put_contents($path['file'], $base64);
 
         if (!$result) {
             return false;
         }
 
-        return $needCreateDeep ? ($deep . '/' . $filename) : true;
+        return $path['deep'] ? ($path['deep'] . '/' . $path['filename']) : true;
     }
 
     /**
@@ -1695,7 +1709,9 @@ class Helper extends Object
             $top = ($thumbH - $height) / 2;
         }
 
-        return compact('width', 'height', 'left', 'top');
+        $result = compact('width', 'height', 'left', 'top');
+
+        return array_map('intval', $result);
     }
 
     // --- String ---
