@@ -215,8 +215,8 @@ class MainController extends Controller
             return $class;
         }
 
-        return Helper::singleton($class, function ($cls) {
-            return new $cls($this->id, $this->module);
+        return Helper::singleton($class, function () use ($class) {
+            return new $class($this->id, $this->module);
         });
     }
 
