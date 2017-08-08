@@ -149,10 +149,7 @@ class ProductController extends MainController
             $baseModel->insert();
 
             if (!empty($attachment['add'])) {
-                $result = (new Attachment())->updateStateByIds($attachment['add'], $baseModel->state);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
+                (new Attachment())->updateStateByIds($attachment['add'], $baseModel->state);
             }
 
             $this->orderTagsRecord($tagsRecord, $baseModel->id);
@@ -213,18 +210,10 @@ class ProductController extends MainController
             $baseRecord->update();
 
             if (!empty($attachment['add']) || !empty($attachment['del'])) {
-
                 $attachmentModel = new Attachment();
 
-                $result = $attachmentModel->updateStateByIds($attachment['add'], $baseModel->state);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
-
-                $result = $attachmentModel->updateStateByIds($attachment['del'], 0);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
+                $attachmentModel->updateStateByIds($attachment['add'], $baseModel->state);
+                $attachmentModel->updateStateByIds($attachment['del'], 0);
             }
 
             $this->orderTagsRecord($tagsRecord, $id);
