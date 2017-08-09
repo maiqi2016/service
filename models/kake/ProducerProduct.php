@@ -11,6 +11,7 @@ use Yii;
  * @property integer $producer_id
  * @property integer $product_id
  * @property integer $type
+ * @property integer $sort
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -48,7 +49,8 @@ class ProducerProduct extends General
                 [
                     'producer_id',
                     'product_id',
-                    'type'
+                    'type',
+                    'sort'
                 ],
                 'integer'
             ],
@@ -76,6 +78,7 @@ class ProducerProduct extends General
             'producer_id' => Yii::t('database', 'Producer ID'),
             'product_id' => Yii::t('database', 'Product ID'),
             'type' => Yii::t('database', 'Type'),
+            'sort' => Yii::t('database', 'Sort'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

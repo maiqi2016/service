@@ -11,6 +11,7 @@ use Yii;
  * @property integer $hotel_plate_id
  * @property string  $name
  * @property integer $attachment_id
+ * @property integer $sort
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -43,7 +44,7 @@ class HotelRegion extends General
                 [
                     'hotel_plate_id',
                     'attachment_id',
-                    'state'
+                    'sort'
                 ],
                 'integer'
             ],
@@ -65,6 +66,7 @@ class HotelRegion extends General
             'hotel_plate_id' => Yii::t('database', 'Hotel Plate ID'),
             'name' => Yii::t('database', 'Name'),
             'attachment_id' => Yii::t('database', 'Attachment ID'),
+            'sort' => Yii::t('database', 'Sort'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

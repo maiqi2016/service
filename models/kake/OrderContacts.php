@@ -54,12 +54,12 @@ class OrderContacts extends General
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'real_name' => Yii::t('app', 'Real Name'),
-            'phone' => Yii::t('app', 'Phone'),
-            'add_time' => Yii::t('app', 'Add Time'),
-            'update_time' => Yii::t('app', 'Update Time'),
-            'state' => Yii::t('app', 'State'),
+            'id' => Yii::t('database', 'ID'),
+            'real_name' => Yii::t('database', 'Real Name'),
+            'phone' => Yii::t('database', 'Phone'),
+            'add_time' => Yii::t('database', 'Add Time'),
+            'update_time' => Yii::t('database', 'Update Time'),
+            'state' => Yii::t('database', 'State'),
         ];
     }
 }
