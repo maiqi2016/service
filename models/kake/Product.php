@@ -15,7 +15,7 @@ use Yii;
  * @property integer $sale_rate
  * @property string  $sale_from
  * @property string  $sale_to
- * @property integer $top
+ * @property integer $sort
  * @property integer $stock
  * @property integer $virtual_sales
  * @property integer $real_sales
@@ -113,7 +113,7 @@ class Product extends General
                     'hotel_id',
                     'sale_type',
                     'sale_rate',
-                    'top',
+                    'sort',
                     'stock',
                     'virtual_sales',
                     'real_sales',
@@ -174,7 +174,7 @@ class Product extends General
             'sale_rate' => Yii::t('database', 'Sale Rate'),
             'sale_from' => Yii::t('database', 'Sale From'),
             'sale_to' => Yii::t('database', 'Sale To'),
-            'top' => Yii::t('database', 'Top'),
+            'sort' => Yii::t('database', 'Sort'),
             'stock' => Yii::t('database', 'Stock'),
             'virtual_sales' => Yii::t('database', 'Virtual Sales'),
             'real_sales' => Yii::t('database', 'Real Sales'),

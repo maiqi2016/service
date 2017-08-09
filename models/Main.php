@@ -5,6 +5,7 @@ namespace service\models;
 use yii\db\ActiveRecord;
 use yii;
 use service\components\Helper;
+use yii\db\Expression;
 
 /**
  * Main model
@@ -675,6 +676,9 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['select'])) {
+            if (is_string($options['select'])) {
+                $options['select'] = new Expression($options['select']);
+            }
             $activeRecord->select($options['select']);
         }
 
@@ -727,7 +731,9 @@ class Main extends ActiveRecord
         }
 
         if (!empty($options['order'])) {
-            if (is_array($options['order']) && is_numeric(key($options['order']))) {
+            if (is_string($options['order'])) {
+                $options['order'] = new Expression($options['order']);
+            } else if (is_array($options['order']) && is_numeric(key($options['order']))) {
                 $options['order'] = implode(',', $options['order']);
             }
             $activeRecord->orderBy($options['order']);

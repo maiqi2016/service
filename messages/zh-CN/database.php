@@ -46,7 +46,6 @@ return [
     'Use' => '使用说明',
     'Back' => '退改规则',
     'Classify' => '分类',
-    'Top' => '置顶',
     'Sort' => '排序',
     'Controller' => '控制器',
     'Action' => '操作',

@@ -15,6 +15,7 @@ use Yii;
  * @property string  $remark
  * @property string  $from
  * @property string  $to
+ * @property integer $sort
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -64,7 +65,8 @@ class Ad extends General
                 [
                     'attachment_id',
                     'type',
-                    'target'
+                    'target',
+                    'sort'
                 ],
                 'integer'
             ],
@@ -102,6 +104,7 @@ class Ad extends General
             'remark' => Yii::t('database', 'Remark'),
             'from' => Yii::t('database', 'From'),
             'to' => Yii::t('database', 'To'),
+            'sort' => Yii::t('database', 'Sort'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),
