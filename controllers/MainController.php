@@ -602,10 +602,7 @@ class MainController extends Controller
             }
 
             if (!empty($attachment['add'])) {
-                $result = (new Attachment())->updateStateByIds($attachment['add'], $model->state);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
+                (new Attachment())->updateStateByIds($attachment['add'], $model->state);
             }
 
             $this->orderTagsRecord($tagsRecord, $model->id);
@@ -656,18 +653,9 @@ class MainController extends Controller
             }
 
             if (!empty($attachment['add']) || !empty($attachment['del'])) {
-
                 $attachmentModel = new Attachment();
-
-                $result = $attachmentModel->updateStateByIds($attachment['add'], $record->state);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
-
-                $result = $attachmentModel->updateStateByIds($attachment['del'], 0);
-                if (!$result['state']) {
-                    throw new yii\db\Exception($result['info']);
-                }
+                $attachmentModel->updateStateByIds($attachment['add'], $record->state);
+                $attachmentModel->updateStateByIds($attachment['del'], 0);
             }
 
             $this->orderTagsRecord($tagsRecord, $record->id);
