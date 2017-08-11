@@ -39,10 +39,10 @@ class ActivityLotteryCode extends General
         0 => '阿里巴巴',
         1 => '多乐米',
         2 => '保龄球',
-        3 => '立秀宝 (No.1)',
+        3 => '立秀宝',
         4 => '嘿姐',
         5 => '黄浦趴',
-        6 => 'uyuan (No.1)',
+        6 => 'uyuan',
         7 => 'kake',
         8 => '广西大都',
         9 => '凯儿得乐',
@@ -50,7 +50,7 @@ class ActivityLotteryCode extends General
         11 => '小创客',
         12 => '带着屁孩去旅行',
         13 => '金宝贝',
-        14 => '立秀宝 (No.2)',
+        14 => '立秀宝',
         15 => 'ms.black',
         16 => '马丁',
         17 => '花招',
@@ -61,7 +61,7 @@ class ActivityLotteryCode extends General
         22 => '爱代驾',
         23 => '小渔',
         24 => '汪正摄影',
-        25 => 'uyuan (No.2)',
+        25 => 'uyuan',
     ];
 
     /**
