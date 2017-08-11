@@ -1,10 +1,10 @@
 {
   "name": "Service",
-  "description": "Service for maiqi applications.",
+  "description": "Service for general applications.",
   "keywords": [
     "service"
   ],
-  "homepage": "http://service.maiqitrip.com/",
+  "homepage": "http://service.kakehotels.com/",
   "type": "project",
   "license": "BSD-3-Clause",
   "minimum-stability": "stable",

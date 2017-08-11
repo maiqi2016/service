@@ -1,4 +1,4 @@
-# service
+# Service
 Common service
 
 ## Install step
