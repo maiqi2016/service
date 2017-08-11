@@ -166,11 +166,18 @@ class GeneralController extends MainController
 
         $result = $model->trans(function () use ($model, $params) {
             $sql = 'SELECT * FROM `activity_lottery_code` WHERE `company` = :company FOR UPDATE';
-            $total = $model::findBySql($sql, [':company' => $params['company']])->count();
 
-            $company = dechex($params['company'] + 500);
-            $serial = Helper::integerEncode($total + 1, null);
-            $params['code'] = $company . $serial;
+            $company = $params['company'];
+            $total = $model::findBySql($sql, [':company' => $company])->count();
+
+            if (in_array($company, [0, 25])) {
+                $serial = str_pad($total + 1, 3, 0, STR_PAD_LEFT);
+                $params['code'] = $model->_company_en[$company] . $serial;
+            } else {
+                $company = dechex($company + 500);
+                $serial = Helper::integerEncode($total + 1, null);
+                $params['code'] = $company . $serial;
+            }
 
             $result = $model->add($params);
             if (!$result['state']) {

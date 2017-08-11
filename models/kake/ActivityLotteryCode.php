@@ -25,6 +25,7 @@ class ActivityLotteryCode extends General
      * @var array Field
      */
     public $_state = [
+        -3 => '第三期',
         -2 => '第二期',
         -1 => '第一期',
         0 => '删除',
@@ -35,12 +36,13 @@ class ActivityLotteryCode extends General
      * @var array Fields
      */
     public $_company = [
+        0 => '阿里巴巴',
         1 => '多乐米',
         2 => '保龄球',
-        3 => '立秀宝(No.1)',
+        3 => '立秀宝 (No.1)',
         4 => '嘿姐',
         5 => '黄浦趴',
-        6 => 'uyuan',
+        6 => 'uyuan (No.1)',
         7 => 'kake',
         8 => '广西大都',
         9 => '凯儿得乐',
@@ -48,7 +50,7 @@ class ActivityLotteryCode extends General
         11 => '小创客',
         12 => '带着屁孩去旅行',
         13 => '金宝贝',
-        14 => '立秀宝(No.2)',
+        14 => '立秀宝 (No.2)',
         15 => 'ms.black',
         16 => '马丁',
         17 => '花招',
@@ -58,13 +60,51 @@ class ActivityLotteryCode extends General
         21 => '妈妈帮',
         22 => '爱代驾',
         23 => '小渔',
-        24 => '汪正摄影'
+        24 => '汪正摄影',
+        25 => 'uyuan (No.2)',
+    ];
+
+    /**
+     * @var array Fields
+     */
+    public $_company_en = [
+        0 => 'ALI',
+        1 => 'DLM',
+        2 => 'BLQ',
+        3 => 'LXB',
+        4 => 'HJ',
+        5 => 'HPP',
+        6 => 'UY',
+        7 => 'KK',
+        8 => 'GXDD',
+        9 => 'KEDL',
+        10 => 'HM.SH',
+        11 => 'XCK',
+        12 => 'DPH.LX',
+        13 => 'JBB',
+        14 => 'LXB',
+        15 => 'MS.B',
+        16 => 'MD',
+        17 => 'HZ',
+        18 => 'YM',
+        19 => 'ET.KJY',
+        20 => 'HGN',
+        21 => 'MMB',
+        22 => 'ADJ',
+        23 => 'XY',
+        24 => 'WZ.SY',
+        25 => 'UY',
     ];
 
     /**
      * @var array 对应活动时间
      */
-    public $_activity_date = [];
+    public $_activity_date = [
+        25 => [
+            'begin' => '2017-08-13 14:00:00',
+            'end' => '2017-08-13 17:30:00'
+        ],
+    ];
 
     /**
      * @var array Fields
