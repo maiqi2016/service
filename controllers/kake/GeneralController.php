@@ -170,7 +170,7 @@ class GeneralController extends MainController
             $company = $params['company'];
             $total = $model::findBySql($sql, [':company' => $company])->count();
 
-            if (in_array($company, [0, 25])) {
+            if (in_array($company, [999, 25])) {
                 $serial = str_pad($total + 1, 3, 0, STR_PAD_LEFT);
                 $params['code'] = $model->_company_en[$company] . $serial;
             } else {
