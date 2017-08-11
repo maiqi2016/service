@@ -36,7 +36,7 @@ class ActivityLotteryCode extends General
      * @var array Fields
      */
     public $_company = [
-        0 => '阿里巴巴',
+        999 => '阿里巴巴',
         1 => '多乐米 (No.1)',
         2 => '保龄球 (No.1)',
         3 => '立秀宝 (No.1)',
@@ -68,7 +68,7 @@ class ActivityLotteryCode extends General
      * @var array Fields
      */
     public $_company_en = [
-        0 => 'ALI',
+        999 => 'ALI',
         1 => 'DLM',
         2 => 'BLQ',
         3 => 'LXB',
