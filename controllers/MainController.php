@@ -2,14 +2,14 @@
 
 namespace service\controllers;
 
+use service\components\Helper;
 use service\models\kake\Attachment;
 use service\models\kake\Config;
 use service\models\Main;
 use service\models\service\User as ServiceUser;
 use yii;
-use yii\web\Controller;
-use service\components\Helper;
 use yii\base\DynamicModel;
+use yii\web\Controller;
 
 /**
  * Main controller
@@ -401,6 +401,76 @@ class MainController extends Controller
         }, null, Yii::$app->params['use_cache']);
 
         $this->success($list);
+    }
+
+    /**
+     * 添加指定表数据
+     *
+     * @access public
+     *
+     * @param string $table
+     * @param string $db
+     *
+     * @return void
+     */
+    public function actionNewly($table, $db = null)
+    {
+        $model = $this->model($table, $db);
+
+        $result = $model->add(current($this->getData()));
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
+    }
+
+    /**
+     * 更新指定表数据
+     *
+     * @access public
+     *
+     * @param string $table
+     * @param string $where
+     * @param string $db
+     *
+     * @return void
+     */
+    public function actionEdit($table, $where, $db = null)
+    {
+        $model = $this->model($table, $db);
+        $where = Helper::parseJsonString($where);
+
+        $result = $model->edit($where, current($this->getData()));
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
+    }
+
+    /**
+     * 新增或更新指定表数据
+     *
+     * @access public
+     *
+     * @param string $table
+     * @param string $where
+     * @param string $db
+     *
+     * @return void
+     */
+    public function actionNewlyOrEdit($table, $where, $db = null)
+    {
+        $model = $this->model($table, $db);
+        $where = Helper::parseJsonString($where);
+
+        $result = $model->updateOrInsert($where, current($this->getData()));
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
     }
 
     /**

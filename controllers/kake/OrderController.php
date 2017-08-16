@@ -647,4 +647,47 @@ class OrderController extends MainController
 
         $this->success($result);
     }
+
+    /**
+     * 列表订单的所有套餐
+     *
+     * @access public
+     *
+     * @param integer $order_id
+     *
+     * @return void
+     */
+    public function actionListPackageByOrderId($order_id)
+    {
+        $list = (new OrderSub())->all(function ($list) use ($order_id) {
+            /**
+             * @var $list yii\db\Query
+             */
+            $list->select([
+                'order_sub.id',
+                'order_sub.product_package_id',
+                'product_package.name',
+                'product_package.price',
+                'product_package.info',
+            ]);
+
+            $list->where(['order_sub.order_id' => $order_id]);
+            $list->leftJoin('product_package', 'order_sub.product_package_id = product_package.id');
+
+            return $list;
+        }, null, Yii::$app->params['use_cache']);
+
+        $package = [];
+        foreach ($list as $item) {
+            $id = $item['product_package_id'];
+            if (!isset($package[$id])) {
+                $item['number'] = 1;
+                $package[$id] = $item;
+            } else {
+                $package[$id]['number'] += 1;
+            }
+        }
+
+        $this->success($package);
+    }
 }

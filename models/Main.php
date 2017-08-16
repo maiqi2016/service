@@ -39,7 +39,8 @@ class Main extends ActiveRecord
     public $_app = [
         0 => 'common',
         1 => 'frontend',
-        2 => 'backend'
+        2 => 'backend',
+        3 => 'sso'
     ];
 
     /**
@@ -265,6 +266,34 @@ class Main extends ActiveRecord
         }
 
         return $this->result($result);
+    }
+
+    /**
+     * Multiple new record
+     *
+     * @access public
+     *
+     * @param array  $field
+     * @param array  $data
+     * @param object $model
+     *
+     * @return array
+     */
+    public function batchAdd($field, $data, $model = null)
+    {
+        $model = $model ?: new static;
+
+        foreach ($data as $item) {
+            $model->attributes = array_combine($field, $item);
+            if (!$model->validate()) {
+                return $this->result(current($model->getFirstErrors()));
+            }
+        }
+
+        $query = $model->db->createCommand();
+        $effect = $query->batchInsert($model::tableName(), $field, $data)->execute();
+
+        return $this->result($effect);
     }
 
     /**

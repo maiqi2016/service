@@ -23,6 +23,7 @@ class PhoneCaptcha extends General
     public $_type = [
         1 => '后台登录',
         2 => '填写订单联系人',
+        3 => 'SSO'
     ];
 
     /**
@@ -30,7 +31,8 @@ class PhoneCaptcha extends General
      */
     public $_type_captcha_length = [
         1 => 8,
-        2 => 4
+        2 => 4,
+        3 => 4
     ];
 
     /**

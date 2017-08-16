@@ -11,7 +11,7 @@ use Yii;
  * @property integer $id
  * @property string  $app_id
  * @property string  $app_secret
- * @property integer $type
+ * @property integer $role
  * @property integer $app
  * @property string  $remark
  * @property string  $add_time
@@ -43,7 +43,7 @@ class User extends General
             ],
             [
                 [
-                    'type',
+                    'role',
                     'app'
                 ],
                 'integer'
@@ -75,7 +75,7 @@ class User extends General
             'id' => Yii::t('database', 'ID'),
             'app_id' => Yii::t('database', 'App ID'),
             'app_secret' => Yii::t('database', 'App Secret'),
-            'type' => Yii::t('database', 'Type'),
+            'role' => Yii::t('database', 'Role'),
             'app' => Yii::t('database', 'app'),
             'remark' => Yii::t('database', 'Remark'),
             'add_time' => Yii::t('database', 'Add Time'),
@@ -89,15 +89,14 @@ class User extends General
      *
      * @access  public
      *
-     * @param   string $remark 备注
-     * @param integer  $type   0对外 1对内
-     * @param integer  $app    对内时的项目id
+     * @param string  $remark
+     * @param integer $role
+     * @param integer $app
      *
      * @return  array
      */
-    public function addUser($remark = null, $type = 1, $app = null)
+    public function addUser($remark = null, $role = 1, $app = null)
     {
-
         // 生成id和密钥
         $app_secret = strrev(md5(Helper::randString(8) . TIME));
         $app_id = 'kk_' . substr(md5(TIME . $app_secret), 8, 15);
@@ -107,7 +106,7 @@ class User extends General
         $caller->attributes = $user = [
             'app_id' => $app_id,
             'app_secret' => $app_secret,
-            'type' => $type,
+            'role' => $role,
             'app' => $app,
             'remark' => $remark
         ];
