@@ -52,9 +52,16 @@ class ActivityStory extends General
                 'max' => 100
             ],
             [
-                ['user_id'],
-                'unique'
-            ],
+                [
+                    'openid',
+                    'state'
+                ],
+                'unique',
+                'targetAttribute' => [
+                    'user_id',
+                    'state'
+                ]
+            ]
         ], $this->_rule_add_time, $this->_rule_update_time, $this->_rule_state);
     }
 

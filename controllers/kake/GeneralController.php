@@ -2,14 +2,12 @@
 
 namespace service\controllers\kake;
 
-use service\components\Helper;
 use service\controllers\MainController;
-use service\models\kake\ActivityLotteryCode;
-use service\models\kake\ActivityStory;
 use service\models\kake\Attachment;
 use service\models\kake\Ad;
 use service\models\kake\Config;
-use service\models\kake\OrderSub;
+use service\models\kake\SsoCode;
+use service\models\kake\SsoToken;
 use yii;
 
 /**
@@ -94,130 +92,37 @@ class GeneralController extends MainController
     }
 
     /**
-     * 列表订单的所有套餐
+     * 新增令牌并失效授权码
      *
      * @access public
-     *
-     * @param integer $order_id
-     *
-     * @return void
+     * @return  void
      */
-    public function actionListPackageByOrderId($order_id)
+    public function actionNewlySsoToken()
     {
-        $list = (new OrderSub())->all(function ($list) use ($order_id) {
-            /**
-             * @var $list yii\db\Query
-             */
-            $list->select([
-                'order_sub.id',
-                'order_sub.product_package_id',
-                'product_package.name',
-                'product_package.price',
-                'product_package.info',
-            ]);
+        $model = new SsoToken();
+        $data = current($this->getData());
 
-            $list->where(['order_sub.order_id' => $order_id]);
-            $list->leftJoin('product_package', 'order_sub.product_package_id = product_package.id');
+        $result = $model->trans(function () use ($model, $data) {
 
-            return $list;
-        }, null, Yii::$app->params['use_cache']);
-
-        $package = [];
-        foreach ($list as $item) {
-            $id = $item['product_package_id'];
-            if (!isset($package[$id])) {
-                $item['number'] = 1;
-                $package[$id] = $item;
-            } else {
-                $package[$id]['number'] += 1;
-            }
-        }
-
-        $this->success($package);
-    }
-
-    /**
-     * 生成抽奖码
-     *
-     * @access public
-     * @return void
-     */
-    public function actionLogLotteryCode()
-    {
-        $params = $this->getParams();
-        $model = new ActivityLotteryCode();
-
-        $record = $model->first(function ($ar) use ($params) {
-            /**
-             * @var $ar yii\db\Query
-             */
-            $ar->where(['openid' => $params['openid']]);
-            $ar->andWhere(['state' => 1]);
-
-            return $ar;
-        }, Yii::$app->params['use_cache']);
-
-        if (!empty($record)) {
-            $this->success([
-                'code' => $record['code'],
-                'exists' => true
-            ]);
-        }
-
-        $result = $model->trans(function () use ($model, $params) {
-            $sql = 'SELECT * FROM `activity_lottery_code` WHERE `company` = :company FOR UPDATE';
-
-            $company = $params['company'];
-            $total = $model::findBySql($sql, [':company' => $company])->count();
-
-            if (in_array($company, [999, 25])) {
-                $serial = str_pad($total + 1, 3, 0, STR_PAD_LEFT);
-                $params['code'] = $model->_company_en[$company] . $serial;
-            } else {
-                $company = dechex($company + 500);
-                $serial = Helper::integerEncode($total + 1, null);
-                $params['code'] = $company . $serial;
-            }
-
-            $result = $model->add($params);
+            $result = $model->add($data);
             if (!$result['state']) {
                 throw new yii\db\Exception($result['info']);
             }
 
-            return ['code' => $params['code']];
-        }, '生成抽奖码');
+            $result = (new SsoCode())->edit([
+                'id' => $data['sso_code_id']
+            ], ['state' => 0]);
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            return true;
+        }, '新增令牌并失效授权码');
 
         if (!$result['state']) {
             $this->fail($result['info']);
         }
 
-        $this->success([
-            'code' => $result['data']['code'],
-            'exists' => false
-        ]);
-    }
-
-    /**
-     * 添加活动故事
-     *
-     * @access public
-     * @return void
-     */
-    public function actionAddActivityStory()
-    {
-        $params = $this->getParams();
-
-        $result = (new ActivityStory())->updateOrInsert([
-            'user_id' => $params['user_id']
-        ], [
-            'photo_attachment_id' => $params['attachment'],
-            'story' => $params['story']
-        ]);
-
-        if (!$result['state']) {
-            $this->fail($result['info']);
-        }
-
-        $this->success($result['data']);
+        $this->success();
     }
 }

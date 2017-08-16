@@ -5,34 +5,24 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "login_log".
+ * This is the model class for table "sso_code".
  *
  * @property integer $id
  * @property integer $user_id
- * @property integer $type
- * @property string  $ip
+ * @property string  $code
+ * @property string  $sign
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class LoginLog extends General
+class SsoCode extends General
 {
-    /**
-     * @var array Field
-     */
-    public $_type = [
-        1 => 'backend-login',
-        2 => 'we-chat-login',
-        3 => 'we-chat-bind',
-        4 => 'sso-login'
-    ];
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'login_log';
+        return 'sso_code';
     }
 
     /**
@@ -44,24 +34,32 @@ class LoginLog extends General
             [
                 [
                     'user_id',
-                    'type',
-                    'ip'
+                    'code',
+                    'sign'
                 ],
                 'required'
             ],
             [
-                [
-                    'user_id',
-                    'type'
-                ],
+                ['user_id'],
                 'integer'
             ],
             [
-                ['ip'],
+                [
+                    'code',
+                    'sign'
+                ],
                 'string',
-                'max' => 15
-            ]
-        ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
+                'max' => 32
+            ],
+            [
+                ['user_id'],
+                'unique'
+            ],
+            [
+                ['code'],
+                'unique'
+            ],
+        ], $this->_rule_state, $this->_rule_state, $this->_rule_update_time);
     }
 
     /**
@@ -72,8 +70,8 @@ class LoginLog extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'user_id' => Yii::t('database', 'User ID'),
-            'type' => Yii::t('database', 'Type'),
-            'ip' => Yii::t('database', 'Ip'),
+            'code' => Yii::t('database', 'Sso Code'),
+            'sign' => Yii::t('database', 'Sign'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

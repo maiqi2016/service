@@ -18,7 +18,6 @@ use yii;
  */
 class UserController extends MainController
 {
-
     /**
      * 用户登录验证
      *

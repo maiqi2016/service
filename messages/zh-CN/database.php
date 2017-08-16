@@ -110,4 +110,9 @@ return [
     'Story' => '故事',
     'Hotel Plate ID' => '所属板块',
     'Hotel Region ID' => '所属地区',
+    'Sign' => '签名',
+    'Sso Code' => '授权码',
+    'Token' => '令牌',
+    'Sso Code ID'  => '授权主键',
+    'Winning' => '中奖',
 ];
