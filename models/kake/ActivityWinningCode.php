@@ -19,6 +19,14 @@ use Yii;
 class ActivityWinningCode extends General
 {
     /**
+     * @var array Field
+     */
+    public $_winning = [
+        0 => '未中奖',
+        1 => '中奖'
+    ];
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
