@@ -136,7 +136,7 @@ class Helper extends Object
         }
 
         // address
-        $options[CURLOPT_URL] = $url;
+        $options[CURLOPT_URL] = str_replace(' ', '+', $url);
 
         $curl = curl_init();
 

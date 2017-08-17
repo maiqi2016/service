@@ -21,6 +21,14 @@ class ActivityWinningCode extends General
     /**
      * @var array Field
      */
+    public $_state = [
+        0 => '删除',
+        1 => '本期',
+    ];
+    
+    /**
+     * @var array Field
+     */
     public $_winning = [
         0 => '未中奖',
         1 => '中奖'
