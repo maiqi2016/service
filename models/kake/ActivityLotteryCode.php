@@ -36,7 +36,6 @@ class ActivityLotteryCode extends General
      * @var array Fields
      */
     public $_company = [
-        999 => '阿里巴巴',
         1 => '多乐米 (No.1)',
         2 => '保龄球 (No.1)',
         3 => '立秀宝 (No.1)',
@@ -62,13 +61,13 @@ class ActivityLotteryCode extends General
         23 => '小渔 (No.1)',
         24 => '汪正摄影 (No.1)',
         25 => 'uyuan',
+        26 => '立秀宝',
     ];
 
     /**
      * @var array Fields
      */
     public $_company_en = [
-        999 => 'ALI',
         1 => 'DLM',
         2 => 'BLQ',
         3 => 'LXB',
@@ -94,6 +93,7 @@ class ActivityLotteryCode extends General
         23 => 'XY',
         24 => 'WZ.SY',
         25 => 'UY',
+        26 => 'LXB',
     ];
 
     /**
@@ -103,6 +103,10 @@ class ActivityLotteryCode extends General
         25 => [
             'begin' => '2017-08-13 14:00:00',
             'end' => '2017-08-13 17:30:00'
+        ],
+        26 => [
+            'begin' => '2017-08-18 12:00:00',
+            'end' => '2017-08-23 12:00:00'
         ],
     ];
 

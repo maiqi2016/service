@@ -18,6 +18,14 @@ use Yii;
 class ActivityStory extends General
 {
     /**
+     * @var array Field
+     */
+    public $_state = [
+        0 => '删除',
+        1 => '本期',
+    ];
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
