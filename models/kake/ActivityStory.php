@@ -61,7 +61,7 @@ class ActivityStory extends General
             ],
             [
                 [
-                    'openid',
+                    'user_id',
                     'state'
                 ],
                 'unique',
