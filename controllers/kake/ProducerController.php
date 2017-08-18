@@ -4,10 +4,15 @@ namespace service\controllers\kake;
 
 use service\components\Helper;
 use service\controllers\MainController;
+use service\models\kake\Attachment;
+use service\models\kake\ProducerApply;
 use service\models\kake\ProducerLog;
 use service\models\kake\ProducerProduct;
 use service\models\kake\ProducerQuota;
+use service\models\kake\ProducerSetting;
 use service\models\kake\ProducerWithdraw;
+use service\models\kake\ProductProducer;
+use service\models\kake\User;
 use yii;
 
 /**
@@ -23,8 +28,8 @@ class ProducerController extends MainController
      *
      * @access public
      *
-     * @param array   $log
-     * @param float   $quota
+     * @param array $log
+     * @param float $quota
      * @param integer $user_id
      *
      * @return void
@@ -187,5 +192,115 @@ class ProducerController extends MainController
     public function actionListProductIds($producer_id, $limit = null)
     {
         $this->success($this->listProductIds($producer_id, $limit));
+    }
+
+    /**
+     * 通过申请
+     *
+     * @param integer $id
+     *
+     * @return void
+     * @throws yii\db\Exception
+     */
+    public function actionAgreeApply($id)
+    {
+        $producerApplyModel = new ProducerApply();
+        $apply = $producerApplyModel::findOne([
+            'id' => $id,
+            'state' => 1
+        ]);
+        if (empty($apply)) {
+            $this->fail('apply does not exist');
+        }
+
+        $userModel = new User();
+        $user = $userModel::findOne([
+            'id' => $apply->user_id,
+            'state' => 1
+        ]);
+
+        if (empty($user)) {
+            $this->fail('abnormal data');
+        }
+
+        if ($user['role'] > 0) {
+            $apply->state = 0;
+            if (!$apply->update()) {
+                $this->fail(current($apply->getFirstErrors()));
+            }
+            $this->fail('user already has the ability to distribute');
+        }
+
+        $producerProduct = (new ProductProducer())->all(function ($ar) {
+            /**
+             * @var $ar yii\db\Query
+             */
+            $ar->where(['state' => 1]);
+            $ar->groupBy('product_id');
+            $ar->select([
+                'product_id',
+                'type'
+            ]);
+
+            return $ar;
+        });
+
+        // 注册分销商
+        $result = $userModel->trans(function () use ($producerApplyModel, $user, $apply, $producerProduct) {
+
+            // update table `producer_apply`
+            $apply->state = 0;
+            if (!$apply->update()) {
+                throw new yii\db\Exception(current($apply->getFirstErrors()));
+            }
+
+            // update table `user`
+            $user->role = 10;
+            $user->phone = $apply->phone;
+
+            if (!$user->update()) {
+                throw new yii\db\Exception(current($user->getFirstErrors()));
+            }
+
+            // add table `producer`
+            $producerModel = new ProducerSetting();
+            $producerModel->attributes = [
+                'producer_id' => $apply->user_id,
+                'name' => $apply->name,
+                'logo_attachment_id' => $apply->attachment_id,
+                'account_type' => 1,
+                'account_number' => 'AUTO:' . $apply->phone,
+            ];
+
+            if (!$producerModel->save()) {
+                throw new yii\db\Exception(current($producerModel->getFirstErrors()));
+            }
+
+            // add table `producer_product`
+            $items = [];
+            foreach ($producerProduct as $item) {
+                $items[] = [
+                    $apply->user_id,
+                    $item['product_id'],
+                    $items['type']
+                ];
+            }
+
+            $effect = (new ProducerProduct())->batchAdd([
+                'producer_id',
+                'product_id',
+                'type'
+            ], $items);
+
+            return $effect;
+
+        }, '通过申请分销商');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $avatar = (new Attachment())->first(['id' => $apply->attachment_id]);
+        $this->success(compact('avatar'));
     }
 }
