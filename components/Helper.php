@@ -1024,8 +1024,11 @@ class Helper extends Object
         $tpl = "<select ${class} ${name} ${disabled}>";
 
         foreach ($array as $value => $info) {
-            $operationObj = ($selectedModel === 'key') ? $value : $info;
-            $checkedState = ($operationObj === $selected) ? 'selected="selected"' : null;
+            $operationObj = ($selectedModel == 'key') ? $value : $info;
+            if ($selected === 0) {
+                $selected = '0';
+            }
+            $checkedState = ($operationObj == $selected) ? 'selected="selected"' : null;
             $tpl .= '<option value="' . $value . '" ' . $checkedState . '>' . $info . '</option>';
         }
         $tpl .= '</select>';
