@@ -62,6 +62,7 @@ class ActivityLotteryCode extends General
         24 => '汪正摄影 (No.1)',
         25 => 'uyuan',
         26 => '立秀宝',
+        999 => '阿里巴巴',
     ];
 
     /**
@@ -94,6 +95,7 @@ class ActivityLotteryCode extends General
         24 => 'WZ.SY',
         25 => 'UY',
         26 => 'LXB',
+        999 => 'ALI',
     ];
 
     /**
@@ -101,8 +103,8 @@ class ActivityLotteryCode extends General
      */
     public $_activity_date = [
         25 => [
-            'begin' => '2017-08-13 14:00:00',
-            'end' => '2017-08-13 17:30:00'
+            'begin' => '2017-08-20 09:00:00',
+            'end' => '2017-08-20 18:00:00'
         ],
         26 => [
             'begin' => '2017-08-18 12:00:00',
