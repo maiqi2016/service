@@ -21,19 +21,19 @@ return [
             'charset' => 'utf8',
             // Master
             'masterConfig' => [
-                'username' => 'maiqi_kake_write',
-                'password' => 'maiqi@KAKE2016',
+                'username' => 'mq_kake_dev_w',
+                'password' => '[SECRET:kake_pwd]',
             ],
             'masters' => [
-                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_kake'],
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_kake_dev'],
             ],
             // Slave
             'slaveConfig' => [
-                'username' => 'maiqi_kake_read',
-                'password' => 'maiqi@KAKE2016',
+                'username' => 'mq_kake_dev_r',
+                'password' => '[SECRET:kake_pwd]',
             ],
             'slaves' => [
-                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_kake'],
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_kake_dev'],
             ],
         ],
         'service' => [
@@ -41,19 +41,19 @@ return [
             'charset' => 'utf8',
             // Master
             'masterConfig' => [
-                'username' => 'maiqi_service_write',
-                'password' => 'maiqi@SERVICE2016',
+                'username' => 'mq_service_dev_w',
+                'password' => '[SECRET:service_pwd]',
             ],
             'masters' => [
-                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_service'],
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_service_dev'],
             ],
             // Slave
             'slaveConfig' => [
-                'username' => 'maiqi_service_read',
-                'password' => 'maiqi@SERVICE2016',
+                'username' => 'mq_service_dev_r',
+                'password' => '[SECRET:service_pwd]',
             ],
             'slaves' => [
-                'a' => ['dsn' => 'mysql:host=192.168.0.222;dbname=maiqi_service'],
+                'a' => ['dsn' => 'mysql:host=[SECRET:host];dbname=maiqi_service_dev'],
             ],
         ],
     ],
