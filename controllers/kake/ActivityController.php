@@ -116,7 +116,7 @@ class ActivityController extends MainController
     public function actionGenerateWinningCode($total, $winning)
     {
         $code = Helper::generateCode(8, $total);
-        $winning = Helper::generalRandMultipleNum(0, $total - 1, $winning);
+        $winning = Helper::generateRandMultipleNum(0, $total - 1, $winning);
 
         $model = new ActivityWinningCode();
 
