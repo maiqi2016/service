@@ -381,7 +381,7 @@ class Helper extends Object
 
         $url = trim($items['base_url'] . '?' . http_build_query($params), '?');
 
-        return urldecode($url);
+        return $url;
     }
 
     /**
@@ -405,7 +405,7 @@ class Helper extends Object
 
         $url = trim($items['base_url'] . '?' . http_build_query($items['params']), '?');
 
-        return urldecode($url);
+        return $url;
     }
 
     /**
@@ -425,7 +425,7 @@ class Helper extends Object
         $query = http_build_query($params);
         $url .= (strpos($url, '?') !== false) ? '&' . $query : '?' . $query;
 
-        return urldecode(rtrim($url, '&?'));
+        return rtrim($url, '&?');
     }
 
     /**
@@ -566,7 +566,7 @@ class Helper extends Object
         }
 
         // address
-        $options[CURLOPT_URL] = str_replace(' ', '+', $url);
+        $options[CURLOPT_URL] = $url;
 
         $curl = curl_init();
 
@@ -1456,7 +1456,7 @@ class Helper extends Object
      *
      * @return array
      */
-    public static function generalRandMultipleNum($begin, $end, $limit)
+    public static function generateRandMultipleNum($begin, $end, $limit)
     {
         $randArr = range($begin, $end);
         shuffle($randArr);
@@ -2585,6 +2585,19 @@ class Helper extends Object
     }
 
     /**
+     * Generate token
+     *
+     * @param integer $fromBase
+     * @param integer $toBase
+     *
+     * @return string
+     */
+    public static function generateToken($fromBase = 18, $toBase = 36)
+    {
+        return base_convert(md5(uniqid(rand(), true)), $fromBase, $toBase);
+    }
+
+    /**
      * Generate lottery code
      *
      * @param integer $digit
@@ -2598,7 +2611,7 @@ class Helper extends Object
         $box = [];
 
         while ($count < $total) {
-            $code = base_convert(md5(uniqid(rand(), true)), 18, 36);
+            $code = self::generateToken();
             $code = strtoupper(substr($code, 0, $digit));
 
             if (strlen($code) == $digit && !isset($box[$code])) {
