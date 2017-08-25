@@ -60,9 +60,10 @@ class ActivityLotteryCode extends General
         22 => '爱代驾 (No.1)',
         23 => '小渔 (No.1)',
         24 => '汪正摄影 (No.1)',
-        25 => 'uyuan',
+        25 => 'uyuan (No.2)',
         26 => '立秀宝',
         27 => '妈妈帮',
+        28 => 'uyuan',
         999 => '阿里巴巴',
     ];
 
@@ -97,6 +98,7 @@ class ActivityLotteryCode extends General
         25 => 'UY',
         26 => 'LXB',
         27 => 'MMB',
+        28 => 'UY',
         999 => 'ALI',
     ];
 
