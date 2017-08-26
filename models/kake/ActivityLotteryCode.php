@@ -64,6 +64,7 @@ class ActivityLotteryCode extends General
         26 => '立秀宝',
         27 => '妈妈帮',
         28 => 'uyuan',
+        29 => '上海潮生活',
         999 => '阿里巴巴',
     ];
 
@@ -99,6 +100,7 @@ class ActivityLotteryCode extends General
         26 => 'LXB',
         27 => 'MMB',
         28 => 'UY',
+        29 => 'SH.CSH',
         999 => 'ALI',
     ];
 
@@ -117,6 +119,14 @@ class ActivityLotteryCode extends General
         27 => [
             'begin' => '2017-08-22 12:00:00',
             'end' => '2017-08-29 12:00:00'
+        ],
+        28 => [
+            'begin' => '2017-08-27 12:00:00',
+            'end' => '2017-08-27 16:00:00'
+        ],
+        29 => [
+            'begin' => '2017-08-27 10:00:00',
+            'end' => '2017-08-28 14:00:00'
         ],
     ];
 
