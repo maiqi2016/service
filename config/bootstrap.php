@@ -1,7 +1,7 @@
 <?php
 Yii::setAlias('@service', dirname(__DIR__));
 
-define('VERSION', '1.0.0');
+define('VERSION', '1.0.1');
 
 define('TIME', $_SERVER['REQUEST_TIME']);
 define('DS', DIRECTORY_SEPARATOR);
