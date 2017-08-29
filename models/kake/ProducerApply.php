@@ -37,7 +37,7 @@ class ProducerApply extends General
                     'user_id',
                     'phone',
                     'name',
-                    'attachment_id'
+                    // 'attachment_id'
                 ],
                 'required'
             ],

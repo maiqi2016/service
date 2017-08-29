@@ -53,7 +53,7 @@ class ProducerSetting extends General
                 [
                     'producer_id',
                     'name',
-                    'logo_attachment_id',
+                    // 'logo_attachment_id',
                     'account_type',
                     'account_number'
                 ],

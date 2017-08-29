@@ -263,6 +263,10 @@ class ProducerController extends MainController
             }
 
             // add table `producer`
+            if (!isset($apply->attachment_id)) {
+                $apply->attachment_id = null;
+            }
+
             $producerModel = new ProducerSetting();
             $producerModel->attributes = [
                 'producer_id' => $apply->user_id,
@@ -282,7 +286,7 @@ class ProducerController extends MainController
                 $items[] = [
                     $apply->user_id,
                     $item['product_id'],
-                    $items['type']
+                    $item['type']
                 ];
             }
 
@@ -300,7 +304,10 @@ class ProducerController extends MainController
             $this->fail($result['info']);
         }
 
-        $avatar = (new Attachment())->first(['id' => $apply->attachment_id]);
+        $avatar = [];
+        if ($apply->attachment_id) {
+            $avatar = (new Attachment())->first(['id' => $apply->attachment_id]);
+        }
         $this->success(compact('avatar'));
     }
 }
