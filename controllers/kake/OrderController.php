@@ -106,43 +106,64 @@ class OrderController extends MainController
     public function actionPayHandler($order_number, $paid_result)
     {
         $model = new Order();
-        $result = $model->trans(function () use ($model, $order_number, $paid_result) {
-            $order = $model::findOne([
-                'order_number' => $order_number,
-                'state' => 1
+        $where = [
+            'order.order_number' => $order_number,
+            'order.state' => 1
+        ];
+
+        $order = $model->first(function ($one) use ($where) {
+            /**
+             * @var $one yii\db\Query
+             */
+            $one->select([
+                'order.payment_state',
+                'order.id',
+                'order.product_id',
+                'order_contacts.real_name',
+                'order_contacts.phone'
             ]);
+            $one->where($where);
+            $one->leftJoin('order_contacts', 'order.order_contacts_id = order_contacts.id');
 
-            if (empty($order)) {
-                throw new yii\db\Exception('order does not exist');
-            }
+            return $one;
+        });
 
-            if ($order['payment_state'] == 1) {
-                return true;
-            }
+        if (empty($order)) {
+            $this->fail('order does not exist');
+        }
+
+        if ($order['payment_state'] == 1) {
+            $this->success();
+        }
+
+        $editOrder = $model::findOne($where);
+        $result = $model->trans(function () use ($editOrder, $order, $order_number, $paid_result) {
 
             if ($paid_result) {
-
-                $order->payment_state = 1;
+                $editOrder->payment_state = 1;
                 $number = OrderSub::find()->where([
-                    'order_id' => $order->id
+                    'order_id' => $order['id']
                 ])->count();
 
-                (new Product())->edit(['id' => $order->product_id], [
+                (new Product())->edit(['id' => $order['product_id']], [
                     'real_sales' => function ($num) use ($number) {
                         return $num + $number;
                     }
                 ]);
-
             } else {
-                $order->payment_state = 2;
+                $editOrder->payment_state = 2;
             }
 
-            if (!$order->save()) {
-                throw new yii\db\Exception(current($order->getFirstErrors()));
+            if (!$editOrder->save()) {
+                throw new yii\db\Exception(current($editOrder->getFirstErrors()));
             }
 
             return true;
         }, '支付后处理');
+
+        // SMS
+        $content = sprintf(Yii::$app->params['sms_tpl_4'], $order_number, Yii::$app->params['company_tel']);
+        $result = $this->callSmsApi($order['phone'], $content);
 
         if (!$result['state']) {
             $this->fail($result['info']);
@@ -217,6 +238,20 @@ class OrderController extends MainController
             $this->fail($result['info']);
         }
 
+        // SMS
+        $sub = $model->first([
+            'id' => $order_sub_id,
+            'state' => 2
+        ]);
+        $params = [
+            $sub['check_in_name'],
+            $sub['check_in_time'],
+            $sub['conformation_number'] ?: '暂无',
+            Yii::$app->params['company_tel']
+        ];
+        $content = sprintf(Yii::$app->params['sms_tpl_5'], ...$params);
+        $this->callSmsApi($sub['check_in_phone'], $content);
+
         $this->success($result['data']);
     }
 
@@ -263,6 +298,20 @@ class OrderController extends MainController
         if (!$result['state']) {
             $this->fail($result['info']);
         }
+
+        // SMS
+        $sub = $model->first([
+            'id' => $order_sub_id,
+            'state' => 2
+        ]);
+        $params = [
+            $sub['check_in_name'],
+            $sub['check_in_time'],
+            $remark,
+            Yii::$app->params['company_tel']
+        ];
+        $content = sprintf(Yii::$app->params['sms_tpl_6'], ...$params);
+        $this->callSmsApi($sub['check_in_phone'], $content);
 
         $this->success();
     }

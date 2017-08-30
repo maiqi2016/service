@@ -776,6 +776,42 @@ class MainController extends Controller
     }
 
     /**
+     * 调用发送短信接口
+     *
+     * @access public
+     *
+     * @param string $phone
+     * @param string $content
+     *
+     * @return mixed
+     */
+    public function callSmsApi($phone, $content)
+    {
+        $conf = Yii::$app->params;
+        $response = Yii::$app->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
+            'phones' => $phone,
+            'content' => $content,
+            'sign' => $conf['sms_sign'],
+            'sendtime' => null
+        ])->optionsHandler(function ($options, $params) {
+
+            $options[CURLOPT_POSTFIELDS] = json_encode($params);
+            $options[CURLOPT_HTTPHEADER] = [
+                'Content-Type: application/json; charset=utf-8',
+                'Content-Length: ' . strlen(json_encode($params))
+            ];
+
+            return $options;
+        })->request();
+
+        if (!empty($response['result'])) {
+            Yii::error('短信发送异常: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
+        }
+
+        return $response;
+    }
+
+    /**
      * @inheritDoc
      */
     public function __call($name, $params)
