@@ -15,64 +15,6 @@ use yii;
  */
 class PhoneCaptchaController extends MainController
 {
-
-    /**
-     * 调用发送短信接口
-     *
-     * @access private
-     *
-     * @param string $phone
-     * @param string $content
-     *
-     * @return mixed
-     */
-    private function callSmsApi($phone, $content)
-    {
-        $conf = Yii::$app->params;
-        $response = Yii::$app->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
-            'phones' => $phone,
-            'content' => $content,
-            'sign' => $conf['sms_sign'],
-            'sendtime' => null
-        ])->optionsHandler(function ($options, $params) {
-
-            $options[CURLOPT_POSTFIELDS] = json_encode($params);
-            $options[CURLOPT_HTTPHEADER] = [
-                'Content-Type: application/json; charset=utf-8',
-                'Content-Length: ' . strlen(json_encode($params))
-            ];
-
-            return $options;
-        })->request();
-
-        return $response;
-    }
-
-    /**
-     * Boom phone number
-     *
-     * @access public
-     *
-     * @param string $phone
-     *
-     * @return void
-     */
-    public function actionBoom($phone)
-    {
-        // Call DH3T SMS
-        $tpl = Yii::$app->params['sms_tpl_1'];
-
-        $captcha = Helper::randString(4, 'number');
-        $content = sprintf($tpl, $captcha, 10);
-        $response = $this->callSmsApi($phone, $content);
-
-        if ($response['result']) {
-            $this->fail('burst error, please contact the administrator');
-        }
-
-        $this->success();
-    }
-
     /**
      * 发送短信验证码
      *
@@ -122,7 +64,31 @@ class PhoneCaptchaController extends MainController
         $response = $this->callSmsApi($phone, $content);
 
         if ($response['result']) {
-            Yii::error(json_encode($response, JSON_UNESCAPED_UNICODE));
+            $this->fail('burst error, please contact the administrator');
+        }
+
+        $this->success();
+    }
+
+    /**
+     * Boom phone number
+     *
+     * @access public
+     *
+     * @param string $phone
+     *
+     * @return void
+     */
+    public function actionBoom($phone)
+    {
+        // Call DH3T SMS
+        $tpl = Yii::$app->params['sms_tpl_1'];
+
+        $captcha = Helper::randString(4, 'number');
+        $content = sprintf($tpl, $captcha, 10);
+        $response = $this->callSmsApi($phone, $content);
+
+        if ($response['result']) {
             $this->fail('burst error, please contact the administrator');
         }
 
