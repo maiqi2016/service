@@ -32,6 +32,11 @@ class ProducerLog extends General
     /**
      * @var array Field
      */
+    public $_payment_state_model = 'kake\Order';
+
+    /**
+     * @var array Field
+     */
     public $_type_model = 'kake\ProductProducer';
 
     /**
