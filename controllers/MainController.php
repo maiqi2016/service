@@ -501,6 +501,7 @@ class MainController extends Controller
                 continue;
             }
 
+            $field = null;
             if (strpos($model->$item, '::')) {
                 list($model->$item, $field) = explode('::', $model->$item);
             }
