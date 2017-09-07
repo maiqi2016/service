@@ -446,7 +446,7 @@ class MainController extends Controller
             $this->fail($result['info']);
         }
 
-        $this->success($result['data']);
+        $this->success(true);
     }
 
     /**
