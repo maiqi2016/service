@@ -661,6 +661,17 @@ class Helper extends Object
         return $html;
     }
 
+    /**
+     * Is we chat browser
+     *
+     * @access public
+     * @return bool
+     */
+    public static function weChatBrowser()
+    {
+        return strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false;
+    }
+
     // --- Array ---
 
     /**
