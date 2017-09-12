@@ -28,8 +28,8 @@ class ProducerController extends MainController
      *
      * @access public
      *
-     * @param array $log
-     * @param float $quota
+     * @param array   $log
+     * @param float   $quota
      * @param integer $user_id
      *
      * @return void
@@ -162,7 +162,7 @@ class ProducerController extends MainController
     public function listProductIds($producer_id, $limit = null)
     {
         $producerProduct = new ProducerProduct();
-        $product = $producerProduct->all(function ($list) use ($producer_id, $limit) {
+        $product = $producerProduct->all(function ($list) use ($producer_id) {
             /**
              * @var $list yii\db\Query
              */
@@ -170,13 +170,12 @@ class ProducerController extends MainController
                 'producer_id' => $producer_id,
                 'state' => 1
             ]);
-            $list->orderBy('update_time DESC');
+            $list->orderBy('ISNULL(producer_product.sort), producer_product.sort ASC, update_time DESC');
             $list->select('product_id');
-            $limit && $list->limit($limit);
 
             return $list;
-        }, null, Yii::$app->params['use_cache']);
-        $product = array_column($product, 'product_id');
+        }, $limit, Yii::$app->params['use_cache']);
+        $product = array_column($limit ? $product[0] : $product, 'product_id');
 
         return $product;
     }
