@@ -30,7 +30,7 @@ class PhoneCaptcha extends General
      * @var array Type 类型对应的验证码长度
      */
     public $_type_captcha_length = [
-        1 => 8,
+        1 => 6,
         2 => 4,
         3 => 4
     ];
