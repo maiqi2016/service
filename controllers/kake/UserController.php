@@ -115,23 +115,22 @@ class UserController extends MainController
         ]);
 
         $userModel = new User();
-        $record = $userModel::find()->where([
-            'openid' => $user['openid']
-        ]);
+        $record = $userModel::find()->where(['openid' => $user['openid']])->asArray()->one();
 
-        if ($data = $record->one()) {
-            if (!$data->attributes['state']) {
+        // exists
+        if ($record) {
+            if (!$record['state']) {
                 $this->fail('the account has been frozen');
             }
-            $user = $record->asArray()->one();
-        } else {
-            $userModel->attributes = $user;
-
-            if (!$res = $userModel->insert()) {
-                $this->fail(current($userModel->getFirstErrors()));
-            }
-            $user['id'] = $userModel->id;
+            $this->success($record);
         }
+
+        // register
+        $userModel->attributes = $user;
+        if (!$res = $userModel->insert()) {
+            $this->fail(current($userModel->getFirstErrors()));
+        }
+        $user = $userModel::find()->where(['openid' => $user['openid']])->asArray()->one();
 
         $this->success($user);
     }
