@@ -805,6 +805,10 @@ class MainController extends Controller
             return $options;
         })->request();
 
+        if (!empty($response['info'])) {
+            $response['result'] = $response['info'];
+        }
+
         if (!empty($response['result'])) {
             Yii::error('短信发送异常: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
         }

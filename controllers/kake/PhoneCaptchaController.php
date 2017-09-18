@@ -63,7 +63,7 @@ class PhoneCaptchaController extends MainController
         $content = sprintf($tpl, $captcha, ceil(Yii::$app->params['captcha_timeout'] / 60));
         $response = $this->callSmsApi($phone, $content);
 
-        if ($response['result']) {
+        if (!empty($response['result'])) {
             $this->fail('burst error, please contact the administrator');
         }
 
