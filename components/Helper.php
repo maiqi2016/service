@@ -669,6 +669,10 @@ class Helper extends Object
      */
     public static function weChatBrowser()
     {
+        if (empty($_SERVER['HTTP_USER_AGENT'])) {
+            return false;
+        }
+
         return strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false;
     }
 
@@ -2522,6 +2526,54 @@ class Helper extends Object
         $num = intval($num);
 
         return $add ? $num - $add : $num;
+    }
+
+    /**
+     * 十进制整数转换成 n 进制数
+     *
+     * @access public
+     *
+     * @param integer $num
+     * @param string  $dict
+     *
+     * @return string
+     */
+    public static function hexDecimal2n($num, $dict = null)
+    {
+        $dict = $dict ?: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $to = strlen($dict);
+        $result = '';
+
+        do {
+            $result = $dict[bcmod($num, $to)] . $result;
+            $num = bcdiv($num, $to);
+        } while ($num > 0);
+
+        return ltrim($result, '0');
+    }
+
+    /**
+     * n 进制数转换成十进制整数
+     *
+     * @param string $num
+     * @param string $dict
+     *
+     * @return integer
+     */
+    public static function hexN2Decimal($num, $dict = null)
+    {
+        $num = strval($num);
+        $dict = $dict ?: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $from = strlen($dict);
+        $len = strlen($num);
+
+        $result = 0;
+        for ($i = 0; $i < $len; $i++) {
+            $pos = strpos($dict, $num[$i]);
+            $result = bcadd(bcmul(bcpow($from, $len - $i - 1), $pos), $result);
+        }
+
+        return intval($result);
     }
 
     /**

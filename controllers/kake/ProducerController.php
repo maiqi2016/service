@@ -304,13 +304,15 @@ class ProducerController extends MainController
         }
 
         // SMS
-        $content = sprintf(Yii::$app->params['sms_tpl_7'], 'http://backend.kakehotels.com/');
-        $this->callSmsApi($apply->phone, $content);
+        $this->callSmsApi($apply->phone, Yii::$app->params['sms_tpl_apply_distributor_success']);
 
-        $avatar = [];
         if ($apply->attachment_id) {
             $avatar = (new Attachment())->first(['id' => $apply->attachment_id]);
         }
+        $avatar['openid'] = $user['openid'];
+        $avatar['user_id'] = $user['id'];
+        $avatar['name'] = $apply->name;
+
         $this->success(compact('avatar'));
     }
 }
