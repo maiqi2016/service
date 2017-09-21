@@ -161,15 +161,46 @@ class OrderController extends MainController
             return true;
         }, '支付后处理');
 
-        // SMS
-        $content = sprintf(Yii::$app->params['sms_tpl_4'], $order_number, Yii::$app->params['company_tel']);
-        $result = $this->callSmsApi($order['phone'], $content);
-
         if (!$result['state']) {
             $this->fail($result['info']);
         }
 
-        $this->success($result['data']);
+        // SMS
+        $content = sprintf(Yii::$app->params['sms_tpl_order_success'], $order_number, Yii::$app->params['company_tel']);
+        $this->callSmsApi($order['phone'], $content);
+
+        // 获取 openid 用于发送模板信息
+        $openid = (new Order())->first(function ($one) use ($where) {
+            /**
+             * @var $one yii\db\Query
+             */
+
+            $sub = (new yii\db\Query())->select('order_id, count(*) AS sub_total')->from('order_sub')->groupBy('order_id');
+
+            $one->where($where);
+            $one->leftJoin('user', 'order.user_id = user.id');
+            $one->leftJoin('producer_log', 'order.producer_log_id = producer_log.id');
+            $one->leftJoin('user AS producer', 'producer_log.producer_id = producer.id');
+            $one->leftJoin('product', 'order.product_id = product.id');
+            $one->leftJoin('hotel', 'product.hotel_id = hotel.id');
+            $one->leftJoin('order_sub', 'order.id = order_sub.order_id');
+            $one->leftJoin(['sub' => $sub], 'sub.order_id = order.id');
+
+            $one->select([
+                'order.*',
+                'sub.sub_total',
+                'producer_log.producer_id',
+                'product.title',
+                'hotel.name',
+                'user.username',
+                'user.openid AS user_openid',
+                'producer.openid AS producer_openid'
+            ]);
+
+            return $one;
+        });
+
+        $this->success($openid);
     }
 
     /**
@@ -184,7 +215,7 @@ class OrderController extends MainController
      */
     public function actionUpdateOrderNumber($id, $order_number)
     {
-        $model = $this->model('order');
+        $model = new Order();
 
         $record = $model::findOne(['id' => $id]);
         $record->order_number = $order_number;
@@ -194,6 +225,61 @@ class OrderController extends MainController
         }
 
         $this->success();
+    }
+
+    /**
+     * 通过子订单 id 获取订单相关信息
+     *
+     * @access public
+     *
+     * @param integer $id
+     * @param mixed   $state
+     *
+     * @return array
+     */
+    public function getOrderBySubId($id, $state = null)
+    {
+        $model = new OrderSub();
+        $detail = $model->first(function ($one) use ($model, $id, $state) {
+
+            $where = [['order_sub.id' => $id]];
+            $state && $where[] = ['order_sub.state' => $state];
+
+            return $model->handleActiveRecord($one, 'order_sub', [
+                'join' => [
+                    ['table' => 'order'],
+                    [
+                        'left_table' => 'order',
+                        'table' => 'order_contacts'
+                    ],
+                    [
+                        'left_table' => 'order',
+                        'table' => 'user'
+                    ],
+                    [
+                        'left_table' => 'order',
+                        'table' => 'product'
+                    ],
+                    [
+                        'left_table' => 'product',
+                        'table' => 'hotel'
+                    ]
+                ],
+                'where' => $where,
+                'select' => [
+                    'order.*',
+                    'order.price AS total_price',
+                    'order_sub.*',
+                    'user.username',
+                    'user.openid',
+                    'hotel.name',
+                    'order_contacts.real_name order_user',
+                    'order_contacts.phone AS order_phone'
+                ],
+            ]);
+        }, null, Yii::$app->params['use_cache']);
+
+        return $detail;
     }
 
     /**
@@ -239,20 +325,16 @@ class OrderController extends MainController
         }
 
         // SMS
-        $sub = $model->first([
-            'id' => $order_sub_id,
-            'state' => 2
-        ]);
-        $params = [
+        $sub = $this->getOrderBySubId($order_sub_id);
+        $content = sprintf(Yii::$app->params['sms_tpl_apply_check_success'], ...[
             $sub['check_in_name'],
             $sub['check_in_time'],
             $sub['conformation_number'] ?: '暂无',
             Yii::$app->params['company_tel']
-        ];
-        $content = sprintf(Yii::$app->params['sms_tpl_5'], ...$params);
+        ]);
         $this->callSmsApi($sub['check_in_phone'], $content);
 
-        $this->success($result['data']);
+        $this->success($sub);
     }
 
     /**
@@ -300,20 +382,16 @@ class OrderController extends MainController
         }
 
         // SMS
-        $sub = $model->first([
-            'id' => $order_sub_id,
-            'state' => 2
-        ]);
-        $params = [
+        $sub = $this->getOrderBySubId($order_sub_id);
+        $content = sprintf(Yii::$app->params['sms_tpl_apply_check_fail'], ...[
             $sub['check_in_name'],
             $sub['check_in_time'],
             $remark,
             Yii::$app->params['company_tel']
-        ];
-        $content = sprintf(Yii::$app->params['sms_tpl_6'], ...$params);
+        ]);
         $this->callSmsApi($sub['check_in_phone'], $content);
 
-        $this->success();
+        $this->success($sub);
     }
 
     /**
@@ -358,7 +436,15 @@ class OrderController extends MainController
             $this->fail($result['info']);
         }
 
-        $this->success($result['data']);
+        // SMS
+        $order = $this->getOrderBySubId($order_sub_id);
+        $content = sprintf(Yii::$app->params['sms_tpl_apply_refund_success'], ...[
+            $order['order_number'],
+            $order['price'] / 100
+        ]);
+        $this->callSmsApi($order['order_phone'], $content);
+
+        $this->success($order);
     }
 
     /**
@@ -405,7 +491,16 @@ class OrderController extends MainController
             $this->fail($result['info']);
         }
 
-        $this->success();
+        // SMS
+        $order = $this->getOrderBySubId($order_sub_id);
+        $content = sprintf(Yii::$app->params['sms_tpl_apply_refund_fail'], ...[
+            $order['order_number'],
+            $order['price'] / 100,
+            $remark
+        ]);
+        $this->callSmsApi($order['order_phone'], $content);
+
+        $this->success($order);
     }
 
     /**
@@ -689,8 +784,8 @@ class OrderController extends MainController
             'user_id' => $user_id,
             'payment_state' => 1
         ])->andWhere([
-            '<=',
-            'update_time',
+            '>=',
+            'add_time',
             $time
         ])->count();
 
@@ -738,5 +833,35 @@ class OrderController extends MainController
         }
 
         $this->success($package);
+    }
+
+    /**
+     * 获取订单最后的联系人
+     *
+     * @access public
+     *
+     * @param integer $user_id
+     *
+     * @return void
+     */
+    public function actionGetLastOrderContact($user_id)
+    {
+        $model = new Order();
+        $contact = $model->first(function ($one) use ($user_id) {
+            /**
+             * @var $one yii\db\Query
+             */
+            $one->select([
+                'order_contacts.real_name',
+                'order_contacts.phone'
+            ]);
+            $one->leftJoin('order_contacts', 'order.order_contacts_id = order_contacts.id');
+            $one->where(['order.user_id' => $user_id]);
+            $one->orderBy('order.id DESC');
+
+            return $one;
+        });
+
+        $this->success($contact);
     }
 }
