@@ -82,6 +82,7 @@ class Helper extends Object
         return [
             $offset,
             $pageSize,
+            $page,
             $mysql
         ];
     }

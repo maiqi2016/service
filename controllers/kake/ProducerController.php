@@ -170,7 +170,7 @@ class ProducerController extends MainController
                 'producer_id' => $producer_id,
                 'state' => 1
             ]);
-            $list->orderBy('ISNULL(producer_product.sort), producer_product.sort ASC, update_time DESC');
+            $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC');
             $list->select('product_id');
 
             return $list;

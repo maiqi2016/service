@@ -52,7 +52,7 @@ class ProductController extends MainController
                 'package.product_id' => $product_id,
                 'package.state' => 1
             ]);
-            $list->orderBy('package.bidding DESC');
+            $list->orderBy('package.bidding DESC, package.update_time DESC');
 
             return $list;
         }, null, Yii::$app->params['use_cache']);

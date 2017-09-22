@@ -13,6 +13,7 @@ use Yii;
  * @property integer $base_price
  * @property integer $price
  * @property integer $bidding
+ * @property integer $sort
  * @property integer $purchase_limit
  * @property string  $info
  * @property string  $add_time
@@ -65,6 +66,7 @@ class ProductPackage extends General
                     'base_price',
                     'price',
                     'bidding',
+                    'sort',
                     'purchase_limit'
                 ],
                 'integer'
@@ -93,6 +95,7 @@ class ProductPackage extends General
             'base_price' => Yii::t('database', 'Base Price'),
             'price' => Yii::t('database', 'Price'),
             'bidding' => Yii::t('database', 'Bidding'),
+            'sort' => Yii::t('database', 'Sort'),
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
             'add_time' => Yii::t('database', 'Add Time'),
