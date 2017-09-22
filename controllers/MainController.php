@@ -809,6 +809,8 @@ class MainController extends Controller
             $response['result'] = $response['info'];
         }
 
+        Yii::trace('发送短信：' . $phone . ', 短信内容：' . $content);
+
         if (!empty($response['result'])) {
             Yii::error('短信发送异常: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
         }
