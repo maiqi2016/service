@@ -155,14 +155,15 @@ class ProducerController extends MainController
      * 获取分销产品的 product_ids
      *
      * @param integer $producer_id
+     * @param integer $page_number
      * @param integer $limit
      *
      * @return array
      */
-    public function listProductIds($producer_id, $limit = null)
+    public function listProductIds($producer_id, $page_number, $limit)
     {
         $producerProduct = new ProducerProduct();
-        $product = $producerProduct->all(function ($list) use ($producer_id) {
+        $product = $producerProduct->all(function ($list) use ($producer_id, $page_number, $limit) {
             /**
              * @var $list yii\db\Query
              */
@@ -173,24 +174,31 @@ class ProducerController extends MainController
             $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC');
             $list->select('product_id');
 
-            return $list;
-        }, $limit, Yii::$app->params['use_cache']);
-        $product = array_column($limit ? $product[0] : $product, 'product_id');
+            $list->offset(abs($page_number - 1) * $limit);
+            $list->limit($limit);
 
-        return $product;
+            return $list;
+        }, null, Yii::$app->params['use_cache']);
+
+        if (empty($product)) {
+            return $product;
+        }
+
+        return array_column($product, 'product_id');
     }
 
     /**
      * 获取分销产品的 product_ids
      *
      * @param integer $producer_id
+     * @param integer $page_number
      * @param integer $limit
      *
      * @return void
      */
-    public function actionListProductIds($producer_id, $limit = null)
+    public function actionListProductIds($producer_id, $page_number, $limit)
     {
-        $this->success($this->listProductIds($producer_id, $limit));
+        $this->success($this->listProductIds($producer_id, $page_number, $limit));
     }
 
     /**

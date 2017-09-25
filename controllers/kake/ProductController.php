@@ -84,7 +84,7 @@ class ProductController extends MainController
             ]);
             $list->where([
                 'producer.product_id' => $product_id,
-                'producer.state' => 1
+                // 'producer.state' => 1
             ]);
             $list->orderBy('producer.from_sales ASC');
 
