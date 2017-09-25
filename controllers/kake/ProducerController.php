@@ -171,7 +171,7 @@ class ProducerController extends MainController
                 'producer_id' => $producer_id,
                 'state' => 1
             ]);
-            $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC');
+            $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC, id ASC');
             $list->select('product_id');
 
             $list->offset(abs($page_number - 1) * $limit);
@@ -184,10 +184,7 @@ class ProducerController extends MainController
             return $product;
         }
 
-        $product = array_column($product, 'product_id');
-        Yii::error('IDS:' . implode(',', $product));
-
-        return $product;
+        return array_column($product, 'product_id');
     }
 
     /**
