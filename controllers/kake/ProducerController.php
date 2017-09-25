@@ -184,7 +184,10 @@ class ProducerController extends MainController
             return $product;
         }
 
-        return array_column($product, 'product_id');
+        $product = array_column($product, 'product_id');
+        Yii::error('IDS:' . implode(',', $product));
+
+        return $product;
     }
 
     /**
