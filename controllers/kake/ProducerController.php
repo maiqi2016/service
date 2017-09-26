@@ -160,7 +160,7 @@ class ProducerController extends MainController
      *
      * @return array
      */
-    public function listProductIds($producer_id, $page_number, $limit)
+    public function listProductIds($producer_id, $page_number = 1, $limit = null)
     {
         $producerProduct = new ProducerProduct();
         $product = $producerProduct->all(function ($list) use ($producer_id, $page_number, $limit) {
@@ -174,8 +174,10 @@ class ProducerController extends MainController
             $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC, id ASC');
             $list->select('product_id');
 
-            $list->offset(abs($page_number - 1) * $limit);
-            $list->limit($limit);
+            if ($page_number && $limit) {
+                $list->offset(abs($page_number - 1) * $limit);
+                $list->limit($limit);
+            }
 
             return $list;
         }, null, Yii::$app->params['use_cache']);
