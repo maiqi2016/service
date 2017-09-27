@@ -31,6 +31,14 @@ class ProductPackage extends General
     ];
 
     /**
+     * @var array Fields
+     */
+    public $_verify_sold = [
+        0 => '不需要',
+        1 => '需要'
+    ];
+
+    /**
      * @var array Field
      */
     public $_status_model = 'kake\Product::state';
@@ -67,7 +75,8 @@ class ProductPackage extends General
                     'price',
                     'bidding',
                     'sort',
-                    'purchase_limit'
+                    'purchase_limit',
+                    'verify_sold'
                 ],
                 'integer'
             ],
@@ -98,6 +107,7 @@ class ProductPackage extends General
             'sort' => Yii::t('database', 'Sort'),
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
+            'verify_sold' => Yii::t('database', 'Verify Sold'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

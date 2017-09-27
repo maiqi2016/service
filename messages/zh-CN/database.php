@@ -115,4 +115,5 @@ return [
     'Token' => '令牌',
     'Sso Code ID'  => '授权主键',
     'Winning' => '中奖',
+    'Verify Sold' => '核销',
 ];
