@@ -71,7 +71,16 @@ class ProductController extends MainController
      */
     public function actionProducerList($product_id)
     {
-        $list = (new ProductProducer())->all(function ($list) use ($product_id) {
+        $params = $this->getParams();
+
+        $where = ['producer.product_id' => $product_id];
+        if (isset($params['where']) && is_array($params['where'])) {
+            $where = array_merge($params['where'], $where);
+        } else {
+            $where['producer.state'] = 1;
+        }
+
+        $list = (new ProductProducer())->all(function ($list) use ($where) {
             /**
              * @var $list yii\db\Query
              */
@@ -80,12 +89,9 @@ class ProductController extends MainController
                 'producer.from_sales',
                 'producer.to_sales',
                 'producer.type',
-                'producer.commission',
+                'producer.commission'
             ]);
-            $list->where([
-                'producer.product_id' => $product_id,
-                // 'producer.state' => 1
-            ]);
+            $list->where($where);
             $list->orderBy('producer.from_sales ASC');
 
             return $list;
