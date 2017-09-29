@@ -777,16 +777,12 @@ class OrderController extends MainController
      *
      * @return void
      */
-    public function actionPollOrder($order_number, $user_id, $time)
+    public function actionPollOrder($order_number, $user_id)
     {
         $result = Order::find()->where([
             'order_number' => $order_number,
             'user_id' => $user_id,
             'payment_state' => 1
-        ])->andWhere([
-            '>=',
-            'add_time',
-            $time
         ])->count();
 
         $this->success($result);
