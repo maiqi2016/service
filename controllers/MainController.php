@@ -765,7 +765,7 @@ class MainController extends Controller
     }
 
     /**
-     * 清楚缓存
+     * 清除缓存
      *
      * @access public
      * @return void

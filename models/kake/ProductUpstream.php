@@ -5,26 +5,36 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "bill".
+ * This is the model class for table "product_upstream".
  *
  * @property integer $id
- * @property integer $order_sub_id
- * @property string  $courier_number
- * @property string  $courier_company
- * @property string  $invoice_title
+ * @property integer $classify
+ * @property string  $name
+ * @property integer $product_region_id
+ * @property string  $principal
+ * @property string  $contact
  * @property string  $address
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class Bill extends General
+class ProductUpstream extends General
 {
+    /**
+     * @var array Field
+     */
+    public $_classify = [
+        0 => '酒店',
+        1 => '餐饮',
+        2 => '娱乐',
+    ];
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'bill';
+        return 'product_upstream';
     }
 
     /**
@@ -35,32 +45,35 @@ class Bill extends General
         return array_merge([
             [
                 [
-                    'order_sub_id',
+                    'classify',
+                    'name',
+                    'product_region_id',
                     'address'
                 ],
                 'required'
             ],
             [
-                ['order_sub_id'],
-                'unique'
-            ],
-            [
-                ['order_sub_id'],
+                [
+                    'classify',
+                    'product_region_id'
+                ],
                 'integer'
             ],
             [
                 [
-                    'courier_number',
-                    'courier_company',
+                    'name',
                     'address'
                 ],
                 'string',
                 'max' => 64
             ],
             [
-                ['invoice_title'],
+                [
+                    'principal',
+                    'contact'
+                ],
                 'string',
-                'max' => 128
+                'max' => 32
             ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
@@ -72,10 +85,11 @@ class Bill extends General
     {
         return [
             'id' => Yii::t('database', 'ID'),
-            'order_sub_id' => Yii::t('database', 'Order Sub ID'),
-            'courier_number' => Yii::t('database', 'Courier Number'),
-            'courier_company' => Yii::t('database', 'Courier Company'),
-            'invoice_title' => Yii::t('database', 'Invoice Title'),
+            'classify' => Yii::t('database', 'Classify'),
+            'name' => Yii::t('database', 'Name'),
+            'product_region_id' => Yii::t('database', 'Product Region ID'),
+            'principal' => Yii::t('database', 'Principal'),
+            'contact' => Yii::t('database', 'Contact'),
             'address' => Yii::t('database', 'Address'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),

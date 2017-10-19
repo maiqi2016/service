@@ -16,6 +16,7 @@ use Yii;
  * @property integer $sort
  * @property integer $purchase_limit
  * @property string  $info
+ * @property integer $product_supplier_id
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -28,14 +29,6 @@ class ProductPackage extends General
     public $_bidding = [
         0 => '不参与',
         1 => '参与'
-    ];
-
-    /**
-     * @var array Fields
-     */
-    public $_verify_sold = [
-        0 => '不需要',
-        1 => '需要'
     ];
 
     /**
@@ -76,7 +69,7 @@ class ProductPackage extends General
                     'bidding',
                     'sort',
                     'purchase_limit',
-                    'verify_sold'
+                    'product_supplier_id'
                 ],
                 'integer'
             ],
@@ -107,7 +100,7 @@ class ProductPackage extends General
             'sort' => Yii::t('database', 'Sort'),
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
-            'verify_sold' => Yii::t('database', 'Verify Sold'),
+            'product_supplier_id' => Yii::t('database', 'Product Supplier ID'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

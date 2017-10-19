@@ -9,8 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string  $title
- * @property integer $hotel_id
- * @property integer $classify
+ * @property integer $product_upstream_id
  * @property integer $sale_type
  * @property integer $sale_rate
  * @property string  $sale_from
@@ -34,6 +33,11 @@ class Product extends General
     /**
      * @var array Field
      */
+    public $_classify_model = 'kake\ProductUpstream';
+
+    /**
+     * @var array Field
+     */
     public $_top = [
         0 => '否',
         1 => '是',
@@ -46,32 +50,6 @@ class Product extends General
         0 => '标准',
         1 => '焦点图',
         2 => '闪购模块'
-    ];
-
-    /**
-     * @var array Field
-     */
-    public $_classify = [
-        1 => '食慧酒廊',
-        2 => '亲子游',
-        3 => 'KAKE置换',
-        4 => '精品酒店',
-        5 => '周末游',
-        6 => '国内长线',
-        7 => '海外度假'
-    ];
-
-    /**
-     * @var array Field en
-     */
-    public $_classify_en = [
-        1 => 'Lounge',
-        2 => 'Parenting',
-        3 => 'Trade',
-        4 => 'Boutique',
-        5 => 'Weekend',
-        6 => 'Domestic',
-        7 => 'Overseas',
     ];
 
     /**
@@ -99,8 +77,7 @@ class Product extends General
             [
                 [
                     'title',
-                    'hotel_id',
-                    'classify',
+                    'product_upstream_id',
                     'attachment_cover',
                     'attachment_ids',
                     'product_description_id'
@@ -109,8 +86,7 @@ class Product extends General
             ],
             [
                 [
-                    'classify',
-                    'hotel_id',
+                    'product_upstream_id',
                     'sale_type',
                     'sale_rate',
                     'sort',
@@ -168,8 +144,7 @@ class Product extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'title' => Yii::t('database', 'Title'),
-            'hotel_id' => Yii::t('database', 'Hotel ID'),
-            'classify' => Yii::t('database', 'Classify'),
+            'product_upstream_id' => Yii::t('database', 'Product Upstream ID'),
             'sale_type' => Yii::t('database', 'Sale Type'),
             'sale_rate' => Yii::t('database', 'Sale Rate'),
             'sale_from' => Yii::t('database', 'Sale From'),

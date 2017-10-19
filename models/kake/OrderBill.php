@@ -5,26 +5,26 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "hotel".
+ * This is the model class for table "order_bill".
  *
  * @property integer $id
- * @property string  $name
- * @property integer $hotel_region_id
- * @property string  $principal
- * @property string  $contact
+ * @property integer $order_sub_id
+ * @property string  $courier_number
+ * @property string  $courier_company
+ * @property string  $invoice_title
  * @property string  $address
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class Hotel extends General
+class OrderBill extends General
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'hotel';
+        return 'order_bill';
     }
 
     /**
@@ -35,33 +35,32 @@ class Hotel extends General
         return array_merge([
             [
                 [
-                    'name',
-                    'hotel_region_id',
-                    'principal',
-                    'contact',
+                    'order_sub_id',
                     'address'
                 ],
                 'required'
             ],
             [
-                ['hotel_region_id'],
+                ['order_sub_id'],
+                'unique'
+            ],
+            [
+                ['order_sub_id'],
                 'integer'
             ],
             [
                 [
-                    'name',
+                    'courier_number',
+                    'courier_company',
                     'address'
                 ],
                 'string',
                 'max' => 64
             ],
             [
-                [
-                    'principal',
-                    'contact'
-                ],
+                ['invoice_title'],
                 'string',
-                'max' => 32
+                'max' => 128
             ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
@@ -73,10 +72,10 @@ class Hotel extends General
     {
         return [
             'id' => Yii::t('database', 'ID'),
-            'name' => Yii::t('database', 'Name'),
-            'hotel_region_id' => Yii::t('database', 'Hotel Region ID'),
-            'principal' => Yii::t('database', 'Principal'),
-            'contact' => Yii::t('database', 'Contact'),
+            'order_sub_id' => Yii::t('database', 'Order Sub ID'),
+            'courier_number' => Yii::t('database', 'Courier Number'),
+            'courier_company' => Yii::t('database', 'Courier Company'),
+            'invoice_title' => Yii::t('database', 'Invoice Title'),
             'address' => Yii::t('database', 'Address'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),

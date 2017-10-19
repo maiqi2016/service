@@ -232,7 +232,7 @@ class ProducerController extends MainController
             $this->fail('abnormal data');
         }
 
-        if ($user['role'] > 0) {
+        if (in_array($user['role'], [1, 10])) {
             $apply->state = 0;
             if (!$apply->update()) {
                 $this->fail(current($apply->getFirstErrors()));
@@ -249,7 +249,7 @@ class ProducerController extends MainController
             $ar->select([
                 'product_id',
                 'type'
-            ]);
+            ], null, Yii::$app->params['use_cache']);
 
             return $ar;
         });
@@ -264,6 +264,7 @@ class ProducerController extends MainController
             }
 
             // update table `user`
+            $user->manager = 1;
             $user->role = 10;
             $user->phone = $apply->phone;
 

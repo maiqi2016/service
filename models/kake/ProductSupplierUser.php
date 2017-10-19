@@ -5,24 +5,23 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "hotel_plate".
+ * This is the model class for table "product_supplier_user".
  *
  * @property integer $id
- * @property string  $name
- * @property integer $attachment_id
- * @property integer $sort
+ * @property integer $product_supplier_id
+ * @property integer $user_id
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class HotelPlate extends General
+class ProductSupplierUser extends General
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'hotel_plate';
+        return 'product_supplier_user';
     }
 
     /**
@@ -33,22 +32,28 @@ class HotelPlate extends General
         return array_merge([
             [
                 [
-                    'name',
-                    'attachment_id'
+                    'product_supplier_id',
+                    'user_id'
                 ],
                 'required'
             ],
             [
                 [
-                    'attachment_id',
-                    'sort'
+                    'product_supplier_id',
+                    'user_id'
                 ],
                 'integer'
             ],
             [
-                ['name'],
-                'string',
-                'max' => 32
+                [
+                    'product_supplier_id',
+                    'user_id'
+                ],
+                'unique',
+                'targetAttribute' => [
+                    'product_supplier_id',
+                    'user_id'
+                ]
             ],
         ], $this->_rule_add_time, $this->_rule_update_time, $this->_rule_state);
     }
@@ -60,9 +65,8 @@ class HotelPlate extends General
     {
         return [
             'id' => Yii::t('database', 'ID'),
-            'name' => Yii::t('database', 'Name'),
-            'attachment_id' => Yii::t('database', 'Attachment ID'),
-            'sort' => Yii::t('database', 'Sort'),
+            'product_supplier_id' => Yii::t('database', 'Product Supplier ID'),
+            'user_id' => Yii::t('database', 'User ID'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

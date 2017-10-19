@@ -91,16 +91,22 @@ class Helper extends Object
      * Create a uuid
      *
      * @access public
+     *
+     * @param string $hyphen
+     *
      * @return string
      */
-    public static function gUid()
+    public static function gUid($hyphen = null)
     {
         $charId = strtoupper(md5(uniqid(mt_rand(), true)));
-        $hyphen = chr(45);
-        $uuid = null;
-        $uuid .= substr($charId, 0, 8) . $hyphen;
-        $uuid .= substr($charId, 8, 4) . $hyphen;
-        $uuid .= substr($charId, 12, 4) . $hyphen;
+        $hyphen = $hyphen ?: chr(45);
+
+        $uuid = substr($charId, 5, 3);
+        $uuid .= substr($charId, 0, 5) . $hyphen;
+        $uuid .= substr($charId, 10, 2);
+        $uuid .= substr($charId, 8, 2) . $hyphen;
+        $uuid .= substr($charId, 14, 2);
+        $uuid .= substr($charId, 12, 2) . $hyphen;
         $uuid .= substr($charId, 16, 4) . $hyphen;
         $uuid .= substr($charId, 20, 12);
 
@@ -2432,7 +2438,7 @@ class Helper extends Object
     }
 
     /**
-     * 生成订单编号
+     * 生成纯数字订单编号 - 14位
      *
      * @access public
      *
@@ -2443,13 +2449,34 @@ class Helper extends Object
      */
     public static function createOrderNumber($channel, $userId)
     {
-        $orderNumber = substr($channel, -1);
-        $orderNumber .= date('ym');
-        $orderNumber .= str_pad(rand(0, 999), 3, 0, STR_PAD_LEFT);
-        $orderNumber .= strrev(str_pad(substr($userId, -4), 4, 0, STR_PAD_LEFT));
-        $orderNumber .= date('s');
+        $number = substr($channel, -1); // 1
+        $number .= date('ym'); // 4
+        $number .= str_pad(rand(0, 999), 3, 0, STR_PAD_LEFT); // 3
+        $number .= strrev(str_pad(substr($userId, -4), 4, 0, STR_PAD_LEFT)); // 4
+        $number .= date('s'); // 2
 
-        return $orderNumber;
+        return $number;
+    }
+
+    /**
+     * 生成票卷码 - 12位
+     *
+     * @access public
+     *
+     * @param $channel
+     * @param $userId
+     *
+     * @return string
+     */
+    public static function createTicketNumber($channel, $userId)
+    {
+        $number = strrev(str_pad(substr($channel, -2), 2, 0, STR_PAD_LEFT)); // 2
+        $uuid = uniqid(getmypid() . mt_rand());
+        $number .= substr($uuid, -5); // 5
+        $number .= substr($userId, -1); // 1
+        $number .= substr($uuid, 1, 4); // 4
+
+        return $number;
     }
 
     /**

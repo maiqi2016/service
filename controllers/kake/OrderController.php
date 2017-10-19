@@ -4,7 +4,7 @@ namespace service\controllers\kake;
 
 use service\controllers\MainController;
 use service\components\Helper;
-use service\models\kake\Bill;
+use service\models\kake\OrderBill;
 use service\models\kake\Order;
 use service\models\kake\OrderContacts;
 use service\models\kake\OrderInstructionsLog;
@@ -12,6 +12,7 @@ use service\models\kake\OrderSub;
 use service\models\kake\PhoneCaptcha;
 use service\models\kake\ProducerLog;
 use service\models\kake\Product;
+use service\models\kake\OrderSoldCode;
 use yii;
 
 /**
@@ -141,15 +142,54 @@ class OrderController extends MainController
 
             if ($paid_result) {
                 $editOrder->payment_state = 1;
-                $number = OrderSub::find()->where([
-                    'order_id' => $order['id']
-                ])->count();
 
+                $orderSub = new OrderSub();
+                $sub = $orderSub->all(function ($list) use ($orderSub, $order) {
+                    return $orderSub->handleActiveRecord($list, 'order_sub', [
+                        'join' => [
+                            ['table' => 'product_package'],
+                            ['table' => 'order']
+                        ],
+                        'where' => [['order_sub.order_id' => $order['id']]],
+                        'select' => [
+                            'order_sub.*',
+                            'product_package.product_supplier_id',
+                            'order.user_id'
+                        ]
+                    ]);
+                });
+
+                // 更新销量
+                $number = count($sub);
                 (new Product())->edit(['id' => $order['product_id']], [
                     'real_sales' => function ($num) use ($number) {
                         return $num + $number;
                     }
                 ]);
+
+                // 生成子订单核销码
+                $code = [];
+                foreach ($sub as $item) {
+                    if (empty($item['product_supplier_id'])) {
+                        continue;
+                    }
+                    $code[] = [
+                        $item['id'],
+                        $item['product_supplier_id'],
+                        Helper::createTicketNumber($item['product_supplier_id'], $item['user_id'])
+                    ];
+                }
+
+                $soldCode = new OrderSoldCode();
+                $result = $soldCode->batchAdd([
+                    'order_sub_id',
+                    'product_supplier_id',
+                    'code'
+                ], $code);
+
+                if (!$result['state']) {
+                    Yii::error($result['info'] . ' : ' . json_encode($code));
+                }
             } else {
                 $editOrder->payment_state = 2;
             }
@@ -182,7 +222,7 @@ class OrderController extends MainController
             $one->leftJoin('producer_log', 'order.producer_log_id = producer_log.id');
             $one->leftJoin('user AS producer', 'producer_log.producer_id = producer.id');
             $one->leftJoin('product', 'order.product_id = product.id');
-            $one->leftJoin('hotel', 'product.hotel_id = hotel.id');
+            $one->leftJoin('product_upstream', 'product.product_upstream_id = product_upstream.id');
             $one->leftJoin('order_sub', 'order.id = order_sub.order_id');
             $one->leftJoin(['sub' => $sub], 'sub.order_id = order.id');
 
@@ -191,7 +231,7 @@ class OrderController extends MainController
                 'sub.sub_total',
                 'producer_log.producer_id',
                 'product.title',
-                'hotel.name',
+                'product_upstream.name',
                 'user.username',
                 'user.openid AS user_openid',
                 'producer.openid AS producer_openid'
@@ -262,7 +302,7 @@ class OrderController extends MainController
                     ],
                     [
                         'left_table' => 'product',
-                        'table' => 'hotel'
+                        'table' => 'product_upstream'
                     ]
                 ],
                 'where' => $where,
@@ -272,7 +312,7 @@ class OrderController extends MainController
                     'order_sub.*',
                     'user.username',
                     'user.openid',
-                    'hotel.name',
+                    'product_upstream.name',
                     'order_contacts.real_name order_user',
                     'order_contacts.phone AS order_phone'
                 ],
@@ -758,7 +798,7 @@ class OrderController extends MainController
     {
         $this->validateOrderSubUser($user_id, $order_sub_id);
 
-        $result = (new Bill())->add(compact('order_sub_id', 'invoice_title', 'address'));
+        $result = (new OrderBill())->add(compact('order_sub_id', 'invoice_title', 'address'));
         if (!$result['state']) {
             $this->fail($result['info']);
         }

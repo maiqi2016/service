@@ -5,10 +5,9 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "hotel_region".
+ * This is the model class for table "product_plate".
  *
  * @property integer $id
- * @property integer $hotel_plate_id
  * @property string  $name
  * @property integer $attachment_id
  * @property integer $sort
@@ -16,14 +15,14 @@ use Yii;
  * @property string  $update_time
  * @property integer $state
  */
-class HotelRegion extends General
+class ProductPlate extends General
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'hotel_region';
+        return 'product_plate';
     }
 
     /**
@@ -34,7 +33,6 @@ class HotelRegion extends General
         return array_merge([
             [
                 [
-                    'hotel_plate_id',
                     'name',
                     'attachment_id'
                 ],
@@ -42,7 +40,6 @@ class HotelRegion extends General
             ],
             [
                 [
-                    'hotel_plate_id',
                     'attachment_id',
                     'sort'
                 ],
@@ -63,7 +60,6 @@ class HotelRegion extends General
     {
         return [
             'id' => Yii::t('database', 'ID'),
-            'hotel_plate_id' => Yii::t('database', 'Hotel Plate ID'),
             'name' => Yii::t('database', 'Name'),
             'attachment_id' => Yii::t('database', 'Attachment ID'),
             'sort' => Yii::t('database', 'Sort'),
