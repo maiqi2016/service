@@ -25,7 +25,7 @@ class OrderSub extends General
      * @var array Field
      */
     public $_state = [
-        0 => '未预约',
+        0 => '未使用',
         1 => '预约中',
         2 => '待入住',
         3 => '退款申请中',
@@ -38,6 +38,11 @@ class OrderSub extends General
      * @var array Field
      */
     public $_payment_state_model = 'kake\Order';
+
+    /**
+     * @var array Field
+     */
+    public $_sold_state_model = 'kake\OrderSoldCode::state';
 
     /**
      * @inheritdoc

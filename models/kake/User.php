@@ -10,6 +10,7 @@ use Yii;
  * @property integer $id
  * @property string  $username
  * @property string  $phone
+ * @property integer $manager
  * @property integer $role
  * @property string  $openid
  * @property integer $sex
@@ -26,9 +27,18 @@ class User extends General
     /**
      * @var array Field
      */
+    public $_manager = [
+        0 => '无',
+        1 => '有'
+    ];
+
+    /**
+     * @var array Field
+     */
     public $_role = [
         0 => '普通用户',
         1 => '管理员',
+        9 => '供应商',
         10 => '分销商',
     ];
 
@@ -57,6 +67,7 @@ class User extends General
         return array_merge($this->_rule_phone, $this->_rule_username, [
             [
                 [
+                    'manager',
                     'role',
                     'sex'
                 ],
@@ -106,6 +117,7 @@ class User extends General
             'id' => Yii::t('database', 'ID'),
             'username' => Yii::t('database', 'Username'),
             'phone' => Yii::t('database', 'Phone'),
+            'manager' => Yii::t('database', 'Manager'),
             'role' => Yii::t('database', 'Role'),
             'openid' => Yii::t('database', 'Openid'),
             'sex' => Yii::t('database', 'Sex'),
