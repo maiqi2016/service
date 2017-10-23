@@ -459,6 +459,14 @@ class OrderController extends MainController
                 throw new yii\db\Exception($result['info']);
             }
 
+            // 核销码失效
+            (new OrderSoldCode())->edit([
+                'order_sub_id' => $order_sub_id,
+                'state' => 1
+            ], [
+                'state' => 0
+            ]);
+
             $result = (new OrderInstructionsLog())->add([
                 'order_sub_id' => $order_sub_id,
                 'admin_user_id' => $user_id,
@@ -899,5 +907,55 @@ class OrderController extends MainController
         });
 
         $this->success($contact);
+    }
+
+    /**
+     * 核销套餐
+     *
+     * @access public
+     *
+     * @param string $sold
+     * @param array  $supplier
+     *
+     * @return  void
+     */
+    public function actionVerifySoldCode($sold, $supplier)
+    {
+        /**
+         * @var $model OrderSoldCode
+         */
+        $model = $this->model('order_sold_code');
+        $result = $model->trans(function () use ($model, $sold, $supplier) {
+
+            $record = $model::findOne([
+                'code' => $sold,
+                'product_supplier_id' => Helper::parseJsonString($supplier)
+            ]);
+
+            if (empty($record)) {
+                throw new yii\db\Exception('sold code not exists');
+            } else if ($record->state != 1) {
+                throw new yii\db\Exception('sold code used');
+            }
+
+            $result = $model->edit(['code' => $sold], ['state' => 2]);
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            $orderSubModel = $this->model('order_sub');
+            $result = $orderSubModel->edit(['id' => $record->order_sub_id], ['state' => 6]);
+            if (!$result['state']) {
+                throw new yii\db\Exception($result['info']);
+            }
+
+            return true;
+        }, '核销套餐');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
     }
 }
