@@ -17,6 +17,7 @@ use Yii;
  * @property integer $purchase_limit
  * @property string  $info
  * @property integer $product_supplier_id
+ * @property string  $supplier_contact
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -78,7 +79,10 @@ class ProductPackage extends General
                 'string'
             ],
             [
-                ['name'],
+                [
+                    'name',
+                    'supplier_contact'
+                ],
                 'string',
                 'max' => 32
             ],
@@ -101,6 +105,7 @@ class ProductPackage extends General
             'purchase_limit' => Yii::t('database', 'Purchase Limit'),
             'info' => Yii::t('database', 'Info'),
             'product_supplier_id' => Yii::t('database', 'Product Supplier ID'),
+            'supplier_contact' => Yii::t('database', 'Supplier Contact'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),
