@@ -24,6 +24,7 @@ use Yii;
  * @property string  $attachment_ids
  * @property integer $product_description_id
  * @property integer $share_times
+ * @property string  $referral_link
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -129,7 +130,10 @@ class Product extends General
                 'value' => 0
             ],
             [
-                ['attachment_ids'],
+                [
+                    'attachment_ids',
+                    'referral_link'
+                ],
                 'string',
                 'max' => 256
             ],
@@ -159,6 +163,7 @@ class Product extends General
             'attachment_ids' => Yii::t('database', 'Attachment Ids'),
             'product_description_id' => Yii::t('database', 'Product Description ID'),
             'share_times' => Yii::t('database', 'Share Times'),
+            'referral_link' => Yii::t('database', 'Referral Link'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

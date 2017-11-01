@@ -117,4 +117,6 @@ return [
     'Winning' => '中奖',
     'Manager' => '后台登录权',
     'Product Supplier ID' => '产品供应商ID',
+    'Supplier Contact' => '供应商预约电话',
+    'Referral Link' => '推广链接',
 ];
