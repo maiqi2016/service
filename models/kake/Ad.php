@@ -26,8 +26,10 @@ class Ad extends General
      * @var array Field
      */
     public $_type = [
-        0 => '焦点图',
-        1 => 'banner'
+        0 => '首页焦点图',
+        1 => '首页广告',
+        2 => '分销页焦点图',
+        3 => '分销页广告',
     ];
 
     /**
