@@ -28,8 +28,8 @@ class ProducerController extends MainController
      *
      * @access public
      *
-     * @param array   $log
-     * @param float   $quota
+     * @param array $log
+     * @param float $quota
      * @param integer $user_id
      *
      * @return void
@@ -155,23 +155,32 @@ class ProducerController extends MainController
      * 获取分销产品的 product_ids
      *
      * @param integer $producer_id
+     * @param integer $classify
      * @param integer $page_number
      * @param integer $limit
      *
      * @return array
      */
-    public function listProductIds($producer_id, $page_number = 1, $limit = null)
+    public function listProductIds($producer_id, $classify = null, $page_number = 1, $limit = null)
     {
         $producerProduct = new ProducerProduct();
-        $product = $producerProduct->all(function ($list) use ($producer_id, $page_number, $limit) {
+        $product = $producerProduct->all(function ($list) use ($producer_id, $classify, $page_number, $limit) {
             /**
              * @var $list yii\db\Query
              */
-            $list->where([
-                'producer_id' => $producer_id,
-                'state' => 1
-            ]);
-            $list->orderBy('state DESC, ISNULL(sort), sort ASC, update_time DESC, id ASC');
+            $where = [
+                'producer_product.producer_id' => $producer_id,
+                'producer_product.state' => 1
+            ];
+
+            if (!is_null($classify)) {
+                $list->leftJoin('product', 'producer_product.product_id = product.id');
+                $list->leftJoin('product_upstream', 'product.product_upstream_id = product_upstream.id');
+                $where['product_upstream.classify'] = $classify;
+            }
+
+            $list->where($where);
+            $list->orderBy('producer_product.state DESC, ISNULL(producer_product.sort), producer_product.sort ASC, producer_product.update_time DESC, producer_product.id ASC');
             $list->select('product_id');
 
             if ($page_number && $limit) {
@@ -195,12 +204,13 @@ class ProducerController extends MainController
      * @param integer $producer_id
      * @param integer $page_number
      * @param integer $limit
+     * @param integer $classify
      *
      * @return void
      */
-    public function actionListProductIds($producer_id, $page_number, $limit)
+    public function actionListProductIds($producer_id, $page_number, $limit, $classify = null)
     {
-        $this->success($this->listProductIds($producer_id, $page_number, $limit));
+        $this->success($this->listProductIds($producer_id, $classify, $page_number, $limit));
     }
 
     /**
@@ -232,7 +242,10 @@ class ProducerController extends MainController
             $this->fail('abnormal data');
         }
 
-        if (in_array($user['role'], [1, 10])) {
+        if (in_array($user['role'], [
+            1,
+            10
+        ])) {
             $apply->state = 0;
             if (!$apply->update()) {
                 $this->fail(current($apply->getFirstErrors()));
