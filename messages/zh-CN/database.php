@@ -49,7 +49,7 @@ return [
     'Sort' => '排序',
     'Controller' => '控制器',
     'Action' => '操作',
-    'Tag' => '标记',
+    'Tag' => '标签',
     'Openid' => 'OpenID',
     'Sex' => '性别',
     'Country' => '国家',
@@ -119,4 +119,5 @@ return [
     'Product Supplier ID' => '产品供应商ID',
     'Supplier Contact' => '供应商预约电话',
     'Referral Link' => '推广链接',
+    'Producer Group ID' => '分销商分组ID',
 ];
