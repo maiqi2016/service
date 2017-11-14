@@ -28,7 +28,15 @@ return [
             'cookieValidationKey' => '[SECRET:cookie]',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            // 'class' => 'yii\caching\FileCache',
+            'class' => 'yii\redis\Cache',
+        ],
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => '[SECRET:redis_host]',
+            'password' => '[SECRET:redis_pwd]',
+            'port' => [SECRET:redis_port],
+            'database' => 0,
         ],
         'urlManager' => [
             'class' => 'service\inherit\CliUrlManager'
