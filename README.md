@@ -7,4 +7,4 @@ Common service
 * chmod a+x install.sh
 * ./install.sh
 * cd thrift
-* nohup python runserver.py 106.14.65.39 8888 2>&1 &
+* nohup python runserver.py 101.132.171.219 8888 2>&1 &
