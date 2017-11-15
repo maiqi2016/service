@@ -16,6 +16,9 @@ return [
         require(__DIR__ . '/params-local.php')
     ),
     'components' => [
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
         'kake' => [
             'class' => 'yii\db\Connection',
             'charset' => 'utf8',

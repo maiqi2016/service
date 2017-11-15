@@ -28,7 +28,6 @@ return [
             'cookieValidationKey' => '[SECRET:cookie]',
         ],
         'cache' => [
-            // 'class' => 'yii\caching\FileCache',
             'class' => 'yii\redis\Cache',
         ],
         'redis' => [

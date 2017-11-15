@@ -1270,29 +1270,47 @@ class Helper extends Object
     /**
      * If empty return default
      *
-     * @param array  $item
-     * @param string $key
-     * @param mixed  $default
+     * @param array   $item
+     * @param string  $key
+     * @param mixed   $default
+     * @param boolean $defaultIsArray
      *
      * @return mixed
      */
-    public static function emptyDefault($item, $key, $default = null)
+    public static function emptyDefault($item, $key, $default = null, $defaultIsArray = false)
     {
-        return empty($item[$key]) ? $default : $item[$key];
+        if (!empty($item[$key])) {
+            return $item[$key];
+        }
+
+        if (!$defaultIsArray) {
+            return $default;
+        }
+
+        return isset($default[$key]) ? $default[$key] : null;
     }
 
     /**
      * If not set return default
      *
-     * @param array  $item
-     * @param string $key
-     * @param mixed  $default
+     * @param array   $item
+     * @param string  $key
+     * @param mixed   $default
+     * @param boolean $defaultIsArray
      *
      * @return mixed
      */
-    public static function issetDefault($item, $key, $default = null)
+    public static function issetDefault($item, $key, $default = null, $defaultIsArray = false)
     {
-        return isset($item[$key]) ? $item[$key] : $default;
+        if (isset($item[$key])) {
+            return $item[$key];
+        }
+
+        if (!$defaultIsArray) {
+            return $default;
+        }
+
+        return isset($default[$key]) ? $default[$key] : null;
     }
 
     /**
@@ -1708,15 +1726,17 @@ class Helper extends Object
      * Create deep path
      *
      * @access public
+     *
+     * @param string $separator
+     *
      * @return string
      */
-    public static function createDeepPath()
+    public static function createDeepPath($separator = DIRECTORY_SEPARATOR)
     {
-
         // most 2000 in the same directory
         $deep = time() % 2000;
 
-        $deep = str_pad($deep, 4, '0', STR_PAD_LEFT) . '/';
+        $deep = str_pad($deep, 4, '0', STR_PAD_LEFT) . $separator;
 
         $time = substr(microtime(true), -6, 5);
         $time = intval(str_replace('.', null, $time));
@@ -1760,20 +1780,23 @@ class Helper extends Object
      *
      * @param string $path
      * @param string $suffix
+     * @param string $separator
      * @param string $prefix
      *
      * @return array
      */
-    public static function createFilePath($path, $suffix = 'jpg', $prefix = null)
+    public static function createFilePath($path, $suffix = 'jpg', $separator = DIRECTORY_SEPARATOR, $prefix = null)
     {
         $deep = $filename = null;
         if (pathinfo($path, PATHINFO_EXTENSION)) {
             $file = $path;
         } else {
-            $deep = self::createDeepPath();
+            $deep = self::createDeepPath($separator);
             $filename = uniqid($prefix) . '.' . $suffix;
-            $file = $path . '/' . $deep . '/' . $filename;
-            mkdir($path . '/' . $deep, 0777, true);
+            $file = $path . DIRECTORY_SEPARATOR . $deep . $separator . $filename;
+            if ($separator === DIRECTORY_SEPARATOR) {
+                mkdir($path . DIRECTORY_SEPARATOR . $deep, 0777, true);
+            }
         }
 
         return compact('deep', 'filename', 'file');
@@ -1784,11 +1807,12 @@ class Helper extends Object
      *
      * @param string $base64
      * @param string $path
+     * @param string $separator
      * @param string $suffix
      *
      * @return mixed
      */
-    public static function saveBase64File($base64, $path = null, $suffix = 'jpg')
+    public static function saveBase64File($base64, $path = null, $separator = '-', $suffix = 'jpg')
     {
         $base64 = preg_replace('/^(data:\s*image\/(\w+);base64,)/', '', $base64);
         $base64 = base64_decode($base64);
@@ -1797,14 +1821,14 @@ class Helper extends Object
             return $base64;
         }
 
-        $path = self::createFilePath($path, $suffix, 'base64_');
+        $path = self::createFilePath($path, $suffix, $separator, 'base64_');
         $result = @file_put_contents($path['file'], $base64);
 
         if (!$result) {
             return false;
         }
 
-        return $path['deep'] ? ($path['deep'] . '/' . $path['filename']) : true;
+        return $path['deep'] ? ($path['deep'] . $separator . $path['filename']) : true;
     }
 
     /**
