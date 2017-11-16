@@ -590,16 +590,17 @@ class Main extends ActiveRecord
      *
      * @return mixed
      */
-    public function cache($key, $fetchFn, $time = null, $dependent = null, $useCache = false)
+    public function cache($key, $fetchFn, $time = null, $dependent = null, $useCache = true)
     {
         if (!$useCache || Yii::$app->session->getFlash('no_cache')) {
             return call_user_func($fetchFn);
         }
 
-        if (!(is_string($key) && strpos($key, '.') !== false)) {
-            $key = static::className() . '-' . md5(json_encode($key));
+        if (!is_string($key)) {
+            $key = strtolower(static::className()) . '_' . md5(json_encode($key));
         }
 
+        $key = strtolower(Yii::$app->params['app_name']) . '_' . $key;
         $data = Yii::$app->cache->get($key);
 
         if (false === $data) {
