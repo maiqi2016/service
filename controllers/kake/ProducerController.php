@@ -214,7 +214,7 @@ class ProducerController extends MainController
     }
 
     /**
-     * 通过申请
+     * 通过分销商申请
      *
      * @param integer $id
      *
@@ -295,7 +295,7 @@ class ProducerController extends MainController
                 'producer_id' => $apply->user_id,
                 'name' => $apply->name,
                 'logo_attachment_id' => $apply->attachment_id,
-                'account_type' => 1,
+                'account_type' => 0,
                 'account_number' => 'AUTO:' . $apply->phone,
             ];
 

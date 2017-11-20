@@ -1318,12 +1318,13 @@ class Helper extends Object
      *
      * @access public
      *
-     * @param array $target
-     * @param array $keys
+     * @param array   $target
+     * @param array   $keys
+     * @param boolean $null
      *
      * @return array
      */
-    public static function pullSome($target, $keys)
+    public static function pullSome($target, $keys, $null = false)
     {
         $_target = [];
         foreach ($keys as $oldKey => $newKey) {
@@ -1332,6 +1333,8 @@ class Helper extends Object
             }
             if (isset($target[$oldKey])) {
                 $_target[$newKey] = $target[$oldKey];
+            } else if ($null) {
+                $_target[$newKey] = null;
             }
         }
 

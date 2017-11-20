@@ -26,7 +26,7 @@ class ProductUpstream extends General
     public $_classify = [
         0 => '酒店',
         1 => '餐饮',
-        2 => '娱乐',
+        2 => '玩乐',
     ];
 
     /**
