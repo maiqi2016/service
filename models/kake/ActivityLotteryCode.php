@@ -25,6 +25,7 @@ class ActivityLotteryCode extends General
      * @var array Field
      */
     public $_state = [
+        -4 => '第四期',
         -3 => '第三期',
         -2 => '第二期',
         -1 => '第一期',
@@ -61,10 +62,10 @@ class ActivityLotteryCode extends General
         23 => '小渔 (No.1)',
         24 => '汪正摄影 (No.1)',
         25 => 'uyuan (No.2)',
-        26 => '立秀宝',
-        27 => '妈妈帮',
-        28 => 'uyuan',
-        29 => '上海潮生活',
+        26 => '立秀宝 (No.3)',
+        27 => '妈妈帮 (No.2)',
+        28 => 'uyuan (No.3)',
+        29 => '上海潮生活 (No.1)',
         999 => '阿里巴巴',
     ];
 
@@ -108,27 +109,30 @@ class ActivityLotteryCode extends General
      * @var array 对应活动时间
      */
     public $_activity_date = [
-        25 => [
-            'begin' => '2017-08-20 09:00:00',
-            'end' => '2017-08-20 18:00:00'
-        ],
-        26 => [
-            'begin' => '2017-08-18 12:00:00',
-            'end' => '2017-08-23 12:00:00'
-        ],
-        27 => [
-            'begin' => '2017-08-22 12:00:00',
-            'end' => '2017-08-29 12:00:00'
-        ],
-        28 => [
-            'begin' => '2017-08-27 12:00:00',
-            'end' => '2017-08-27 16:00:00'
-        ],
-        29 => [
-            'begin' => '2017-08-27 10:00:00',
-            'end' => '2017-08-28 14:00:00'
+        999 => [
+            'begin' => '2017-01-01 00:00:00',
+            'end' => '2019-01-01 00:00:00'
         ],
     ];
+
+    /**
+     * @var array 生成有序的抽奖码
+     */
+    public $_order_ids = [
+        25
+    ];
+
+    /**
+     * @var array 只需填写公司名称
+     */
+    public $_company_only = [
+        999
+    ];
+
+    /**
+     * @var int 生效中的最大活动
+     */
+    public $_max_activity_id = 999;
 
     /**
      * @var array Fields
