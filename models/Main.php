@@ -600,7 +600,7 @@ class Main extends ActiveRecord
             $key = strtolower(static::className()) . '_' . md5(json_encode($key));
         }
 
-        $key = strtolower(Yii::$app->params['app_name']) . '_' . $key;
+        $key = strtolower(Yii::$app->id) . '_' . $key;
         $data = Yii::$app->cache->get($key);
 
         if (false === $data) {
