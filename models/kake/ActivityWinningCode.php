@@ -22,6 +22,7 @@ class ActivityWinningCode extends General
      * @var array Field
      */
     public $_state = [
+        -1 => '第一期',
         0 => '删除',
         1 => '本期',
     ];
