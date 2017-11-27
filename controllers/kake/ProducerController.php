@@ -177,6 +177,7 @@ class ProducerController extends MainController
                 $list->leftJoin('product', 'producer_product.product_id = product.id');
                 $list->leftJoin('product_upstream', 'product.product_upstream_id = product_upstream.id');
                 $where['product_upstream.classify'] = $classify;
+                $where['product.state'] = 1;
             }
 
             $list->where($where);
