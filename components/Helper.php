@@ -3,6 +3,7 @@
 namespace service\components;
 
 use yii\base\Object;
+use ZipArchive;
 
 /**
  * Helper components
@@ -12,8 +13,15 @@ use yii\base\Object;
  */
 class Helper extends Object
 {
+    /**
+     * @const file mode
+     */
+    const FILE_MODE = 0777;
 
-    // --- Mixed ---
+    /**
+     * @const directory separator
+     */
+    const DS = DIRECTORY_SEPARATOR;
 
     /**
      * Control execution once at current request
@@ -683,8 +691,6 @@ class Helper extends Object
         return strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false;
     }
 
-    // --- Array ---
-
     /**
      * Change the keys name
      *
@@ -1006,25 +1012,6 @@ class Helper extends Object
     }
 
     /**
-     * Get the One/Two-dimensional from Two-dimensional simple
-     *
-     * @access public
-     *
-     * @param array  $array
-     * @param string $keyTag
-     * @param mixed  $valTag
-     *
-     * @return array
-     */
-    public static function arrayColumnSimple($array, $keyTag, $valTag)
-    {
-        $keyArray = array_column($array, $keyTag);
-        $valArray = array_column($array, $valTag);
-
-        return array_combine($keyArray, $valArray);
-    }
-
-    /**
      * Create select'html
      *
      * @param array   $array
@@ -1174,7 +1161,7 @@ class Helper extends Object
 
         $values = [];
         foreach ($keys as $val) {
-            $values[] = isset($array[$val]) ? $array[$val] : null;
+            $values[$val] = isset($array[$val]) ? $array[$val] : null;
         }
 
         return $isString ? implode(',', $values) : $values;
@@ -1507,8 +1494,6 @@ class Helper extends Object
         return array_slice($randArr, 0, $limit);
     }
 
-    // --- File ---
-
     /**
      * Write content to file
      *
@@ -1522,7 +1507,7 @@ class Helper extends Object
      *
      * @return boolean
      */
-    public static function writeFile($file, $message, $firstMessage = null, $permission = 0777, $mode = 'ab')
+    public static function writeFile($file, $message, $firstMessage = null, $permission = self::FILE_MODE, $mode = 'ab')
     {
         if (!file_exists($file)) {
             $first = true;
@@ -1570,7 +1555,7 @@ class Helper extends Object
                 continue;
             }
 
-            $path = $directory . DIRECTORY_SEPARATOR . $item;
+            $path = $directory . self::DS . $item;
 
             if (is_dir($path)) {
                 $result = null;
@@ -1612,10 +1597,10 @@ class Helper extends Object
      *
      * @return boolean
      */
-    public static function createDirectory($newDir, $permission = 0777)
+    public static function createDirectory($newDir, $permission = self::FILE_MODE)
     {
-        if (strripos($newDir, DIRECTORY_SEPARATOR) != 0) {
-            $parentDir = substr($newDir, 0, strripos($newDir, DIRECTORY_SEPARATOR));
+        if (strripos($newDir, self::DS) != 0) {
+            $parentDir = substr($newDir, 0, strripos($newDir, self::DS));
         }
 
         if (isset($parentDir) && !is_dir($parentDir)) {
@@ -1707,8 +1692,12 @@ class Helper extends Object
      */
     public static function archiveDirectory($directory, $zipFilePath = null)
     {
-        $zip = new \ZipArchive();
-        if (true !== $zip->open($zipFilePath, \ZipArchive::CREATE)) {
+        $zip = new ZipArchive();
+
+        $dirInfo = pathinfo($directory);
+        $zipFilePath = $zipFilePath ?: $dirInfo['dirname'] . self::DS . $dirInfo['basename'] . '.zip';
+
+        if (true !== $zip->open($zipFilePath, ZipArchive::CREATE)) {
             return 'create zip file failed';
         }
 
@@ -1717,8 +1706,10 @@ class Helper extends Object
                 $zip->addFile($file, is_numeric($localName) ? null : $localName);
             }
         } else {
-            self::directoryIterator($directory, function ($file) use ($zip) {
-                $zip->addFile($file);
+            self::directoryIterator($directory, function ($file) use ($directory, $zip) {
+                $localName = str_replace($directory, null, $file);
+                $localName = self::DS . ltrim($localName, self::DS);
+                $zip->addFile($file, $localName);
             });
         }
 
@@ -1734,7 +1725,7 @@ class Helper extends Object
      *
      * @return string
      */
-    public static function createDeepPath($separator = DIRECTORY_SEPARATOR)
+    public static function createDeepPath($separator = self::DS)
     {
         // most 2000 in the same directory
         $deep = time() % 2000;
@@ -1773,6 +1764,10 @@ class Helper extends Object
             return false;
         }
 
+        if (!is_dir($dir = dirname($savePath))) {
+            @mkdir($dir, self::FILE_MODE, true);
+        }
+
         $result = @file_put_contents($savePath, $content);
 
         return $result ? true : false;
@@ -1781,14 +1776,15 @@ class Helper extends Object
     /**
      * Create file path
      *
-     * @param string $path
-     * @param string $suffix
-     * @param string $separator
-     * @param string $prefix
+     * @param string  $path
+     * @param string  $suffix
+     * @param string  $separator
+     * @param string  $prefix
+     * @param integer $permission
      *
      * @return array
      */
-    public static function createFilePath($path, $suffix = 'jpg', $separator = DIRECTORY_SEPARATOR, $prefix = null)
+    public static function createFilePath($path, $suffix = 'jpg', $separator = self::DS, $prefix = null, $permission = self::FILE_MODE)
     {
         $deep = $filename = null;
         if (pathinfo($path, PATHINFO_EXTENSION)) {
@@ -1796,9 +1792,9 @@ class Helper extends Object
         } else {
             $deep = self::createDeepPath($separator);
             $filename = uniqid($prefix) . '.' . $suffix;
-            $file = $path . DIRECTORY_SEPARATOR . $deep . $separator . $filename;
-            if ($separator === DIRECTORY_SEPARATOR) {
-                mkdir($path . DIRECTORY_SEPARATOR . $deep, 0777, true);
+            $file = $path . self::DS . $deep . $separator . $filename;
+            if ($separator === self::DS) {
+                @mkdir($path . self::DS . $deep, $permission, true);
             }
         }
 
@@ -1806,7 +1802,7 @@ class Helper extends Object
     }
 
     /**
-     * Save base64 to file
+     * Save base64 to image
      *
      * @param string $base64
      * @param string $path
@@ -1815,7 +1811,7 @@ class Helper extends Object
      *
      * @return mixed
      */
-    public static function saveBase64File($base64, $path = null, $separator = '-', $suffix = 'jpg')
+    public static function base64ToImage($base64, $path = null, $separator = '-', $suffix = 'jpg')
     {
         $base64 = preg_replace('/^(data:\s*image\/(\w+);base64,)/', '', $base64);
         $base64 = base64_decode($base64);
@@ -1832,6 +1828,21 @@ class Helper extends Object
         }
 
         return $path['deep'] ? ($path['deep'] . $separator . $path['filename']) : true;
+    }
+
+    /**
+     * Transformation image to base64
+     *
+     * @param string $filePath
+     *
+     * @return string
+     */
+    public static function imageToBase64($filePath)
+    {
+        $image = fread(fopen($filePath, 'r'), filesize($filePath));
+        $base64 = 'data:' . getimagesize($filePath)['mime'] . ';base64,' . chunk_split(base64_encode($image));
+
+        return $base64;
     }
 
     /**
@@ -1864,8 +1875,6 @@ class Helper extends Object
 
         return array_map('intval', $result);
     }
-
-    // --- String ---
 
     /**
      * Number of characters
@@ -2739,5 +2748,61 @@ class Helper extends Object
         }
 
         return array_keys($box);
+    }
+
+    /**
+     * Print json code with format
+     *
+     * @param mixed $json
+     *
+     * @return string
+     */
+    public static function formatPrintJson($json)
+    {
+        if (is_array($json)) {
+            $json = json_encode($json, JSON_UNESCAPED_UNICODE);
+        }
+
+        $result = null;
+        $pos = 0;
+        $strLen = strlen($json);
+        $indentStr = str_repeat(' ', 4);
+        $newLine = PHP_EOL;
+        $prevChar = '';
+        $outOfQuotes = true;
+
+        for ($i = 0; $i <= $strLen; $i++) {
+
+            // Grab the next character in the string.
+            $char = substr($json, $i, 1);
+            // Are we inside a quoted string?
+            if ($char == '"' && $prevChar != '\\') {
+                $outOfQuotes = !$outOfQuotes;
+                // If this character is the end of an element,
+                // output a new line and indent the next line.
+            } else if (($char == '}' || $char == ']') && $outOfQuotes) {
+                $result .= $newLine;
+                $pos--;
+                for ($j = 0; $j < $pos; $j++) {
+                    $result .= $indentStr;
+                }
+            }
+            // Add the character to the result string.
+            $result .= $char;
+            // If the last character was the beginning of an element,
+            // output a new line and indent the next line.
+            if (($char == ',' || $char == '{' || $char == '[') && $outOfQuotes) {
+                $result .= $newLine;
+                if ($char == '{' || $char == '[') {
+                    $pos++;
+                }
+                for ($j = 0; $j < $pos; $j++) {
+                    $result .= $indentStr;
+                }
+            }
+            $prevChar = $char;
+        }
+
+        return $result;
     }
 }
