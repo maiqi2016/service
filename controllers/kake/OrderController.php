@@ -921,10 +921,7 @@ class OrderController extends MainController
      */
     public function actionVerifySoldCode($sold, $supplier)
     {
-        /**
-         * @var $model OrderSoldCode
-         */
-        $model = $this->model('order_sold_code');
+        $model = new OrderSoldCode();
         $result = $model->trans(function () use ($model, $sold, $supplier) {
 
             $record = $model::findOne([
@@ -943,7 +940,7 @@ class OrderController extends MainController
                 throw new yii\db\Exception($result['info']);
             }
 
-            $orderSubModel = $this->model('order_sub');
+            $orderSubModel = new OrderSub();
             $result = $orderSubModel->edit(['id' => $record->order_sub_id], ['state' => 6]);
             if (!$result['state']) {
                 throw new yii\db\Exception($result['info']);

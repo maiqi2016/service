@@ -28,8 +28,8 @@ class ProducerController extends MainController
      *
      * @access public
      *
-     * @param array $log
-     * @param float $quota
+     * @param array   $log
+     * @param float   $quota
      * @param integer $user_id
      *
      * @return void
@@ -339,5 +339,67 @@ class ProducerController extends MainController
         $avatar['name'] = $apply->name;
 
         $this->success(compact('avatar'));
+    }
+
+    /**
+     * 分销产品统一排序
+     *
+     * @access public
+     *
+     * @param string $sort
+     *
+     * @return void
+     */
+    public function actionUnifySort($sort)
+    {
+        $unifySort = Helper::handleString($sort);
+
+        $model = new ProducerProduct();
+        foreach ($unifySort as $sort => $productId) {
+            $model->updateAll(['sort' => $sort + 1], ['product_id' => $productId]);
+        }
+
+        $this->success();
+    }
+
+    /**
+     * 分销产品克隆排序
+     *
+     * @access public
+     *
+     * @param integer $from
+     * @param integer $to
+     *
+     * @return void
+     */
+    public function actionCloneSort($from, $to)
+    {
+        $model = new ProducerProduct();
+        $from = $model->all(function ($list) use ($from) {
+            /**
+             * @var $list yii\db\Query
+             */
+            $list->where([
+                'producer_id' => $from,
+                'state' => 1
+            ]);
+            $list->select([
+                'product_id',
+                'sort'
+            ]);
+
+            return $list;
+        }, null, Yii::$app->params['use_cache']);
+
+        $from = array_column($from, 'sort', 'product_id');
+
+        foreach ($from as $productId => $sort) {
+            $model->edit([
+                'producer_id' => $to,
+                'product_id' => $productId
+            ], ['sort' => $sort]);
+        }
+
+        $this->success();
     }
 }
