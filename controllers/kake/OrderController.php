@@ -798,15 +798,16 @@ class OrderController extends MainController
      * @param integer $order_sub_id
      * @param string  $address
      * @param string  $invoice_title
+     * @param string  $tax_number
      *
      * @return void
      * @throws yii\db\Exception
      */
-    public function actionApplyBill($user_id, $order_sub_id, $address, $invoice_title = null)
+    public function actionApplyBill($user_id, $order_sub_id, $address, $invoice_title = null, $tax_number = null)
     {
         $this->validateOrderSubUser($user_id, $order_sub_id);
 
-        $result = (new OrderBill())->add(compact('order_sub_id', 'invoice_title', 'address'));
+        $result = (new OrderBill())->add(compact('order_sub_id', 'invoice_title', 'tax_number', 'address'));
         if (!$result['state']) {
             $this->fail($result['info']);
         }

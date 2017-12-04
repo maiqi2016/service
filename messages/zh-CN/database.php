@@ -120,4 +120,5 @@ return [
     'Supplier Contact' => '供应商预约电话',
     'Referral Link' => '推广链接',
     'Producer Group ID' => '分销商分组ID',
+    'Tax Number' => '纳税人识别号',
 ];
