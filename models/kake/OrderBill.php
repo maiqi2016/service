@@ -12,6 +12,7 @@ use Yii;
  * @property string  $courier_number
  * @property string  $courier_company
  * @property string  $invoice_title
+ * @property string  $tax_number
  * @property string  $address
  * @property string  $add_time
  * @property string  $update_time
@@ -62,6 +63,11 @@ class OrderBill extends General
                 'string',
                 'max' => 128
             ],
+            [
+                ['tax_number'],
+                'string',
+                'max' => 32
+            ],
         ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 
@@ -76,6 +82,7 @@ class OrderBill extends General
             'courier_number' => Yii::t('database', 'Courier Number'),
             'courier_company' => Yii::t('database', 'Courier Company'),
             'invoice_title' => Yii::t('database', 'Invoice Title'),
+            'tax_number' => Yii::t('database', 'Tax Number'),
             'address' => Yii::t('database', 'Address'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),

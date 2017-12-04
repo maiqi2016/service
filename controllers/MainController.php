@@ -46,13 +46,7 @@ class MainController extends Controller
     {
         $useCache = $this->identityVerification($_GET);
 
-        $config = (new Config())->listConfigKVP([
-            'app' => [
-                0,
-                $this->user->app
-            ],
-            'state' => 1
-        ]);
+        $config = (new Config())->listConfigKVP();
 
         $config['use_cache'] = $useCache;
         Yii::$app->params = array_merge(Yii::$app->params, $config);

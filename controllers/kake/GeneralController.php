@@ -26,7 +26,7 @@ class GeneralController extends MainController
      */
     public function actionConfigKvp()
     {
-        $config = (new Config())->listConfigKVP([
+        $config = (new Config())->listConfigKVP(($this->user->app == 2) ? null : [
             0,
             $this->user->app
         ], Yii::$app->params['use_cache']);

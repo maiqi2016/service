@@ -90,19 +90,22 @@ class Config extends General
      *
      * @return array
      */
-    public function listConfigKVP($app = 1, $useCache = false)
+    public function listConfigKVP($app = null, $useCache = false)
     {
         return $this->cache([
             'list.config.kvp',
             func_get_args()
         ], function () use ($app) {
+
+            $where = ['state' => 1];
+            if ($app) {
+                $where['app'] = $app;
+            }
+
             $config = static::find()->select([
                 'key',
                 'value'
-            ])->where([
-                'state' => 1,
-                'app' => $app
-            ])->asArray()->all();
+            ])->where($where)->asArray()->all();
 
             return array_column($config, 'value', 'key');
         }, null, $this->cacheDbDependent(self::tableName()), $useCache);
