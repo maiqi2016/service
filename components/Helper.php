@@ -27,18 +27,19 @@ class Helper extends Object
      * Control execution once at current request
      *
      * @param callable $logicHandler
+     * @param array    $params
      *
      * @return void
      */
-    public static function executeOnce($logicHandler)
+    public static function executeOnce($logicHandler, $params = null)
     {
         static $container = [];
 
-        $key = self::functionCallTrance(1, [
+        $params = $params ?: self::functionCallTrance(1, [
             'class',
             'function'
         ]);
-        $key = md5(json_encode($key));
+        $key = md5(json_encode($params));
 
         if (!isset($container[$key])) {
             call_user_func($logicHandler);
@@ -47,7 +48,7 @@ class Helper extends Object
     }
 
     /**
-     * 获取单例
+     * Singleton
      *
      * @param mixed    $params
      * @param callable $logicHandler
@@ -68,7 +69,7 @@ class Helper extends Object
     }
 
     /**
-     * 获取分页相关的数据
+     * Get params about page
      *
      * @param $page
      * @param $pageSize
@@ -2804,5 +2805,39 @@ class Helper extends Object
         }
 
         return $result;
+    }
+
+    /**
+     * Compress html
+     *
+     * @param string $content
+     *
+     * @return string
+     * */
+    public static function compressHtml($content)
+    {
+        $content = str_replace("\r\n", '', $content);
+        $content = str_replace("\n", '', $content);
+        $content = str_replace("\t", '', $content);
+
+        $pattern = [
+            "/> *([^ ]*) *</",
+            "/[\s]+/",
+            "/<!--[^!]*-->/",
+            "/\" /",
+            "/ \"/",
+            "/\*[^*]*\*/",
+        ];
+        $replace = [
+            '>\\1<',
+            ' ',
+            null,
+            '"',
+            '"',
+            null,
+            null,
+        ];
+
+        return preg_replace($pattern, $replace, $content);
     }
 }
