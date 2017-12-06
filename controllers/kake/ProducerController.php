@@ -354,9 +354,13 @@ class ProducerController extends MainController
     {
         $unifySort = Helper::handleString($sort);
 
-        $model = new ProducerProduct();
+        $producerProduct = new ProducerProduct();
+        $productProducer = new ProductProducer();
+
         foreach ($unifySort as $sort => $productId) {
-            $model->updateAll(['sort' => $sort + 1], ['product_id' => $productId]);
+            $sort += 1;
+            $producerProduct->updateAll(['sort' => $sort], ['product_id' => $productId]);
+            $productProducer->edit(['product_id' => $productId], ['sort' => $sort]);
         }
 
         $this->success();

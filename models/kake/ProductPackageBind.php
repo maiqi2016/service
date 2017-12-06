@@ -5,35 +5,24 @@ namespace service\models\kake;
 use Yii;
 
 /**
- * This is the model class for table "product_producer".
+ * This is the model class for table "product_package_bind".
  *
  * @property integer $id
  * @property integer $product_id
- * @property integer $from_sales
- * @property integer $to_sales
- * @property integer $type
- * @property integer $commission
- * @property integer $sort
+ * @property integer $min
+ * @property integer $max
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
-class ProductProducer extends General
+class ProductPackageBind extends General
 {
-    /**
-     * @var array Field
-     */
-    public $_type = [
-        0 => '固定额',
-        1 => '百分比'
-    ];
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'product_producer';
+        return 'product_package_bind';
     }
 
     /**
@@ -45,24 +34,31 @@ class ProductProducer extends General
             [
                 [
                     'product_id',
-                    'from_sales',
-                    'type',
-                    'commission'
+                    'min',
+                    'max'
                 ],
                 'required'
             ],
             [
                 [
                     'product_id',
-                    'from_sales',
-                    'to_sales',
-                    'type',
-                    'commission',
-                    'sort'
+                    'min',
+                    'max'
                 ],
                 'integer'
             ],
-        ], $this->_rule_add_time, $this->_rule_update_time, $this->_rule_state);
+            [
+                [
+                    'min',
+                    'max'
+                ],
+                'unique',
+                'targetAttribute' => [
+                    'min',
+                    'max'
+                ],
+            ],
+        ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
     }
 
     /**
@@ -73,11 +69,8 @@ class ProductProducer extends General
         return [
             'id' => Yii::t('database', 'ID'),
             'product_id' => Yii::t('database', 'Product ID'),
-            'from_sales' => Yii::t('database', 'From Sales'),
-            'to_sales' => Yii::t('database', 'To Sales'),
-            'type' => Yii::t('database', 'Type'),
-            'commission' => Yii::t('database', 'Commission'),
-            'sort' => Yii::t('database', 'Sort'),
+            'min' => Yii::t('database', 'Left Package'),
+            'max' => Yii::t('database', 'Right Package'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),

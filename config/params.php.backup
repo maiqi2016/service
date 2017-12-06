@@ -3,10 +3,7 @@ return [
     'app_name' => 'Service',
 
     'use_cache' => true,
-
-    'private' => [
-        'root_user_ids' => '1' // user ids, comma separated
-    ],
+    'private' => ['root_user_ids' => '1'],
 
     'pagenum' => 15,
     'sendmail_interval' => 90,

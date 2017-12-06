@@ -8,6 +8,7 @@ use service\models\kake\Attachment;
 use service\models\kake\Product;
 use service\models\kake\ProductDescription;
 use service\models\kake\ProductPackage;
+use service\models\kake\ProductPackageBind;
 use service\models\kake\ProductProducer;
 use yii;
 
@@ -53,6 +54,36 @@ class ProductController extends MainController
                 'package.state' => 1
             ]);
             $list->orderBy('package.bidding DESC, package.update_time DESC');
+
+            return $list;
+        }, null, Yii::$app->params['use_cache']);
+
+        $this->success($list);
+    }
+
+    /**
+     * 列表套餐打包详情
+     *
+     * @access public
+     *
+     * @param integer $product_id
+     *
+     * @return void
+     */
+    public function actionPackageBindList($product_id)
+    {
+        $list = (new ProductPackageBind())->all(function ($list) use ($product_id) {
+            /**
+             * @var $list yii\db\Query
+             */
+            $list->select([
+                'min',
+                'max',
+            ]);
+            $list->where([
+                'product_package_bind.product_id' => $product_id,
+                'product_package_bind.state' => 1
+            ]);
 
             return $list;
         }, null, Yii::$app->params['use_cache']);

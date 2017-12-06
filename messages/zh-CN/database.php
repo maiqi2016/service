@@ -121,4 +121,8 @@ return [
     'Referral Link' => '推广链接',
     'Producer Group ID' => '分销商分组ID',
     'Tax Number' => '纳税人识别号',
+    'Min' => '最小',
+    'Max' => '最大',
+    'Left Package' => '左套餐',
+    'Right Package' => '右套餐',
 ];
