@@ -10,16 +10,20 @@ use service\models\service\User as ServiceUser;
 use yii;
 use yii\base\DynamicModel;
 use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * Main controller
+ *
+ * @author    Leon <jiangxilee@gmail.com>
+ * @copyright 2017-01-10 14:22:05
  * @method mixed cache($key, $fetchFn, $time = null, $dependent = null)
  * @method mixed dump($var, $strict = false, $exit = true)
  */
 class MainController extends Controller
 {
     /**
-     * @var array 用户信息
+     * @var array user
      */
     protected $user;
 
@@ -51,13 +55,13 @@ class MainController extends Controller
         $config['use_cache'] = $useCache;
         Yii::$app->params = array_merge(Yii::$app->params, $config);
 
-        // 对应 api 的权限验证 TODO
+        // TODO auth validate
 
         return parent::beforeAction($action);
     }
 
     /**
-     * 调用者身份验证
+     * Api user verification
      *
      * @access public
      *
@@ -67,7 +71,7 @@ class MainController extends Controller
      */
     public function identityVerification(&$params)
     {
-        // 缓存
+        // use cache
         $useCache = true;
         if (isset($params['app_cache']) && $params['app_cache'] == 'no') {
             $useCache = false;
@@ -80,30 +84,30 @@ class MainController extends Controller
         Yii::info(json_encode($params, JSON_UNESCAPED_UNICODE));
         $api = Helper::popOne($params, 'r');
 
-        // 参数为空或错误
+        // params error
         if (empty($params['app_sign'])) {
-            $this->fail('api parameter validation failed', 'common', -1);
+            $this->fail('api parameter validation failed', 'common', -1, 412);
         }
 
-        // 验证签名
+        // validate sign
         if (!Helper::validateSign($params, 'app_sign')) {
             $this->fail([
                 'signature verification failed',
                 'api' => $params['app_api']
-            ], 'common', -1);
+            ], 'common', -1, 422);
         }
 
-        // 语言包
+        // language
         if (isset($params['app_lang'])) {
             Yii::$app->language = $params['app_lang'];
         }
 
-        // 用户 id 或用户秘钥为空
+        // empty user id or password
         if (empty($params['app_id']) || empty($params['app_secret'])) {
-            $this->fail('account validation failed', 'common', -1);
+            $this->fail('account validation failed', 'common', -1, 412);
         }
 
-        // 验证用户是否存在
+        // user exists
         $user = (new ServiceUser())->first([
             'app_id' => $params['app_id'],
             'app_secret' => $params['app_secret'],
@@ -111,7 +115,7 @@ class MainController extends Controller
         ], Yii::$app->params['use_cache']);
 
         if (empty($user)) {
-            $this->fail('account validation failed', 'common', -1);
+            $this->fail('account validation failed', 'common', -1, 403);
         }
 
         $this->user = (object) Helper::pullSome($user, [
@@ -123,7 +127,7 @@ class MainController extends Controller
 
         $this->validated = true;
 
-        // 删除隐私变量
+        // unset var
         Helper::popSome($params, [
             'app_api',
             'app_id',
@@ -138,7 +142,7 @@ class MainController extends Controller
     }
 
     /**
-     * 公共错误控制器
+     * Common error handler
      *
      * @access public
      * @return void
@@ -146,6 +150,7 @@ class MainController extends Controller
     public function actionError()
     {
         $api = trim(Yii::$app->request->get('r'), '/');
+
         $this->fail([
             'access to an interface that does not exist',
             'api' => strtr($api, '/', '.')
@@ -153,7 +158,7 @@ class MainController extends Controller
     }
 
     /**
-     * 语言包翻译 - 支持多个语言包
+     * Translate lang
      *
      * @access public
      *
@@ -215,13 +220,13 @@ class MainController extends Controller
     }
 
     /**
-     * 返回成功提示信息及数据
+     * Response message about success
      *
      * @access public
      *
-     * @param mixed  $data    返回数据
-     * @param mixed  $lang    成功提示信息
-     * @param string $package 语言包
+     * @param mixed  $data
+     * @param mixed  $lang
+     * @param string $package
      *
      * @return void
      */
@@ -238,21 +243,22 @@ class MainController extends Controller
     }
 
     /**
-     * 返回失败提示信息
+     * Response message about fail
      *
      * @access public
      *
-     * @param mixed   $lang    成功提示信息
-     * @param string  $package 语言包
-     * @param integer $state   状态码
+     * @param mixed   $lang
+     * @param string  $package
+     * @param integer $statusCode
      *
      * @return void
      */
-    public function fail($lang, $package = 'common', $state = 0)
+    public function fail($lang, $package = 'common', $state = 0, $statusCode = 400)
     {
         $info = $this->lang($lang, $package);
         Yii::info($info);
 
+        header("HTTP/1.1 {$statusCode}" . Response::$httpStatuses[$statusCode]);
         exit(json_encode([
             'state' => $state,
             'info' => $info,
@@ -261,7 +267,7 @@ class MainController extends Controller
     }
 
     /**
-     * 验证数据
+     * Validate data
      *
      * @access public
      *
@@ -287,7 +293,7 @@ class MainController extends Controller
     }
 
     /**
-     * 动态实例化模型
+     * Register get model
      *
      * @access public
      *
@@ -298,21 +304,29 @@ class MainController extends Controller
      */
     public function model($table, $db = null)
     {
-        $db = $db ?: DB_KAKE;
-        $class = '\service\models\\' . $db . '\\' . Helper::underToCamel($table, false);
+        static $pool = [];
 
-        if (!class_exists($class)) {
-            $this->fail([
-                'param illegal',
-                'param' => $table
-            ], 'common', -1);
+        $db = $db ?: DB_KAKE;
+        $key = $db . '.' . $table;
+
+        if (!isset($pool[$key])) {
+            $class = '\service\models\\' . $db . '\\' . Helper::underToCamel($table, false);
+
+            if (!class_exists($class)) {
+                $this->fail([
+                    'param illegal',
+                    'param' => $table
+                ], 'common', -1, 404);
+            }
+
+            $pool[$key] = new $class;
         }
 
-        return new $class;
+        return $pool[$key];
     }
 
     /**
-     * 获取表名
+     * Get table name
      *
      * @access public
      *
@@ -335,7 +349,7 @@ class MainController extends Controller
     }
 
     /**
-     * 获取 get 参数
+     * Params about $_GET
      *
      * @access public
      * @return array
@@ -360,7 +374,7 @@ class MainController extends Controller
     }
 
     /**
-     * 获取详情 - 常用于联表查询
+     * Common for find record
      *
      * @access public
      * @return void
@@ -379,7 +393,7 @@ class MainController extends Controller
     }
 
     /**
-     * 获取列表 - 常用于联表查询
+     * Common for select record
      *
      * @access public
      * @return void
@@ -398,7 +412,7 @@ class MainController extends Controller
     }
 
     /**
-     * 添加指定表数据
+     * Common insert record
      *
      * @access public
      *
@@ -420,7 +434,7 @@ class MainController extends Controller
     }
 
     /**
-     * 更新指定表数据
+     * Common update record
      *
      * @access public
      *
@@ -444,7 +458,7 @@ class MainController extends Controller
     }
 
     /**
-     * 新增或更新指定表数据
+     * Common insert or update record
      *
      * @access public
      *
@@ -468,7 +482,7 @@ class MainController extends Controller
     }
 
     /**
-     * 获取模型元信息 (for yii2)
+     * Get meta about model (for yii2)
      *
      * @access public
      *
@@ -521,7 +535,7 @@ class MainController extends Controller
     }
 
     /**
-     * 处理标签相关的数据 - 相当于外键
+     * Common handler data about relation table like foreign key
      *
      * @access protected
      *
@@ -570,7 +584,7 @@ class MainController extends Controller
     }
 
     /**
-     * 获取参数
+     * Get data
      *
      * @access protected
      * @return array
@@ -579,9 +593,9 @@ class MainController extends Controller
     {
         $data = $this->getParams();
 
-        $add = Helper::emptyDefault($data, 'attachment_add'); // 新增的附件
-        $del = Helper::emptyDefault($data, 'attachment_del'); // 删除的附件
-        $tags_record = Helper::emptyDefault($data, 'tags_record'); // 标签记录
+        $add = Helper::emptyDefault($data, 'attachment_add');
+        $del = Helper::emptyDefault($data, 'attachment_del');
+        $tags_record = Helper::emptyDefault($data, 'tags_record');
 
         Helper::popSome($data, [
             'id',
@@ -599,7 +613,7 @@ class MainController extends Controller
     }
 
     /**
-     * 列出指定表数据
+     * Common select record for backend
      *
      * @access public
      *
@@ -624,7 +638,7 @@ class MainController extends Controller
     }
 
     /**
-     * 查询指定表指定ID数据
+     * Common find record for backend
      *
      * @access public
      *
@@ -646,7 +660,7 @@ class MainController extends Controller
     }
 
     /**
-     * 添加指定表数据
+     * Common insert record for backend
      *
      * @access public
      *
@@ -673,7 +687,7 @@ class MainController extends Controller
             $this->orderTagsRecord($tagsRecord, $model->id);
 
             return ['id' => $model->id];
-        }, '添加或更新附件状态(若有附件)');
+        }, 'insert record and attachment');
 
         if (!$result['state']) {
             $this->fail($result['info']);
@@ -683,7 +697,7 @@ class MainController extends Controller
     }
 
     /**
-     * 更新指定表指定ID数据
+     * Common update record for backend
      *
      * @access public
      *
@@ -726,7 +740,7 @@ class MainController extends Controller
             $this->orderTagsRecord($tagsRecord, $record->id);
 
             return true;
-        }, '更新记录和附件状态(若有附件)');
+        }, 'update record and attachment');
 
         if (!$result['state']) {
             $this->fail($result['info']);
@@ -736,7 +750,7 @@ class MainController extends Controller
     }
 
     /**
-     * 前置记录
+     * Common front record for backend
      *
      * @access public
      *
@@ -759,7 +773,7 @@ class MainController extends Controller
     }
 
     /**
-     * 清除缓存
+     * Clear cache
      *
      * @access public
      * @return void
@@ -771,7 +785,7 @@ class MainController extends Controller
     }
 
     /**
-     * 调用发送短信接口
+     * Call api for SMS
      *
      * @access public
      *
@@ -803,10 +817,10 @@ class MainController extends Controller
             $response['result'] = $response['info'];
         }
 
-        Yii::trace('发送短信：' . $phone . ', 短信内容：' . $content);
+        Yii::trace('SMS Info：' . $phone . ', ' . $content);
 
         if (!empty($response['result'])) {
-            Yii::error('短信发送异常: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
+            Yii::error('SMS Error: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
         return $response;
