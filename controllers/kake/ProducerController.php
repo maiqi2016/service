@@ -2,7 +2,7 @@
 
 namespace service\controllers\kake;
 
-use service\components\Helper;
+use Oil\src\Helper;
 use service\controllers\MainController;
 use service\models\kake\Attachment;
 use service\models\kake\ProducerApply;

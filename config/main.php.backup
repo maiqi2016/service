@@ -120,12 +120,10 @@ return [
                 'a' => ['dsn' => 'mysql:host=[SECRET:service_host_slave1];dbname=[SECRET:service_db]'],
             ],
         ],
-        // Custom components
-        'reflection' => [
-            'class' => 'service\components\Reflection'
-        ],
-        'api' => [
-            'class' => 'service\components\Service'
+        'oil' => [
+            'class' => 'service\components\Oil',
+            'reflection' => 'Oil\src\Reflection',
+            'api' => 'Oil\src\Service',
         ],
     ],
 ];

@@ -2,7 +2,7 @@
 
 namespace service\models\service;
 
-use service\components\Helper;
+use Oil\src\Helper;
 use Yii;
 
 /**

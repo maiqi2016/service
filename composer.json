@@ -14,7 +14,8 @@
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
     "apache/thrift": "^0.9.3",
-    "yiisoft/yii2-redis": "^2.0"
+    "yiisoft/yii2-redis": "^2.0",
+    "jtleon/oil": "v0.20-stable"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "*",

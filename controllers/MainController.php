@@ -2,7 +2,7 @@
 
 namespace service\controllers;
 
-use service\components\Helper;
+use Oil\src\Helper;
 use service\models\kake\Attachment;
 use service\models\kake\Config;
 use service\models\Main;
@@ -496,8 +496,8 @@ class MainController extends Controller
         $model = $this->model($table, $db);
         $_model = [];
 
-        $properties = Yii::$app->reflection->getPropertiesName($model, null);
-        $methods = Yii::$app->reflection->getMethodsName($model, null);
+        $properties = Yii::$app->oil->reflection->getPropertiesName($model, null);
+        $methods = Yii::$app->oil->reflection->getMethodsName($model, null);
 
         foreach ($properties as $item) {
             if (strpos($item, '_') !== 0) {
@@ -797,7 +797,7 @@ class MainController extends Controller
     public function callSmsApi($phone, $content)
     {
         $conf = Yii::$app->params;
-        $response = Yii::$app->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
+        $response = Yii::$app->oil->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
             'phones' => $phone,
             'content' => $content,
             'sign' => $conf['sms_sign'],

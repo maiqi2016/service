@@ -3,7 +3,7 @@
 namespace service\controllers\kake;
 
 use service\controllers\MainController;
-use service\components\Helper;
+use Oil\src\Helper;
 use service\models\kake\AdminAuth;
 use service\models\kake\LoginLog;
 use service\models\kake\PhoneCaptcha;
