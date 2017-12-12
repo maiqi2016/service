@@ -797,13 +797,13 @@ class MainController extends Controller
     public function callSmsApi($phone, $content)
     {
         $conf = Yii::$app->params;
+
         $response = Yii::$app->oil->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
             'phones' => $phone,
             'content' => $content,
             'sign' => $conf['sms_sign'],
             'sendtime' => null
         ])->optionsHandler(function ($options, $params) {
-
             $options[CURLOPT_POSTFIELDS] = json_encode($params);
             $options[CURLOPT_HTTPHEADER] = [
                 'Content-Type: application/json; charset=utf-8',

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6cce7c52043dbdbf4988f1e0109f97a3",
-    "content-hash": "28899e9491bb640fc19b1b3bec93d09d",
+    "hash": "10439cdeea5771dd81f433c080f7fd0c",
+    "content-hash": "88f8482ed70641aa087b2bf415cb54c8",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -630,16 +630,16 @@
         },
         {
             "name": "jtleon/oil",
-            "version": "v0.20-stable",
+            "version": "v0.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jtleon/oil.git",
-                "reference": "0796f9ec585dbf6135b372278c6c7e1bb9930502"
+                "reference": "38717f9f33ee965ff60028d1e2c39317d6cdf378"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/jtleon/oil/0796f9ec585dbf6135b372278c6c7e1bb9930502.zip",
-                "reference": "0796f9ec585dbf6135b372278c6c7e1bb9930502",
+                "url": "https://files.phpcomposer.com/files/jtleon/oil/38717f9f33ee965ff60028d1e2c39317d6cdf378.zip",
+                "reference": "38717f9f33ee965ff60028d1e2c39317d6cdf378",
                 "shasum": ""
             },
             "require": {
@@ -672,7 +672,7 @@
                 "php components",
                 "php helper"
             ],
-            "time": "2017-12-11 08:47:02"
+            "time": "2017-12-12 01:42:38"
         },
         {
             "name": "monolog/monolog",
@@ -804,16 +804,16 @@
         },
         {
             "name": "overtrue/wechat",
-            "version": "3.3.20",
+            "version": "3.3.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/overtrue/wechat.git",
-                "reference": "802ea7218e9ceeffb9530f78cdf56033b58da963"
+                "reference": "ba7a9e26f158caa37182a88a853513ae406837d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/overtrue/wechat/802ea7218e9ceeffb9530f78cdf56033b58da963.zip",
-                "reference": "802ea7218e9ceeffb9530f78cdf56033b58da963",
+                "url": "https://files.phpcomposer.com/files/overtrue/wechat/ba7a9e26f158caa37182a88a853513ae406837d5.zip",
+                "reference": "ba7a9e26f158caa37182a88a853513ae406837d5",
                 "shasum": ""
             },
             "require": {
@@ -858,7 +858,7 @@
                 "weixin",
                 "weixin-sdk"
             ],
-            "time": "2017-11-13 06:58:27"
+            "time": "2017-12-10 13:47:31"
         },
         {
             "name": "paragonie/random_compat",
