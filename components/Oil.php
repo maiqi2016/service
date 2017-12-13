@@ -2,9 +2,9 @@
 
 namespace service\components;
 
+use Oil\basic\Dispatch;
 use yii\base\Object;
 use Exception;
-use ReflectionClass;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -15,6 +15,11 @@ use yii\helpers\ArrayHelper;
  */
 class Oil extends Object
 {
+    /**
+     * @const string class key
+     */
+    const CLS = 'class';
+
     /**
      * @var array
      */
@@ -60,12 +65,12 @@ class Oil extends Object
      */
     public function register($name, $params)
     {
-        $params = is_string($params) ? ['class' => $params] : $params;
+        $params = is_string($params) ? [self::CLS => $params] : $params;
 
         if (!isset($this->oil[$name])) {
             $this->oil[$name] = [];
         } else if (isset($this->oil[$name]) && is_string($this->oil[$name])) {
-            $this->oil[$name] = ['class' => $this->oil[$name]];
+            $this->oil[$name] = [self::CLS => $this->oil[$name]];
         }
 
         $this->oil[$name] = ArrayHelper::merge($this->oil[$name], $params);
@@ -75,51 +80,31 @@ class Oil extends Object
      * Create oil instance
      *
      * @param string $name
-     * @param string $classIndex
      *
      * @return object
      * @throws Exception
      */
-    public function instance($name, $classIndex = 'class')
+    public function instance($name)
     {
+        $prefix = self::className() . PHP_EOL;
+
         if (!isset($this->oil[$name])) {
-            throw new Exception("Un configured options '{$name}' in \$app->params[oil]");
+            throw new Exception($prefix . "Un configured options '{$name}' in \$app->params[oil]");
         }
 
         $params = $this->oil[$name];
 
         if (is_string($params)) {
-            $params = [$classIndex => $params];
+            $params = [self::CLS => $params];
         }
 
-        if (!isset($params[$classIndex])) {
-            throw new Exception("The oil config index '{$classIndex}' no set");
+        if (!isset($params[self::CLS])) {
+            throw new Exception($prefix . 'The oil config index ' . self::CLS . ' no set');
         }
 
-        $class = $params[$classIndex];
-        unset($params[$classIndex]);
+        $class = $params[self::CLS];
+        unset($params[self::CLS]);
 
-        $reflection = new ReflectionClass($class);
-        $constructor = $reflection->getConstructor();
-        if ($constructor === null || empty($parameters = $constructor->getParameters())) {
-            return $reflection->newInstance();
-        }
-
-        $argument = [];
-        foreach ($parameters as $item) {
-            if (version_compare(PHP_VERSION, '5.6.0', '>=') && $item->isVariadic()) {
-                break;
-            }
-
-            if (isset($params[$item->name])) {
-                $argument[$item->name] = $params[$item->name];
-            } else if ($item->isDefaultValueAvailable()) {
-                $argument[$item->name] = $item->getDefaultValue();
-            } else {
-                throw new Exception("Un configured constructor'param '{$item->name}'");
-            }
-        }
-
-        return $reflection->newInstanceArgs($argument);
+        return Dispatch::instance($class, $params);
     }
 }

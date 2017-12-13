@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "10439cdeea5771dd81f433c080f7fd0c",
-    "content-hash": "88f8482ed70641aa087b2bf415cb54c8",
+    "hash": "f202193201a5ff6d21eb1aac50dc7306",
+    "content-hash": "cca5a782a251c5c36c6d909b96b979dd",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -630,16 +630,16 @@
         },
         {
             "name": "jtleon/oil",
-            "version": "v0.22",
+            "version": "v0.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jtleon/oil.git",
-                "reference": "38717f9f33ee965ff60028d1e2c39317d6cdf378"
+                "reference": "ac18c280800ea3c48d6be325ba136fb0a561ff9c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/jtleon/oil/38717f9f33ee965ff60028d1e2c39317d6cdf378.zip",
-                "reference": "38717f9f33ee965ff60028d1e2c39317d6cdf378",
+                "url": "https://files.phpcomposer.com/files/jtleon/oil/ac18c280800ea3c48d6be325ba136fb0a561ff9c.zip",
+                "reference": "ac18c280800ea3c48d6be325ba136fb0a561ff9c",
                 "shasum": ""
             },
             "require": {
@@ -672,7 +672,7 @@
                 "php components",
                 "php helper"
             ],
-            "time": "2017-12-12 01:42:38"
+            "time": "2017-12-13 02:18:22"
         },
         {
             "name": "monolog/monolog",
