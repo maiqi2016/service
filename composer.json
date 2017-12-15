@@ -15,7 +15,7 @@
     "yiisoft/yii2-swiftmailer": "*",
     "apache/thrift": "^0.9.3",
     "yiisoft/yii2-redis": "^2.0",
-    "jtleon/oil": "^0.30.0"
+    "jtleon/oil": ">=0.30.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "*",
