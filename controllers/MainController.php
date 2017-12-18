@@ -233,7 +233,7 @@ class MainController extends Controller
     public function success($data = [], $lang = null, $package = 'common')
     {
         $info = $this->lang($lang, $package);
-        $info && Yii::trace($info);
+        $info && Yii::info($info);
 
         exit(json_encode([
             'state' => 1,
@@ -817,7 +817,7 @@ class MainController extends Controller
             $response['result'] = $response['info'];
         }
 
-        Yii::trace('SMS Info：' . $phone . ', ' . $content);
+        Yii::info('SMS Info：' . $phone . ', ' . $content);
 
         if (!empty($response['result'])) {
             Yii::error('SMS Error: ' . json_encode($response, JSON_UNESCAPED_UNICODE));
