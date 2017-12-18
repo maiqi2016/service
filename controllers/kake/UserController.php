@@ -28,7 +28,7 @@ class UserController extends MainController
     {
         $params = $this->getParams();
 
-        Yii::trace('验证参数 ' . json_encode($params));
+        Yii::info('验证参数 ' . json_encode($params));
         $userModel = new User();
         $userModel->attributes = $params;
         if (!$userModel->validate()) {
