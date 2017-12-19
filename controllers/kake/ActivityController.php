@@ -5,8 +5,10 @@ namespace service\controllers\kake;
 use service\controllers\MainController;
 use Oil\src\Helper;
 use service\models\kake\ActivityLotteryCode;
+use service\models\kake\ActivityProducerCode;
 use service\models\kake\ActivityStory;
 use service\models\kake\ActivityWinningCode;
+use service\models\kake\PhoneCaptcha;
 use yii;
 
 /**
@@ -210,5 +212,69 @@ class ActivityController extends MainController
             'winning' => $record['winning'],
             'error' => null
         ]);
+    }
+
+    /**
+     * 添加分销商活动抽奖码
+     *
+     * @access public
+     *
+     * @param string  $phone
+     * @param string  $captcha
+     * @param integer $prize
+     * @param integer $user
+     * @param integer $from_user
+     * @param integer $channel
+     *
+     * @return void
+     */
+    public function actionAddProducerCode($phone, $captcha, $prize, $user, $from_user = null, $channel = null)
+    {
+        $captcha = (new PhoneCaptcha())->checkCaptcha($phone, $captcha, 4, Yii::$app->params['captcha_timeout']);
+        if (!$captcha) {
+            Yii::info('验证码错误, phone:' . $phone . ', captcha:' . $captcha);
+            $this->fail('phone captcha error');
+        }
+
+        $mode = new ActivityProducerCode();
+        $has = $mode->first([
+            'activity_producer_prize_id' => $prize,
+            'user_id' => $user,
+            'phone' => $phone,
+            'state' => 1
+        ]);
+
+        if (!empty($has)) {
+            $this->fail('已经参与过本次抽奖');
+        }
+
+        $result = $mode->trans(function () use ($mode, $prize, $channel, $user, $from_user, $phone) {
+            $total = $mode::find()->where(['activity_producer_prize_id' => $prize])->count();
+            $mode->add([
+                'activity_producer_prize_id' => $prize,
+                'producer_id' => $channel,
+                'user_id' => $user,
+                'from_user_id' => $from_user,
+                'phone' => $phone,
+                'code' => $total + 100000 + 1
+            ]);
+
+            if (empty($from_user)) {
+                $mode->add([
+                    'activity_producer_prize_id' => $prize,
+                    'producer_id' => $channel,
+                    'user_id' => $from_user,
+                    'code' => $total + 100000 + 2
+                ]);
+            }
+
+            return true;
+        }, '新增分销商抽奖码');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success();
     }
 }
