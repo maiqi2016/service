@@ -125,4 +125,8 @@ return [
     'Max' => '最大',
     'Left Package' => '左套餐',
     'Right Package' => '右套餐',
+    'Date' => '日期',
+    'Description' => '描述',
+    'From User ID' => '接受邀请者',
+    'Activity Producer Prize ID' => '奖品ID',
 ];
