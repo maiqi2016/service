@@ -6,6 +6,7 @@ use service\controllers\MainController;
 use Oil\src\Helper;
 use service\models\kake\ActivityLotteryCode;
 use service\models\kake\ActivityProducerCode;
+use service\models\kake\ActivityProducerSign;
 use service\models\kake\ActivityStory;
 use service\models\kake\ActivityWinningCode;
 use service\models\kake\PhoneCaptcha;
@@ -267,6 +268,8 @@ class ActivityController extends MainController
                     'code' => $total + 100000 + 2
                 ]);
             }
+
+            (new ActivityProducerSign())->add(['user_id' => $user]);
 
             return true;
         }, '新增分销商抽奖码');
