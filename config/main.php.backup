@@ -86,7 +86,7 @@ return [
             ],
             // Slave
             'slaveConfig' => [
-                'username' => '[SECRET:kake_user_write]',
+                'username' => '[SECRET:kake_user_read]',
                 'password' => '[SECRET:kake_pwd_read]',
             ],
             'slaves' => [
