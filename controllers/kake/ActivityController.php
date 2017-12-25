@@ -255,16 +255,16 @@ class ActivityController extends MainController
                 'activity_producer_prize_id' => $prize,
                 'producer_id' => $channel,
                 'user_id' => $user,
-                'from_user_id' => $from_user,
                 'phone' => $phone,
                 'code' => $total + 100000 + 1
             ]);
 
-            if (empty($from_user)) {
+            if (!empty($from_user)) {
                 $mode->add([
                     'activity_producer_prize_id' => $prize,
                     'producer_id' => $channel,
                     'user_id' => $from_user,
+                    'from_user_id' => $user,
                     'code' => $total + 100000 + 2
                 ]);
             }
