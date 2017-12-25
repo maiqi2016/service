@@ -39,7 +39,6 @@ class ActivityProducerCode extends General
                     'activity_producer_prize_id',
                     'producer_id',
                     'user_id',
-                    'phone',
                     'code'
                 ],
                 'required'
