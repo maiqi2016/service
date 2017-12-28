@@ -129,4 +129,6 @@ return [
     'Description' => '描述',
     'From User ID' => '接受邀请者',
     'Activity Producer Prize ID' => '奖品ID',
+    'Standard Code Number' => '开奖达标数',
+    'Win Code' => '中奖码',
 ];
