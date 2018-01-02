@@ -39,6 +39,7 @@ class ActivityProducerPrize extends General
                     'from',
                     'to',
                     'product_id',
+                    'standard_code_number',
                     'description'
                 ],
                 'required'
