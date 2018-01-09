@@ -79,10 +79,12 @@ class ProductPackage extends General
                 'string'
             ],
             [
-                [
-                    'name',
-                    'supplier_contact'
-                ],
+                ['name'],
+                'string',
+                'max' => 64
+            ],
+            [
+                ['supplier_contact'],
                 'string',
                 'max' => 32
             ],
