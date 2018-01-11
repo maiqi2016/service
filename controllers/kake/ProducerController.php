@@ -28,8 +28,8 @@ class ProducerController extends MainController
      *
      * @access public
      *
-     * @param array   $log
-     * @param float   $quota
+     * @param array $log
+     * @param float $quota
      * @param integer $user_id
      *
      * @return void
@@ -405,5 +405,49 @@ class ProducerController extends MainController
         }
 
         $this->success();
+    }
+
+    /**
+     * 新增分销产品
+     *
+     * @access public
+     * @return void
+     * @throws yii\db\Exception
+     */
+    public function actionAddProduct()
+    {
+        $model = new ProducerProduct();
+        list($data) = $this->getData();
+
+        $result = $model->trans(function () use ($model, $data) {
+
+            $multiple = Helper::handleString($data['producer_id_multiple']);
+            unset($data['producer_id_multiple']);
+
+            $ids = $errors = [];
+            foreach ($multiple as $producer_id) {
+                $data['producer_id'] = $producer_id;
+                $_model = clone $model;
+                $_model->attributes = $data;
+                if (!$_model->validate()) {
+                    $errors[$producer_id] = current($_model->getFirstErrors());
+                    continue;
+                }
+
+                $_model->insert();
+                $ids[] = $_model->id;
+            }
+
+            return [
+                'success' => $ids,
+                'fail' => $errors
+            ];
+        }, '新增分销产品');
+
+        if (!$result['state']) {
+            $this->fail($result['info']);
+        }
+
+        $this->success($result['data']);
     }
 }
