@@ -131,13 +131,13 @@ class GeneralController extends MainController
     /**
      * 获取短连接
      *
-     * @param string $url
+     * @param string $original_url
      */
-    public function actionShortUrl($url)
+    public function actionShortUrl($original_url)
     {
         $model = new ShortUrl();
 
-        $uri = md5($url);
+        $uri = md5($original_url);
         $has = $model->first([
             'uri' => $uri,
             'state' => 1
@@ -146,7 +146,7 @@ class GeneralController extends MainController
         if (empty($has)) {
             $data = $model->add([
                 'uri' => $uri,
-                'url' => $url
+                'url' => $original_url
             ]);
             $id = $data['data'];
         } else {
