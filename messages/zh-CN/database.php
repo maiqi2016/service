@@ -131,4 +131,5 @@ return [
     'Activity Producer Prize ID' => '奖品ID',
     'Standard Code Number' => '开奖达标数',
     'Win Code' => '中奖码',
+    'Uri' => 'URI',
 ];
