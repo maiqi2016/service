@@ -31,5 +31,6 @@ return [
     'sms_tpl_apply_refund_fail' => '您申请的订单 %s 退款已被拒绝，退款金额共计 %s，原因是 %s。',
     'sms_tpl_apply_distributor_success' => '您的分销商申请已经成功通过，重新登录后可在菜单中找到分销管理进入。',
 
-    'default_purchase_limit' => 10
+    'default_purchase_limit' => 10,
+    'short_url_host' => 'http://kake.link'
 ];

@@ -2,10 +2,12 @@
 
 namespace service\controllers\kake;
 
+use Oil\src\Helper;
 use service\controllers\MainController;
 use service\models\kake\Attachment;
 use service\models\kake\Ad;
 use service\models\kake\Config;
+use service\models\kake\ShortUrl;
 use service\models\kake\SsoCode;
 use service\models\kake\SsoToken;
 use yii;
@@ -124,5 +126,35 @@ class GeneralController extends MainController
         }
 
         $this->success();
+    }
+
+    /**
+     * 获取短连接
+     *
+     * @param string $url
+     */
+    public function actionShortUrl($url)
+    {
+        $model = new ShortUrl();
+
+        $uri = md5($url);
+        $has = $model->first([
+            'uri' => $uri,
+            'state' => 1
+        ]);
+
+        if (empty($has)) {
+            $data = $model->add([
+                'uri' => $uri,
+                'url' => $url
+            ]);
+            $id = $data['data'];
+        } else {
+            $id = $has['id'];
+        }
+
+        $shortUrl = Yii::$app->params['short_url_host'] . '/' . Helper::hexDecimal2n($id);
+
+        $this->success($shortUrl);
     }
 }
