@@ -39,6 +39,7 @@ class UserController extends MainController
 
         /**
          * @var $phone    string
+         * @var $extra    string
          * @var $captcha  string
          * @var $type     string
          */
@@ -52,8 +53,21 @@ class UserController extends MainController
 
         $user = $userModel->first(['phone' => $phone], Yii::$app->params['use_cache']);
         if (!$user) {
-            Yii::info('用户名错误, phone:' . $phone);
-            $this->fail('wrong user or password');
+            /*
+             Yii::info('用户名错误, phone:' . $phone);
+             $this->fail('wrong user or password');
+             */
+
+            $extra = Helper::parseJsonString(base64_decode($extra));
+            if (!is_array($extra)) { // newly
+                $userModel->attributes = ['phone' => $phone];
+                $userModel->insert();
+            } else { // update
+                /** @var array $extra */
+                $userModel->edit($extra, ['phone' => $phone]);
+            }
+
+            $user = $userModel->first(['phone' => $phone], Yii::$app->params['use_cache']);
         }
 
         if (!$user['state']) {

@@ -630,16 +630,16 @@
         },
         {
             "name": "jtleon/oil",
-            "version": "v0.36",
+            "version": "v0.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jtleon/oil.git",
-                "reference": "9ca21c3f26db7ce861d23e038f0081b56f1b9673"
+                "reference": "2cb9a6bb10574bbf26d5cc5a787d4e495314907e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/jtleon/oil/9ca21c3f26db7ce861d23e038f0081b56f1b9673.zip",
-                "reference": "9ca21c3f26db7ce861d23e038f0081b56f1b9673",
+                "url": "https://files.phpcomposer.com/files/jtleon/oil/2cb9a6bb10574bbf26d5cc5a787d4e495314907e.zip",
+                "reference": "2cb9a6bb10574bbf26d5cc5a787d4e495314907e",
                 "shasum": ""
             },
             "require": {
@@ -672,7 +672,7 @@
                 "php components",
                 "php helper"
             ],
-            "time": "2017-12-21 06:57:27"
+            "time": "2018-01-29 08:32:14"
         },
         {
             "name": "monolog/monolog",
