@@ -59,6 +59,7 @@ class ShortUrl
             $this->error('without short url id');
         }
 
+        $id = explode('?', $id)[0];
         if (empty($id = Helper::hexN2Decimal($id))) {
             $this->error('short url id illegal');
         }
