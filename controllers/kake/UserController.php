@@ -59,7 +59,7 @@ class UserController extends MainController
              */
 
             $extra = Helper::parseJsonString(base64_decode($extra));
-            if (!is_array($extra)) { // newly
+            if (!is_array($extra) || empty($extra)) { // newly
                 $userModel->attributes = ['phone' => $phone];
                 $userModel->insert();
             } else { // update
