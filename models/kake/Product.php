@@ -25,13 +25,7 @@ use Yii;
  * @property integer $product_description_id
  * @property integer $share_times
  * @property string  $referral_link
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-=======
-=======
->>>>>>> Stashed changes
  * @property integer $sell_out
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
@@ -54,8 +48,6 @@ class Product extends General
     /**
      * @var array Field
      */
-<<<<<<< HEAD
-=======
     public $_sell_out = [
         0 => '否',
         1 => '是'
@@ -64,7 +56,6 @@ class Product extends General
     /**
      * @var array Field
      */
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
     public $_manifestation = [
         0 => '标准',
         1 => '焦点图',
@@ -116,21 +107,13 @@ class Product extends General
                     'manifestation',
                     'attachment_cover',
                     'product_description_id',
-<<<<<<< HEAD
-                    'share_times'
-=======
                     'share_times',
                     'sell_out'
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
                 ],
                 'integer'
             ],
             [
-<<<<<<< HEAD
-                ['share_times'],
-=======
                 ['share_times', 'real_sales', 'sell_out'],
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
                 'default',
                 'value' => 0
             ],
@@ -152,14 +135,6 @@ class Product extends General
                 'max' => 64
             ],
             [
-<<<<<<< HEAD
-                ['real_sales'],
-                'default',
-                'value' => 0
-            ],
-            [
-=======
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
                 [
                     'attachment_ids',
                     'referral_link'
@@ -194,10 +169,7 @@ class Product extends General
             'product_description_id' => Yii::t('database', 'Product Description ID'),
             'share_times' => Yii::t('database', 'Share Times'),
             'referral_link' => Yii::t('database', 'Referral Link'),
-<<<<<<< HEAD
-=======
             'sell_out' => Yii::t('database', 'Sell out'),
->>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),
