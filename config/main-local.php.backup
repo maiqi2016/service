@@ -1,0 +1,77 @@
+<?php
+return [
+    'bootstrap' => ['gii'],
+    'modules' => [
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'allowedIPs' => [
+                '127.0.0.1',
+                '::1',
+                '192.168.0.*'
+            ]
+        ],
+    ],
+    'params' => array_merge(
+        require(__DIR__ . '/params.php'),
+        require(__DIR__ . '/params-local.php')
+    ),
+    'components' => [
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
+        /**
+         * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_write]';
+         * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_read]';
+         * grant all on [SECRET:kake_db].* to [SECRET:kake_user_write];
+         * grant SELECT on [SECRET:kake_db].* to [SECRET:kake_user_write];
+         */
+        'kake' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => false,
+            // Master
+            'masterConfig' => [
+                'username' => '[SECRET:kake_user_write]',
+                'password' => '[SECRET:kake_pwd_write]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:kake_host_master];dbname=[SECRET:kake_db]'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => '[SECRET:kake_user_read]',
+                'password' => '[SECRET:kake_pwd_read]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:kake_host_slave1];dbname=[SECRET:kake_db]'],
+            ],
+        ],
+        /**
+         * create user [SECRET:kake_user_write] identified by '[SECRET:service_pwd_write]';
+         * create user [SECRET:kake_user_read] identified by '[SECRET:service_pwd_read]';
+         * grant all on [SECRET:service_db].* to [SECRET:kake_user_write];
+         * grant SELECT on [SECRET:service_db].* to [SECRET:kake_user_read];
+         */
+        'service' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => false,
+            // Master
+            'masterConfig' => [
+                'username' => '[SECRET:service_user_write]',
+                'password' => '[SECRET:service_pwd_write]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:service_host_master];dbname=[SECRET:service_db]'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => '[SECRET:service_user_read]',
+                'password' => '[SECRET:service_pwd_read]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:service_host_slave1];dbname=[SECRET:service_db]'],
+            ],
+        ],
+    ],
+];

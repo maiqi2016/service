@@ -1,0 +1,129 @@
+<?php
+return [
+    'id' => 'service',
+    'language' => 'zh-CN',
+    'defaultRoute' => 'base',
+    'name' => 'Service',
+    'basePath' => dirname(__DIR__),
+    'vendorPath' => dirname(__DIR__) . '/vendor',
+    'controllerNamespace' => 'service\controllers',
+    'bootstrap' => ['log'],
+    'params' => array_merge(
+        require(__DIR__ . '/params-local.php'),
+        require(__DIR__ . '/params.php')
+    ),
+    'components' => [
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@service/messages',
+                ],
+            ],
+        ],
+        'errorHandler' => [
+            'errorAction' => 'main/error',
+        ],
+        'request' => [
+            'cookieValidationKey' => '[SECRET:cookie]',
+        ],
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+        ],
+        'redis' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => '[SECRET:redis_host]',
+            'password' => '[SECRET:redis_pwd]',
+            'port' => [SECRET:redis_port],
+            'database' => 0,
+        ],
+        'urlManager' => [
+            'class' => 'service\inherit\CliUrlManager'
+        ],
+        'log' => [
+            'traceLevel' => YII_DEBUG ? 3 : 0,
+            'targets' => [
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => YII_DEBUG ? [
+                        'trace',
+                        'warning',
+                        'info'
+                    ] : ['info'],
+                    'logFile' => '@app/runtime/logs/debug.log',
+                    'logVars' => [],
+                    'maxLogFiles' => 20
+                ],
+                [
+                    'class' => 'yii\log\DbTarget',
+                    'levels' => ['error'],
+                    'db' => DB_SERVICE,
+                    'logTable' => 'app_log',
+                    'logVars' => []
+                ],
+            ],
+        ],
+        'user' => [
+            'identityClass' => [],
+        ],
+        /**
+         * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_write]';
+         * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_read]';
+         * grant all on [SECRET:kake_db].* to [SECRET:kake_user_write];
+         * grant SELECT on [SECRET:kake_db].* to [SECRET:kake_user_write];
+         */
+        'kake' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => false,
+            // Master
+            'masterConfig' => [
+                'username' => '[SECRET:kake_user_write]',
+                'password' => '[SECRET:kake_pwd_write]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:kake_host_master];dbname=[SECRET:kake_db]'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => '[SECRET:kake_user_read]',
+                'password' => '[SECRET:kake_pwd_read]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:kake_host_slave1];dbname=[SECRET:kake_db]'],
+            ],
+        ],
+        /**
+         * create user [SECRET:kake_user_write] identified by '[SECRET:service_pwd_write]';
+         * create user [SECRET:kake_user_read] identified by '[SECRET:service_pwd_read]';
+         * grant all on [SECRET:service_db].* to [SECRET:kake_user_write];
+         * grant SELECT on [SECRET:service_db].* to [SECRET:kake_user_read];
+         */
+        'service' => [
+            'class' => 'yii\db\Connection',
+            'charset' => 'utf8',
+            'enableSchemaCache' => false,
+            // Master
+            'masterConfig' => [
+                'username' => '[SECRET:service_user_write]',
+                'password' => '[SECRET:service_pwd_write]',
+            ],
+            'masters' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:service_host_master];dbname=[SECRET:service_db]'],
+            ],
+            // Slave
+            'slaveConfig' => [
+                'username' => '[SECRET:service_user_read]',
+                'password' => '[SECRET:service_pwd_read]',
+            ],
+            'slaves' => [
+                'a' => ['dsn' => 'mysql:host=[SECRET:service_host_slave1];dbname=[SECRET:service_db]'],
+            ],
+        ],
+        'oil' => [
+            'class' => 'service\components\Oil',
+            'reflection' => 'Oil\src\Reflection',
+            'api' => 'Oil\src\Service',
+        ],
+    ],
+];
