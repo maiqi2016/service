@@ -25,8 +25,11 @@ use Yii;
  * @property integer $product_description_id
  * @property integer $share_times
  * @property string  $referral_link
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> Stashed changes
  * @property integer $sell_out
 >>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
  * @property string  $add_time
