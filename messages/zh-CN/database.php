@@ -132,4 +132,8 @@ return [
     'Standard Code Number' => '开奖达标数',
     'Win Code' => '中奖码',
     'Uri' => 'URI',
+<<<<<<< HEAD
+=======
+    'Sell out' => '售罄',
+>>>>>>> 3f7e0cbb1e9e9aa6d6ee2a18db7f54011886e0e5
 ];
