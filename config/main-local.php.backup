@@ -21,9 +21,9 @@ return [
         ],
         /**
          * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_write]';
-         * create user [SECRET:kake_user_write] identified by '[SECRET:kake_pwd_read]';
+         * create user [SECRET:kake_user_read] identified by '[SECRET:kake_pwd_read]';
          * grant all on [SECRET:kake_db].* to [SECRET:kake_user_write];
-         * grant SELECT on [SECRET:kake_db].* to [SECRET:kake_user_write];
+         * grant SELECT on [SECRET:kake_db].* to [SECRET:kake_user_read];
          */
         'kake' => [
             'class' => 'yii\db\Connection',
@@ -47,10 +47,10 @@ return [
             ],
         ],
         /**
-         * create user [SECRET:kake_user_write] identified by '[SECRET:service_pwd_write]';
-         * create user [SECRET:kake_user_read] identified by '[SECRET:service_pwd_read]';
-         * grant all on [SECRET:service_db].* to [SECRET:kake_user_write];
-         * grant SELECT on [SECRET:service_db].* to [SECRET:kake_user_read];
+         * create user [SECRET:service_user_write] identified by '[SECRET:service_pwd_write]';
+         * create user [SECRET:service_user_read] identified by '[SECRET:service_pwd_read]';
+         * grant all on [SECRET:service_db].* to [SECRET:service_user_write];
+         * grant SELECT on [SECRET:service_db].* to [SECRET:service_user_read];
          */
         'service' => [
             'class' => 'yii\db\Connection',
