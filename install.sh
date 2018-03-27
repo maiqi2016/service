@@ -1,21 +1,21 @@
 #! /bin/bash
 
-# composer
-composer install
+path=$(cd `dirname $0`; pwd)
 
 # create config files
-sudo cp config/main.php.backup config/main.php
-sudo cp config/main-local.php.backup config/main-local.php
-sudo cp config/params.php.backup config/params.php
-sudo cp config/params-local.php.backup config/params-local.php
+cp ${path}/config/main.php.backup ${path}/config/main.php
+cp ${path}/config/main-local.php.backup ${path}/config/main-local.php
+cp ${path}/config/params.php.backup ${path}/config/params.php
+cp ${path}/config/params-local.php.backup ${path}/config/params-local.php
 
 # add write
-sudo chmod -R a+w config/
-sudo chmod -R a+w runtime/
-sudo chmod -R a+w web/assets/
+chmod -R a+w ${path}/config/
+chmod -R a+w ${path}/runtime/
+mkdir ${path}/web/assets/ >/dev/null
+chmod -R a+w ${path}/web/assets/
 
 # add execute
-sudo chmod a+x thrift/service.php
+chmod a+x ${path}/thrift/service.php
 
 echo
 read -p "Please choose environment. [dev/prod]: " env
@@ -25,4 +25,4 @@ then
     exit 1
 fi
 
-sudo cp web/index-${env}.php web/index.php
+cp ${path}/web/index-${env}.php ${path}/web/index.php
