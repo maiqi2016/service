@@ -1,10 +1,27 @@
-# Service
-Common service
+# 项目
+喀客项目服务提供商
 
-## Install step
-* git clone https://github.com/maiqi2016/service.git
-* cd service
-* chmod a+x install.sh
-* ./install.sh
-* cd thrift
-* nohup python runserver.py 172.19.222.65 8888 2>&1 &
+## 安装步骤
+
+```shell
+$ git clone https://github.com/maiqi2016/service.git
+$ chmod a+x service/install.sh
+```
+
+### 本机环境
+
+```shell
+$ cd service
+$ composer install
+$ ./install.sh
+$ cd thrift
+$ nohup python runserver.py localhost 8888 &
+```
+
+### `Docker` 环境
+
+```
+$ sudo docker-compose up -d     # 并确保已经安装(执行)了 `/web/docker/script/` 目录下的所有脚本
+$ mq-composer install --ignore-platform-reqs
+$ mq-bash service/install.sh
+```
