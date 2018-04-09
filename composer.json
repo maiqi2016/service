@@ -10,11 +10,11 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=5.4.0",
+    "yidas/yii2-composer-bower-skip": ">=2.0.5",
     "yiisoft/yii2": ">=2.0.6",
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
-    "apache/thrift": "^0.9.3",
-    "yiisoft/yii2-redis": "^2.0",
+    "yiisoft/yii2-redis": ">=2.0",
     "jtleon/oil": ">=0.30.0"
   },
   "require-dev": {
