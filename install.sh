@@ -11,7 +11,7 @@ cp ${path}/config/params-local.php.backup ${path}/config/params-local.php
 # add write
 chmod -R a+w ${path}/config/
 chmod -R a+w ${path}/runtime/
-mkdir ${path}/web/assets/ >/dev/null
+mkdir ${path}/web/assets/ 2>/dev/null
 chmod -R a+w ${path}/web/assets/
 
 # add execute
