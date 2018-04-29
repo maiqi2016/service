@@ -181,4 +181,29 @@ class UserController extends MainController
 
         $this->success();
     }
+
+    public function actionMiniBindOrRegister()
+    {
+        $user = $this->getParams();
+
+        $userModel = new User();
+        $record = $userModel::find()->where(['phone' => $user['phone']])->asArray()->one();
+
+        if ($record) { // exists
+            if (!$record['state']) {
+                $this->fail('the account has been frozen');
+            }
+            $result = $userModel->edit(['phone' => $user['phone']], ['mpid' => $user['mpid']]);
+            if (!$result['state']) {
+                $this->fail($result['info']);
+            }
+        } else { // register
+            $userModel->attributes = $user;
+            if (!$res = $userModel->insert()) {
+                $this->fail(current($userModel->getFirstErrors()));
+            }
+        }
+
+        $this->success($userModel::find()->where(['phone' => $user['phone']])->asArray()->one());
+    }
 }

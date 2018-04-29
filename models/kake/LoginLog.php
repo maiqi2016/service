@@ -24,7 +24,9 @@ class LoginLog extends General
         1 => 'backend-login',
         2 => 'we-chat-login',
         3 => 'we-chat-bind',
-        4 => 'sso-login'
+        4 => 'sso-login',
+        5 => 'mini-program-login',
+        6 => 'mini-program-bind',
     ];
 
     /**
