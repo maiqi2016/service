@@ -3,6 +3,8 @@
 namespace service\controllers;
 
 use Oil\src\Helper;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use service\models\kake\Attachment;
 use service\models\kake\Config;
 use service\models\Main;
@@ -11,6 +13,7 @@ use yii;
 use yii\base\DynamicModel;
 use yii\web\Controller;
 use yii\web\Response;
+use Exception;
 
 /**
  * Main controller
@@ -91,10 +94,15 @@ class MainController extends Controller
 
         // validate sign
         if (!Helper::validateSign($params, 'app_sign')) {
-            $this->fail([
-                'signature verification failed',
-                'api' => $params['app_api']
-            ], 'common', -1, 422);
+            $this->fail(
+                [
+                    'signature verification failed',
+                    'api' => $params['app_api'],
+                ],
+                'common',
+                -1,
+                422
+            );
         }
 
         // language
@@ -108,34 +116,43 @@ class MainController extends Controller
         }
 
         // user exists
-        $user = (new ServiceUser())->first([
-            'app_id' => $params['app_id'],
-            'app_secret' => $params['app_secret'],
-            'state' => 1
-        ], Yii::$app->params['use_cache']);
+        $user = (new ServiceUser())->first(
+            [
+                'app_id'     => $params['app_id'],
+                'app_secret' => $params['app_secret'],
+                'state'      => 1,
+            ],
+            Yii::$app->params['use_cache']
+        );
 
         if (empty($user)) {
             $this->fail('account validation failed', 'common', -1, 403);
         }
 
-        $this->user = (object) Helper::pullSome($user, [
-            'id',
-            'type',
-            'app',
-            'remark'
-        ]);
+        $this->user = (object)Helper::pullSome(
+            $user,
+            [
+                'id',
+                'type',
+                'app',
+                'remark',
+            ]
+        );
 
         $this->validated = true;
 
         // unset var
-        Helper::popSome($params, [
-            'app_api',
-            'app_id',
-            'app_secret',
-            'app_lang',
-            'app_cache',
-            'app_sign'
-        ]);
+        Helper::popSome(
+            $params,
+            [
+                'app_api',
+                'app_id',
+                'app_secret',
+                'app_lang',
+                'app_cache',
+                'app_sign',
+            ]
+        );
         $params['r'] = $api;
 
         return $useCache;
@@ -151,10 +168,14 @@ class MainController extends Controller
     {
         $api = trim(Yii::$app->request->get('r'), '/');
 
-        $this->fail([
-            'access to an interface that does not exist',
-            'api' => strtr($api, '/', '.')
-        ], 'common', -1);
+        $this->fail(
+            [
+                'access to an interface that does not exist',
+                'api' => strtr($api, '/', '.'),
+            ],
+            'common',
+            -1
+        );
     }
 
     /**
@@ -214,9 +235,12 @@ class MainController extends Controller
             return $class;
         }
 
-        return Helper::singleton($class, function () use ($class) {
-            return new $class($this->id, $this->module);
-        });
+        return Helper::singleton(
+            $class,
+            function () use ($class) {
+                return new $class($this->id, $this->module);
+            }
+        );
     }
 
     /**
@@ -235,11 +259,16 @@ class MainController extends Controller
         $info = $this->lang($lang, $package);
         $info && Yii::info($info);
 
-        exit(json_encode([
-            'state' => 1,
-            'info' => $info,
-            'data' => $data
-        ], JSON_UNESCAPED_UNICODE));
+        exit(
+        json_encode(
+            [
+                'state' => 1,
+                'info'  => $info,
+                'data'  => $data,
+            ],
+            JSON_UNESCAPED_UNICODE
+        )
+        );
     }
 
     /**
@@ -259,11 +288,16 @@ class MainController extends Controller
         Yii::info($info);
 
         header("HTTP/1.1 {$statusCode}" . Response::$httpStatuses[$statusCode]);
-        exit(json_encode([
-            'state' => $state,
-            'info' => $info,
-            'data' => null
-        ], JSON_UNESCAPED_UNICODE));
+        exit(
+        json_encode(
+            [
+                'state' => $state,
+                'info'  => $info,
+                'data'  => null,
+            ],
+            JSON_UNESCAPED_UNICODE
+        )
+        );
     }
 
     /**
@@ -313,10 +347,15 @@ class MainController extends Controller
             $class = '\service\models\\' . $db . '\\' . Helper::underToCamel($table, false);
 
             if (!class_exists($class)) {
-                $this->fail([
-                    'param illegal',
-                    'param' => $table
-                ], 'common', -1, 404);
+                $this->fail(
+                    [
+                        'param illegal',
+                        'param' => $table,
+                    ],
+                    'common',
+                    -1,
+                    404
+                );
             }
 
             $pool[$key] = new $class;
@@ -340,10 +379,13 @@ class MainController extends Controller
             return $option['table'];
         }
 
-        $controller = Helper::cutString(static::className(), [
-            '\^0^desc',
-            'Controller^0'
-        ]);
+        $controller = Helper::cutString(
+            static::className(),
+            [
+                '\^0^desc',
+                'Controller^0',
+            ]
+        );
 
         return Helper::camelToUnder($controller, '_');
     }
@@ -357,18 +399,24 @@ class MainController extends Controller
     public function getParams()
     {
         $params = Yii::$app->request->get();
-        Helper::popSome($params, [
-            Yii::$app->request->csrfParam,
-            'r'
-        ]);
+        Helper::popSome(
+            $params,
+            [
+                Yii::$app->request->csrfParam,
+                'r',
+            ]
+        );
 
-        array_walk($params, function (&$value) {
-            if (is_numeric($value)) {
-                $value = (string) $value;
-            } else {
-                $value = Helper::parseJsonString($value);
+        array_walk(
+            $params,
+            function (&$value) {
+                if (is_numeric($value)) {
+                    $value = (string)$value;
+                } else {
+                    $value = Helper::parseJsonString($value);
+                }
             }
-        });
+        );
 
         return $params;
     }
@@ -385,9 +433,12 @@ class MainController extends Controller
         $table = $this->getTableName($option);
         $model = $this->model($table);
 
-        $detail = $model->first(function ($ar) use ($table, $model, $option) {
-            return $model->handleActiveRecord($ar, $table, $option);
-        }, Yii::$app->params['use_cache']);
+        $detail = $model->first(
+            function ($ar) use ($table, $model, $option) {
+                return $model->handleActiveRecord($ar, $table, $option);
+            },
+            Yii::$app->params['use_cache']
+        );
 
         $this->success($detail);
     }
@@ -404,9 +455,13 @@ class MainController extends Controller
         $table = $this->getTableName($option);
         $model = $this->model($table);
 
-        $list = $model->all(function ($ar) use ($table, $model, $option) {
-            return $model->handleActiveRecord($ar, $table, $option);
-        }, null, Yii::$app->params['use_cache']);
+        $list = $model->all(
+            function ($ar) use ($table, $model, $option) {
+                return $model->handleActiveRecord($ar, $table, $option);
+            },
+            null,
+            Yii::$app->params['use_cache']
+        );
 
         $this->success($list);
     }
@@ -523,7 +578,7 @@ class MainController extends Controller
 
         $_methods = [
             'rules',
-            'attributeLabels'
+            'attributeLabels',
         ];
         foreach ($methods as $item) {
             if (in_array($item, $_methods)) {
@@ -597,18 +652,21 @@ class MainController extends Controller
         $del = Helper::emptyDefault($data, 'attachment_del');
         $tags_record = Helper::emptyDefault($data, 'tags_record');
 
-        Helper::popSome($data, [
-            'id',
-            'table',
-            'attachment_add',
-            'attachment_del',
-            'where',
-        ]);
+        Helper::popSome(
+            $data,
+            [
+                'id',
+                'table',
+                'attachment_add',
+                'attachment_del',
+                'where',
+            ]
+        );
 
         return [
             $data,
             compact('add', 'del'),
-            $tags_record
+            $tags_record,
         ];
     }
 
@@ -630,9 +688,13 @@ class MainController extends Controller
         empty($size) && $size = null;
 
         $options = $this->getParams();
-        $all = $model->all(function ($list) use ($model, $table, $options) {
-            return $model->handleActiveRecord($list, $table, $options);
-        }, $size, Yii::$app->params['use_cache']);
+        $all = $model->all(
+            function ($list) use ($model, $table, $options) {
+                return $model->handleActiveRecord($list, $table, $options);
+            },
+            $size,
+            Yii::$app->params['use_cache']
+        );
 
         $this->success($all);
     }
@@ -652,9 +714,12 @@ class MainController extends Controller
         $model = $this->model($table, $db);
 
         $options = $this->getParams();
-        $record = $model->first(function ($first) use ($model, $table, $options) {
-            return $model->handleActiveRecord($first, $table, $options);
-        }, Yii::$app->params['use_cache']);
+        $record = $model->first(
+            function ($first) use ($model, $table, $options) {
+                return $model->handleActiveRecord($first, $table, $options);
+            },
+            Yii::$app->params['use_cache']
+        );
 
         $this->success($record);
     }
@@ -675,19 +740,22 @@ class MainController extends Controller
         $model = $this->model($table, $db);
         list($model->attributes, $attachment, $tagsRecord) = $this->getData();
 
-        $result = $model->trans(function () use ($model, $attachment, $tagsRecord) {
-            if (!$model->save()) {
-                throw new yii\db\Exception(current($model->getFirstErrors()));
-            }
+        $result = $model->trans(
+            function () use ($model, $attachment, $tagsRecord) {
+                if (!$model->save()) {
+                    throw new yii\db\Exception(current($model->getFirstErrors()));
+                }
 
-            if (!empty($attachment['add'])) {
-                (new Attachment())->updateStateByIds($attachment['add'], $model->state);
-            }
+                if (!empty($attachment['add'])) {
+                    (new Attachment())->updateStateByIds($attachment['add'], $model->state);
+                }
 
-            $this->orderTagsRecord($tagsRecord, $model->id);
+                $this->orderTagsRecord($tagsRecord, $model->id);
 
-            return ['id' => $model->id];
-        }, 'insert record and attachment');
+                return ['id' => $model->id];
+            },
+            'insert record and attachment'
+        );
 
         if (!$result['state']) {
             $this->fail($result['info']);
@@ -715,32 +783,35 @@ class MainController extends Controller
         list($data, $attachment, $tagsRecord) = $this->getData();
         $model->attributes = $data;
 
-        $result = $model->trans(function () use ($model, $where, $attachment, $tagsRecord, $data) {
-            $where = Helper::parseJsonString($where);
+        $result = $model->trans(
+            function () use ($model, $where, $attachment, $tagsRecord, $data) {
+                $where = Helper::parseJsonString($where);
 
-            $record = $model::findOne($where);
-            if (empty($record)) {
-                throw new yii\db\Exception('abnormal operation');
-            }
+                $record = $model::findOne($where);
+                if (empty($record)) {
+                    throw new yii\db\Exception('abnormal operation');
+                }
 
-            foreach ($data as $field => $value) {
-                $record->{$field} = $value;
-            }
+                foreach ($data as $field => $value) {
+                    $record->{$field} = $value;
+                }
 
-            if (!$record->save()) {
-                throw new yii\db\Exception(current($record->getFirstErrors()));
-            }
+                if (!$record->save()) {
+                    throw new yii\db\Exception(current($record->getFirstErrors()));
+                }
 
-            if (!empty($attachment['add']) || !empty($attachment['del'])) {
-                $attachmentModel = new Attachment();
-                $attachmentModel->updateStateByIds($attachment['add'], $record->state);
-                $attachmentModel->updateStateByIds($attachment['del'], 0);
-            }
+                if (!empty($attachment['add']) || !empty($attachment['del'])) {
+                    $attachmentModel = new Attachment();
+                    $attachmentModel->updateStateByIds($attachment['add'], $record->state);
+                    $attachmentModel->updateStateByIds($attachment['del'], 0);
+                }
 
-            $this->orderTagsRecord($tagsRecord, $record->id);
+                $this->orderTagsRecord($tagsRecord, $record->id);
 
-            return true;
-        }, 'update record and attachment');
+                return true;
+            },
+            'update record and attachment'
+        );
 
         if (!$result['state']) {
             $this->fail($result['info']);
@@ -798,20 +869,30 @@ class MainController extends Controller
     {
         $conf = Yii::$app->params;
 
-        $response = Yii::$app->oil->api->fields('account', 'password')->auth($conf['sms_id'], md5($conf['sms_secret']))->host($conf['sms_host'])->service('json/sms/Submit')->params([
-            'phones' => $phone,
-            'content' => $content,
-            'sign' => $conf['sms_sign'],
-            'sendtime' => null
-        ])->optionsHandler(function ($options, $params) {
-            $options[CURLOPT_POSTFIELDS] = json_encode($params);
-            $options[CURLOPT_HTTPHEADER] = [
-                'Content-Type: application/json; charset=utf-8',
-                'Content-Length: ' . strlen(json_encode($params))
-            ];
+        $response = Yii::$app->oil->api->fields('account', 'password')
+            ->auth($conf['sms_id'], md5($conf['sms_secret']))
+            ->host($conf['sms_host'])
+            ->service('json/sms/Submit')
+            ->params(
+                [
+                    'phones'   => $phone,
+                    'content'  => $content,
+                    'sign'     => $conf['sms_sign'],
+                    'sendtime' => null,
+                ]
+            )
+            ->optionsHandler(
+                function ($options, $params) {
+                    $options[CURLOPT_POSTFIELDS] = json_encode($params);
+                    $options[CURLOPT_HTTPHEADER] = [
+                        'Content-Type: application/json; charset=utf-8',
+                        'Content-Length: ' . strlen(json_encode($params)),
+                    ];
 
-            return $options;
-        })->request();
+                    return $options;
+                }
+            )
+            ->request();
 
         if (!empty($response['info'])) {
             $response['result'] = $response['info'];
@@ -827,13 +908,121 @@ class MainController extends Controller
     }
 
     /**
+     * Get worksheet for excel
+     *
+     * @param string  $file
+     * @param string  $sheet
+     * @param boolean $write
+     *
+     * @throws
+     * @return array
+     */
+    protected function excelSheet($file, $sheet = null, $write = false)
+    {
+        // create reader
+        $type = IOFactory::identify($file);
+        $reader = IOFactory::createReader($type);
+        $spreadsheet = $reader->load($file);
+
+        if ($write) {
+            $worksheet = $spreadsheet->getActiveSheet();
+            $worksheet->setTitle($sheet ?: 'ALL');
+        } else {
+            $worksheet = $sheet ? $spreadsheet->getSheetByName($sheet) : $spreadsheet->getActiveSheet();
+            if (empty($worksheet)) {
+                throw new Exception(
+                    $sheet ? "Sheet `{$sheet}` not exists in the document." : 'No sheet in the document.'
+                );
+            }
+        }
+
+        return [$spreadsheet, $worksheet];
+    }
+
+    /**
+     * Read data from excel
+     *
+     * @param string  $file
+     * @param array   $fieldsMap
+     * @param integer $limit
+     * @param integer $offset
+     * @param integer $dataBeginLine
+     * @param string  $sheet
+     *
+     * @return array
+     * @throws
+     */
+    public function excelReader($file, $fieldsMap, $limit = 0, $offset = 0, $dataBeginLine = 3, $sheet = null)
+    {
+        /**
+         * @var Worksheet $worksheet
+         */
+        list($_, $worksheet) = $this->excelSheet($file, $sheet);
+
+        // get highest
+        $maxRow = $worksheet->getHighestRow(); // row
+        $maxCol = $worksheet->getHighestColumn(); // col
+
+        $beginLine = $offset + $dataBeginLine;
+        if ($maxRow < $beginLine) {
+            throw new Exception('No data in the document.');
+        }
+
+        // list field
+        $field = [];
+        for ($col = 'A'; $col <= $maxCol; $col++) {
+            $value = $worksheet->getCell("{$col}1")->getValue();
+            if (empty($value)) {
+                break;
+            }
+            $field[$col] = isset($fieldsMap[$value]) ? $fieldsMap[$value] : $value;
+        }
+
+        // check field exists
+        $diff = array_diff($fieldsMap, $field);
+        if (!empty($diff)) {
+            $diffField = current($diff);
+            throw new Exception("Field `{$diffField}` not exists in the document.");
+        }
+
+        if (empty($field)) {
+            throw new Exception('No field in the document.');
+        }
+
+        // max col
+        $maxField = key(array_reverse($field));
+
+        $data = [];
+        $i = 1;
+        $fieldsMapValue = array_values($fieldsMap);
+        for ($row = $beginLine; $row <= $maxRow; $row++) {
+            for ($col = 'A'; $col <= $maxCol; $col++) {
+                if ($col > $maxField) {
+                    break;
+                }
+                if (!in_array($field[$col], $fieldsMapValue)) {
+                    break;
+                }
+                $data[$row][$field[$col]] = $worksheet->getCell("{$col}{$row}")->getValue();
+            }
+
+            $i++;
+            if ($limit > 0 && $i > $limit) {
+                break;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @inheritDoc
      */
     public function __call($name, $params)
     {
         $methods = [
             'dump',
-            'cache'
+            'cache',
         ];
         if (in_array($name, $methods)) {
             return (new Main())->{$name}(...$params);

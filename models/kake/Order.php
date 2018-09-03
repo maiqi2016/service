@@ -27,7 +27,8 @@ class Order extends General
      */
     public $_payment_method = [
         0 => '微信',
-        1 => '支付宝'
+        1 => '支付宝',
+        9 => '兑换码',
     ];
 
     /**
@@ -44,7 +45,7 @@ class Order extends General
      */
     public $_state = [
         0 => '已取消',
-        1 => '正常'
+        1 => '正常',
     ];
 
     /**
@@ -60,40 +61,45 @@ class Order extends General
      */
     public function rules()
     {
-        return array_merge([
+        return array_merge(
             [
                 [
-                    'order_number',
-                    'product_id',
-                    'user_id',
-                    'price',
-                    'order_contacts_id',
-                    'payment_method'
+                    [
+                        'order_number',
+                        'product_id',
+                        'user_id',
+                        'price',
+                        'order_contacts_id',
+                        'payment_method',
+                    ],
+                    'required',
                 ],
-                'required'
-            ],
-            [
                 [
-                    'product_id',
-                    'user_id',
-                    'producer_log_id',
-                    'price',
-                    'order_contacts_id',
-                    'payment_method',
-                    'payment_state'
+                    [
+                        'product_id',
+                        'user_id',
+                        'producer_log_id',
+                        'price',
+                        'order_contacts_id',
+                        'payment_method',
+                        'payment_state',
+                    ],
+                    'integer',
                 ],
-                'integer'
+                [
+                    ['order_number'],
+                    'string',
+                    'max' => 14,
+                ],
+                [
+                    ['order_number'],
+                    'unique',
+                ],
             ],
-            [
-                ['order_number'],
-                'string',
-                'max' => 14
-            ],
-            [
-                ['order_number'],
-                'unique'
-            ],
-        ], $this->_rule_state, $this->_rule_add_time, $this->_rule_update_time);
+            $this->_rule_state,
+            $this->_rule_add_time,
+            $this->_rule_update_time
+        );
     }
 
     /**
@@ -102,18 +108,18 @@ class Order extends General
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('database', 'ID'),
-            'order_number' => Yii::t('database', 'Order Number'),
-            'product_id' => Yii::t('database', 'Product ID'),
-            'user_id' => Yii::t('database', 'User ID'),
-            'producer_log_id' => Yii::t('database', 'Producer Log ID'),
-            'price' => Yii::t('database', 'Price'),
+            'id'                => Yii::t('database', 'ID'),
+            'order_number'      => Yii::t('database', 'Order Number'),
+            'product_id'        => Yii::t('database', 'Product ID'),
+            'user_id'           => Yii::t('database', 'User ID'),
+            'producer_log_id'   => Yii::t('database', 'Producer Log ID'),
+            'price'             => Yii::t('database', 'Price'),
             'order_contacts_id' => Yii::t('database', 'Order Contacts ID'),
-            'payment_method' => Yii::t('database', 'Payment Method'),
-            'payment_state' => Yii::t('database', 'Payment State'),
-            'add_time' => Yii::t('database', 'Add Time'),
-            'update_time' => Yii::t('database', 'Update Time'),
-            'state' => Yii::t('database', 'State'),
+            'payment_method'    => Yii::t('database', 'Payment Method'),
+            'payment_state'     => Yii::t('database', 'Payment State'),
+            'add_time'          => Yii::t('database', 'Add Time'),
+            'update_time'       => Yii::t('database', 'Update Time'),
+            'state'             => Yii::t('database', 'State'),
         ];
     }
 }

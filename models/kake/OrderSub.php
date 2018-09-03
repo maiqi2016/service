@@ -45,6 +45,11 @@ class OrderSub extends General
     public $_sold_state_model = 'kake\OrderSoldCode::state';
 
     /**
+     * @var array Field
+     */
+    public $_type_model = 'kake\OrderSoldCode';
+
+    /**
      * @inheritdoc
      */
     public static function tableName()
