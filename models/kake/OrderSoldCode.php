@@ -11,12 +11,23 @@ use Yii;
  * @property integer $order_sub_id
  * @property integer $product_supplier_id
  * @property string  $code
+ * @property integer $type
+ * @property string  $remark
  * @property string  $add_time
  * @property string  $update_time
  * @property integer $state
  */
 class OrderSoldCode extends General
 {
+    /**
+     * @var array Field
+     */
+    public $_type = [
+        0 => '常规',
+        1 => '批量生成',
+        2 => '批量导入',
+    ];
+
     /**
      * @var array Field
      */
@@ -47,14 +58,16 @@ class OrderSoldCode extends General
                 [
                     'order_sub_id',
                     'product_supplier_id',
-                    'code'
+                    'code',
+                    'remark'
                 ],
                 'required'
             ],
             [
                 [
                     'order_sub_id',
-                    'product_supplier_id'
+                    'product_supplier_id',
+                    'type'
                 ],
                 'integer'
             ],
@@ -84,6 +97,8 @@ class OrderSoldCode extends General
             'order_sub_id' => Yii::t('database', 'Order Sub ID'),
             'product_supplier_id' => Yii::t('database', 'Product Supplier ID'),
             'code' => Yii::t('database', 'Code'),
+            'type' => Yii::t('database', 'Type'),
+            'remark' => Yii::t('database', 'Remark'),
             'add_time' => Yii::t('database', 'Add Time'),
             'update_time' => Yii::t('database', 'Update Time'),
             'state' => Yii::t('database', 'State'),
