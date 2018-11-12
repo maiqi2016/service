@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 
 $thriftPath = dirname(__DIR__) . '/vendor/packaged/thrift/src';
-require_once $thriftPath . '/ClassLoader/ThriftClassLoader.php';
+require_once $thriftPath . '/Thrift/ClassLoader/ThriftClassLoader.php';
 
 use Thrift\ClassLoader\ThriftClassLoader;
 
