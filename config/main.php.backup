@@ -97,8 +97,8 @@ return [
         /**
          * create user [SECRET:service_user_write] identified by '[SECRET:service_pwd_write]';
          * create user [SECRET:service_user_read] identified by '[SECRET:service_pwd_read]';
-         * grant all on [SECRET:service_db].* to [SECRET:kake_user_write];
-         * grant SELECT on [SECRET:service_db].* to [SECRET:kake_user_read];
+         * grant all on [SECRET:service_db].* to [SECRET:service_user_write];
+         * grant SELECT on [SECRET:service_db].* to [SECRET:service_user_read];
          */
         'service' => [
             'class' => 'yii\db\Connection',
